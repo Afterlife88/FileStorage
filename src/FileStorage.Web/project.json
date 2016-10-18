@@ -15,7 +15,8 @@
     "FileStorage.Contracts": "1.0.0-*",
     "FileStorage.Domain": "1.0.0-*",
     "FileStorage.Cloud": "1.0.0-*",
-    "Microsoft.AspNetCore.Mvc": "1.0.1"
+    "Microsoft.AspNetCore.Mvc": "1.0.1",
+    "Swashbuckle": "6.0.0-beta901"
   },
 
   "tools": {
@@ -33,7 +34,8 @@
 
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "xmlDoc": true
   },
 
   "runtimeOptions": {

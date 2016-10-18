@@ -12,9 +12,32 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.Swagger.Model;
+using Swashbuckle.SwaggerGen.Generator;
 
 namespace FileStorage.Web
 {
+    public class FileOperation : IOperationFilter
+    {
+        public void Apply(Operation operation, OperationFilterContext context)
+        {
+            if (operation.OperationId.ToLower() == "apifileuploadpost")
+            {
+                operation.Parameters.Clear();//Clearing parameters
+                operation.Parameters.Add(new NonBodyParameter
+                {
+                    Name = "File",
+                    In = "formData",
+                    Description = "Uplaod Image",
+                    Required = true,
+                    Type = "file"
+                });
+                operation.Consumes.Add("application/form-data");
+            }
+        }
+    }
+
     public class Startup
     {
         public static IConfiguration Configuration { get; private set; }
@@ -29,7 +52,6 @@ namespace FileStorage.Web
 
             Configuration = builder.Build();
 
-            services.AddMvc();
 
             services.AddScoped<IBlobService, AzureBlobService>();
             services.Configure<FormOptions>(options =>
@@ -37,19 +59,43 @@ namespace FileStorage.Web
                 options.MultipartBodyLengthLimit = 60000000;
 
             });
+            // Add framework services.
+            services.AddMvc();
+
+            services.AddSwaggerGen();
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.SingleApiVersion(new Info
+                {
+                    Version = "v1",
+                    Title = "My awesome API",
+                    Description = "My Awesome API by @janaks09",
+                    TermsOfService = "NA",
+                    Contact = new Contact() { Name = "Your name", Email = "your email", Url = "your url" }
+                });
+
+                //options.IncludeXmlComments(swaggerCommentXmlPath); //Includes XML comment file
+                options.OperationFilter<FileOperation>();
+                options.DescribeAllEnumsAsStrings();
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
 
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUi();
+        }
+        private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
+        {
+            return Path.Combine(appEnvironment.ApplicationBasePath, "FileStorage.Web.xml");
         }
     }
+
 }
