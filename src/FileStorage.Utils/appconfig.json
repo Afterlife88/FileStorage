@@ -1,0 +1,7 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=_CHANGE_ME;Trusted_Connection=True;MultipleActiveResultSets=true",
+    "AzureBlobConnection": "DefaultEndpointsProtocol=https;AccountName=devchallenge;AccountKey=p/p10wLXwJnGfZVo78fz9OrjXi4GgtxWQjuy2ApNGkgCdy3QO1ryTddqP88u4zb0VeaBgdMCyk8GGsUtYcqgrA==",
+    "AzureBlobContainerName": "files"
+  }
+}

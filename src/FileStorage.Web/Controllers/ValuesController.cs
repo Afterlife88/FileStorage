@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FileStorage.Contracts.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,11 @@ namespace FileStorage.Web.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private IBlobService _blobService;
+        public ValuesController(IBlobService blobService)
+        {
+            _blobService = blobService;
+        }
         // GET: api/values
         [HttpGet]
         public IEnumerable<string> Get()
@@ -28,16 +34,12 @@ namespace FileStorage.Web.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post(IList<IFormFile> files)
+        public void Post(ICollection<IFormFile> files)
         {
-            foreach (var a in files)
-            {
-                a.OpenReadStream()
-            }
-            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
-            {
-                return BadRequest($"Expected a multipart request, but got '{Request.ContentType}'.");
-            }
+            var fomr = Request.Form;
+            foreach (var item in files)
+                _blobService.UploadFileAsync(item);
+
         }
 
         // PUT api/values/5

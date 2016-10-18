@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using FileStorage.Cloud;
+using FileStorage.Contracts.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -25,6 +28,15 @@ namespace FileStorage.Web
                 AddJsonFile("appsettings.json");
 
             Configuration = builder.Build();
+
+            services.AddMvc();
+
+            services.AddScoped<IBlobService, AzureBlobService>();
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 60000000;
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,10 +49,7 @@ namespace FileStorage.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseMvc();
         }
     }
 }

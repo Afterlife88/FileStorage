@@ -1,4 +1,4 @@
-﻿using FileStorage.Web;
+﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -9,8 +9,14 @@ namespace FileStorage.Utils
     {
         public static CloudBlobContainer GetBlobContainer()
         {
-            var blobStorageConnectionString = Startup.Configuration.GetConnectionString("AzureBlobConnection");
-            var blobStorageContainerName = Startup.Configuration.GetConnectionString("AzureBlobContainerName");
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory()).
+                AddJsonFile("appconfig.json");
+
+            var config = builder.Build();
+
+            var blobStorageConnectionString = config.GetConnectionString("AzureBlobConnection");
+            var blobStorageContainerName = config.GetConnectionString("AzureBlobContainerName");
 
             var blobStorageAccount = CloudStorageAccount.Parse(blobStorageConnectionString);
             var blobClient = blobStorageAccount.CreateCloudBlobClient();

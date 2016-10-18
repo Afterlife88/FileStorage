@@ -2,8 +2,9 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "FileStorage.Web": "1.0.0-*",
     "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "NETStandard.Library": "1.6.0",
     "WindowsAzure.Storage": "7.2.1"
   },

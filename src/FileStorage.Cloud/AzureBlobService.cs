@@ -8,6 +8,8 @@ namespace FileStorage.Cloud
 {
     public class AzureBlobService : IBlobService
     {
+     
+
         public async Task<Stream> DownloadFileAsync(string path)
         {
             var containter = AzureCloudHelpers.GetBlobContainer();
