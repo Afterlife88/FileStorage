@@ -1,28 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.IO;
 using System.Threading.Tasks;
 using FileStorage.Contracts.Services;
+using FileStorage.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace FileStorage.Cloud
 {
     public class AzureBlobService : IBlobService
     {
-        public Task<Stream> DownloadFileAsync(string path)
+        public async Task<Stream> DownloadFileAsync(string path)
         {
-            throw new NotImplementedException();
+            var containter = AzureCloudHelpers.GetBlobContainer();
+            var blob = containter.GetBlockBlobReference(path);
+
+            var ms = new MemoryStream();
+            await blob.DownloadToStreamAsync(ms);
+
+            return ms;
         }
 
-        public Task<Stream> UploadFileAsync(HttpContent httpContent)
+        public async Task<string> UploadFileAsync(IFormFile file)
         {
-            throw new NotImplementedException();
+            var blobContainer = AzureCloudHelpers.GetBlobContainer();
+            var blob = blobContainer.GetBlockBlobReference(file.FileName);
+            using (var fs = file.OpenReadStream())
+                await blob.UploadFromStreamAsync(fs);
+
+            return Path.GetFileName(file.FileName);
         }
 
-        public Task DeleteFileAsync(string path)
+        public async Task DeleteFileAsync(string path)
         {
-            throw new NotImplementedException();
+            var container = AzureCloudHelpers.GetBlobContainer();
+            var blob = container.GetBlockBlobReference(path);
+
+            await blob.DeleteAsync();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace FileStorage.Contracts.Services
 {
@@ -21,9 +22,9 @@ namespace FileStorage.Contracts.Services
         /// <summary>
         /// Uploading file to the blob storage
         /// </summary>
-        /// <param name="httpContent">data</param>
+        /// <param name="file">data</param>
         /// <returns></returns>
-        Task<Stream> UploadFileAsync(HttpContent httpContent);
+        Task<string> UploadFileAsync(IFormFile file);
         /// <summary>
         /// Deleting file from the blob storage
         /// </summary>
