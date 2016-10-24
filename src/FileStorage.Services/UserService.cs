@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FileStorage.Domain
+namespace FileStorage.Services
 {
-    public class Class1
+    public class UserService
     {
-        public Class1()
-        {
-        }
     }
 }

@@ -7,8 +7,8 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>6648c9ba-bddd-4e5e-a8cb-4232b573b6de</ProjectGuid>
-    <RootNamespace>FileStorage.Contracts</RootNamespace>
+    <ProjectGuid>399e304b-e48d-4fbf-9cd5-48cb2aec1a09</ProjectGuid>
+    <RootNamespace>FileStorage.Services</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>

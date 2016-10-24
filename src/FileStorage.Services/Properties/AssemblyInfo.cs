@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FileStorage.Contracts")]
+[assembly: AssemblyProduct("FileStorage.Services")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6648c9ba-bddd-4e5e-a8cb-4232b573b6de")]
+[assembly: Guid("399e304b-e48d-4fbf-9cd5-48cb2aec1a09")]

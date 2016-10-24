@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace FileStorage.Contracts.Services
+namespace FileStorage.Domain.Infrastructure.Services
 {
     /// <summary>
     /// Contract for the blob behaviour 

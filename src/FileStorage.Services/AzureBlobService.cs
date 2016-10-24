@@ -1,14 +1,13 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using FileStorage.Contracts.Services;
+using FileStorage.Domain.Infrastructure.Services;
 using FileStorage.Utils;
 using Microsoft.AspNetCore.Http;
 
-namespace FileStorage.Cloud
+namespace FileStorage.Services
 {
     public class AzureBlobService : IBlobService
     {
-     
 
         public async Task<Stream> DownloadFileAsync(string path)
         {

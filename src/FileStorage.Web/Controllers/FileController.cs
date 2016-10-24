@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FileStorage.Contracts.Services;
+using FileStorage.Domain.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

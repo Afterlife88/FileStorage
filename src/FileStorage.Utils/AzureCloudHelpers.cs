@@ -9,17 +9,13 @@ namespace FileStorage.Utils
     {
         public static CloudBlobContainer GetBlobContainer()
         {
-            //var builder = new ConfigurationBuilder()
-            //    .SetBasePath(Directory.GetCurrentDirectory()).
-            //    AddJsonFile("appconfig.json");
-
-            //var config = builder.Build();
 
             var blobStorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=devchallenge;AccountKey=p/p10wLXwJnGfZVo78fz9OrjXi4GgtxWQjuy2ApNGkgCdy3QO1ryTddqP88u4zb0VeaBgdMCyk8GGsUtYcqgrA==";
             var blobStorageContainerName =  "files";
 
             var blobStorageAccount = CloudStorageAccount.Parse(blobStorageConnectionString);
             var blobClient = blobStorageAccount.CreateCloudBlobClient();
+            
             return blobClient.GetContainerReference(blobStorageContainerName);
         }
     }
