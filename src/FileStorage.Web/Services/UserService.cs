@@ -1,6 +1,9 @@
-﻿namespace FileStorage.Web.Services
+﻿using FileStorage.Web.Contracts;
+
+namespace FileStorage.Web.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
+
     }
 }
