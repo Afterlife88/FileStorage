@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using FileStorage.Domain.Infrastructure.Services;
 using FileStorage.Utils;
+using FileStorage.Web.Contracts;
 using Microsoft.AspNetCore.Http;
 
 namespace FileStorage.Services

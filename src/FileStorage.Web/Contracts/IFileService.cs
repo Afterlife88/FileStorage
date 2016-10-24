@@ -1,4 +1,4 @@
-﻿namespace FileStorage.Domain.Infrastructure.Services
+﻿namespace FileStorage.Web.Contracts
 {
     /// <summary>
     /// Managing file entity

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace FileStorage.Domain.Infrastructure.Services
+namespace FileStorage.Web.Contracts
 {
     /// <summary>
     /// Contract for the blob behaviour 

@@ -1,6 +1,7 @@
 ﻿using System.IO;
-using FileStorage.Domain.Infrastructure.Services;
 using FileStorage.Services;
+using FileStorage.Web.Contracts;
+using FileStorage.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;

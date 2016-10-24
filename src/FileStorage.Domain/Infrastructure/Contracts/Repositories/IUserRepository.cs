@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FileStorage.Domain.Entities;
 
-namespace FileStorage.Domain.Infrastructure.Repositories
+namespace FileStorage.Domain.Infrastructure.Contracts.Repositories
 {
     public interface IUserRepository
     {
