@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Net.Http.Server;
 
 namespace FileStorage.Web
 {

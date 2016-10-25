@@ -33,14 +33,13 @@ namespace FileStorage.Domain.Infrastructure.Configuration
                     _context.Remove(u);
                 _context.SaveChanges();
             }
-          
+
             var email = "test@devchallenge.it";
             if (await _userManager.FindByEmailAsync(email) == null)
             {
                 // use the create rather than addorupdate so can set password
                 var user = new ApplicationUser
                 {
-                  
                     Email = email,
                 };
                 await _userManager.CreateAsync(user, "test123456");

@@ -98,8 +98,9 @@ namespace FileStorage.Web
             app.UseSwaggerUi();
             app.UseMvcWithDefaultRoute();
 
+
             // Recreate db's
-            databaseInitializer.Seed().GetAwaiter().GetResult();
+            //databaseInitializer.Seed().GetAwaiter().GetResult();
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
         {
