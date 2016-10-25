@@ -4,7 +4,7 @@ using FileStorage.Utils;
 using FileStorage.Web.Contracts;
 using Microsoft.AspNetCore.Http;
 
-namespace FileStorage.Services
+namespace FileStorage.Web.Services
 {
     public class AzureBlobService : IBlobService
     {

@@ -10,7 +10,7 @@ namespace FileStorage.Domain.Infrastructure.Contracts.Repositories
         Task CreateAsync(ApplicationUser user, string password);
         Task<ApplicationUser> GetUserByNameAsync(string username);
         Task EditAsync(ApplicationUser user);
-        Task<ApplicationUser> GetUser(string userEmail);
+        Task<ApplicationUser> GetUserAsync(string userEmail);
         Task<ApplicationUser> GetUserByID(string userId);
     }
 }

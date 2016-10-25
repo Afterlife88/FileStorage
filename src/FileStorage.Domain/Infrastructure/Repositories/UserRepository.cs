@@ -20,7 +20,7 @@ namespace FileStorage.Domain.Infrastructure.Repositories
         {
             return await _userManager.FindByIdAsync(userId);
         }
-        public async Task<ApplicationUser> GetUser(string userEmail)
+        public async Task<ApplicationUser> GetUserAsync(string userEmail)
         {
             return await _userManager.FindByEmailAsync(userEmail);
         }
