@@ -31,7 +31,7 @@ namespace FileStorage.Domain.Infrastructure.Repositories
 
         public async Task CreateAsync(ApplicationUser user, string password)
         {
-            await _userManager.CreateAsync(user, password);
+          var a =  await _userManager.CreateAsync(user, password);
         }
 
         public async Task EditAsync(ApplicationUser user)

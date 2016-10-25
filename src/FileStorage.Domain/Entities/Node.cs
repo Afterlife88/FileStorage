@@ -13,6 +13,8 @@ namespace FileStorage.Domain.Entities
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+        // MIME mapping for the specified file name.
+        public string ContentType { get; set; }
         public DateTime Created { get; set; }
         public string PathToFile { get; set; }
         public long Size { get; set; }

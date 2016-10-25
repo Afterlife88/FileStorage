@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using FileStorage.Domain.Entities;
 using FileStorage.Domain.Infrastructure.Contracts.Repositories;
@@ -37,13 +39,29 @@ namespace FileStorage.Web.Services
                 State.ErrorMessage = "You must type a password.";
                 return State;
             }
-            var checkIsUserAlreadyExistWithEmail = await _userRepository.GetUserAsync(modelDto.Email);
-            if (checkIsUserAlreadyExistWithEmail != null)
+            //var checkIsUserAlreadyExistWithEmail = await _userRepository.GetUserAsync(modelDto.Email);
+            //if (checkIsUserAlreadyExistWithEmail != null)
+            //{
+            //    State.ErrorMessage = "The user already exists!";
+            //    return State;
+            //}
+            // Create user
+            var user = new ApplicationUser()
             {
-                State.ErrorMessage = "The user already exists!";
-                return State;
-            }
-            await _userRepository.CreateAsync(Mapper.Map<RegistrationModelDto, ApplicationUser>(modelDto), modelDto.Password);
+                Email = modelDto.Email,
+                UserName = modelDto.Email,
+                Nodes = new List<Node>()
+            };
+            // Create base folder for concrete user
+            user.Nodes.Add(new Node()
+            {
+                Name = modelDto.Email + "-root",
+                IsDirectory = true,
+                Created = DateTime.Now,
+                
+
+            });
+            await _userRepository.CreateAsync(user, modelDto.Password);
             return State;
         }
     }

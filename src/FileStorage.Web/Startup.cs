@@ -31,10 +31,10 @@ namespace FileStorage.Web
             builder.AddJsonFile("appsettings.json");
             var connectionStringConfig = builder.Build();
 
-            //services.AddDbContext<DataDbContext>(opt => opt.UseSqlServer(
-            //    connectionStringConfig.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataDbContext>(opt => opt.UseSqlServer(
+                connectionStringConfig.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<DataDbContext>(opt => opt.UseInMemoryDatabase());
+            //services.AddDbContext<DataDbContext>(opt => opt.UseInMemoryDatabase());
 
             services.AddIdentity<ApplicationUser, IdentityRole>(pass =>
                  {
@@ -102,7 +102,7 @@ namespace FileStorage.Web
 
 
             // Recreate db's
-            databaseInitializer.Seed().GetAwaiter().GetResult();
+            //databaseInitializer.Seed().GetAwaiter().GetResult();
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
         {

@@ -8,6 +8,7 @@ namespace FileStorage.Domain
     {
         public DbSet<Node> Nodes { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<ShareEmail> ShareEmails { get; set; }
         public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
         {
 
