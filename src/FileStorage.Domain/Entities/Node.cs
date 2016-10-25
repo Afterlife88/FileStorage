@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FileStorage.Domain.Entities
 {
@@ -16,8 +14,6 @@ namespace FileStorage.Domain.Entities
         // MIME mapping for the specified file name.
         public string ContentType { get; set; }
         public DateTime Created { get; set; }
-        public string PathToFile { get; set; }
-        public long Size { get; set; }
         public bool IsDirectory { get; set; }
         public int? RootId { get; set; }
         public virtual Node Root { get; set; }
@@ -27,5 +23,6 @@ namespace FileStorage.Domain.Entities
         [ForeignKey("PermissionId")]
         public virtual Permission Permission { get; set; }
         public virtual ICollection<Node> Siblings { get; set; }
+        public virtual ICollection<FileVersion> FileVersions { get; set; }
     }
 }

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using FileStorage.Web.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FileStorage.Web.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class FileController : Controller
     {
@@ -35,16 +37,23 @@ namespace FileStorage.Web.Controllers
         /// <summary>
         /// Action to upload file
         /// </summary>
-        /// <param name="rootFolderId">Root folder ID</param>
+        /// <param name="directoryId">Root folder ID</param>
         /// <param name="file"></param>
-        [Route("{rootFolderId}")]
+        [Route("{directoryId}")]
         [HttpPost]
-        public async Task<IActionResult> Upload(int rootFolderId, IFormFile file)
+        public async Task<IActionResult> Upload(int directoryId, IFormFile file)
         {
             try
             {
+                var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var serviceResponse = await _fileService.UploadAsync(file, directoryId, userEmail);
 
-                return Ok(file);
+                if (serviceResponse.IsValid)
+                {
+                    return StatusCode(201);
+                }
+                return BadRequest(serviceResponse.ErrorMessage);
+               
             }
             catch (Exception exception)
             {

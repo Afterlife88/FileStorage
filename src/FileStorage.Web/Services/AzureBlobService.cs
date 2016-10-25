@@ -20,14 +20,14 @@ namespace FileStorage.Web.Services
             return ms;
         }
 
-        public async Task<string> UploadFileAsync(IFormFile file)
+        public async Task UploadFileAsync(IFormFile file, string generatedFileName)
         {
             var blobContainer = AzureCloudHelpers.GetBlobContainer();
-            var blob = blobContainer.GetBlockBlobReference(file.FileName);
+            var blob = blobContainer.GetBlockBlobReference(generatedFileName);
             using (var fs = file.OpenReadStream())
                 await blob.UploadFromStreamAsync(fs);
 
-            return Path.GetFileName(file.FileName);
+
         }
 
         public async Task DeleteFileAsync(string path)

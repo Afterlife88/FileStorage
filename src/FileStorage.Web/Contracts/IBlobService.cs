@@ -15,12 +15,14 @@ namespace FileStorage.Web.Contracts
         /// <param name="path">path to the file</param>
         /// <returns></returns>
         Task<Stream> DownloadFileAsync(string path);
+
         /// <summary>
         /// Uploading file to the blob storage
         /// </summary>
         /// <param name="file">data</param>
+        /// <param name="generatedFileName"></param>
         /// <returns></returns>
-        Task<string> UploadFileAsync(IFormFile file);
+        Task UploadFileAsync(IFormFile file, string generatedFileName);
         /// <summary>
         /// Deleting file from the blob storage
         /// </summary>

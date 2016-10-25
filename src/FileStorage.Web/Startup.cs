@@ -3,6 +3,7 @@ using System.IO;
 using FileStorage.Domain;
 using FileStorage.Domain.Entities;
 using FileStorage.Domain.Infrastructure.Configuration;
+using FileStorage.Domain.Infrastructure.Contracts;
 using FileStorage.Domain.Infrastructure.Contracts.Initializers;
 using FileStorage.Domain.Infrastructure.Contracts.Repositories;
 using FileStorage.Domain.Infrastructure.Repositories;
@@ -69,7 +70,10 @@ namespace FileStorage.Web
             services.AddScoped<IBlobService, AzureBlobService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<INodeRepository, NodeRepository>();
+            services.AddScoped<IFileVersionRepository, FileVersionRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
@@ -103,7 +107,7 @@ namespace FileStorage.Web
 
 
             // Recreate db's
-            //databaseInitializer.Seed().GetAwaiter().GetResult();
+            databaseInitializer.Seed().GetAwaiter().GetResult();
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
         {
