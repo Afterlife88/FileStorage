@@ -1,4 +1,5 @@
-﻿using Swashbuckle.Swagger.Model;
+﻿using System.Linq;
+using Swashbuckle.Swagger.Model;
 using Swashbuckle.SwaggerGen.Generator;
 
 namespace FileStorage.Web.Configuration
@@ -15,17 +16,22 @@ namespace FileStorage.Web.Configuration
         /// <param name="context"></param>
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            if (operation.OperationId.ToLower() == "apifileuploadpost")
+            if (operation.OperationId.ToLower() == "apifilebyrootfolderidpost")
             {
-                operation.Parameters.Clear();//Clearing parameters
+                var counter = operation.Parameters.ToArray().Length;
+                for (int i = counter - 1; i >= 1; i--)
+                    operation.Parameters.RemoveAt(i);
+
+
                 operation.Parameters.Add(new NonBodyParameter
                 {
                     Name = "File",
                     In = "formData",
-                    Description = "Uplaod Image",
+                    Description = "Uplaod file",
                     Required = true,
                     Type = "file"
                 });
+
                 operation.Consumes.Add("application/form-data");
             }
         }

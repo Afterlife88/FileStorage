@@ -63,7 +63,8 @@ namespace FileStorage.Web
             });
 
             // DI
-            services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 60000000);
+            // Max lenght of file is 4 GB
+            services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 4294967295);
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
             services.AddScoped<IBlobService, AzureBlobService>();
             services.AddScoped<IFileService, FileService>();
