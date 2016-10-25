@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FileStorage.Web.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FileStorage.Web.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class FileController : Controller
     {
@@ -19,6 +22,16 @@ namespace FileStorage.Web.Controllers
 
         }
 
+    
+        [HttpGet]
+        public async Task<IActionResult> GetSmth()
+        {
+            //User.Identity.
+            
+            var obj = User;
+            var value = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return Ok(value);
+        }
         
         /// <summary>
         /// Action to upload file

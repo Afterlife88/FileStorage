@@ -10,6 +10,7 @@ using FileStorage.Web.Configuration;
 using FileStorage.Web.Contracts;
 using FileStorage.Web.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -68,6 +69,7 @@ namespace FileStorage.Web
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,7 +102,7 @@ namespace FileStorage.Web
 
 
             // Recreate db's
-            //databaseInitializer.Seed().GetAwaiter().GetResult();
+            databaseInitializer.Seed().GetAwaiter().GetResult();
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
         {
