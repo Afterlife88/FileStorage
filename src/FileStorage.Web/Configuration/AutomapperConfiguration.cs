@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FileStorage.Domain.Entities;
-using FileStorage.Web.DTO;
+using FileStorage.Services.DTO;
+
 
 namespace FileStorage.Web.Configuration
 {

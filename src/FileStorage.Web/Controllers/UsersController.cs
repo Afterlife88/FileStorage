@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
-using FileStorage.Web.Contracts;
-using FileStorage.Web.DTO;
+using FileStorage.Services.Contracts;
+using FileStorage.Services.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FileStorage.Web.Controllers

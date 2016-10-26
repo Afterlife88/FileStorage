@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using FileStorage.Web.Contracts;
-using FileStorage.Web.Utils;
+using FileStorage.Services.Contracts;
+using FileStorage.Services.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
