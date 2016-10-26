@@ -110,7 +110,7 @@ namespace FileStorage.Web.Services
         {
             try
             {
-                Node directoryWhereFileUploadTo;
+                
                 if (file == null)
                 {
                     State.ErrorMessage = "No file attached!";
@@ -118,16 +118,16 @@ namespace FileStorage.Web.Services
                     return State;
                 }
 
+                var callerUser = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
 
-                var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
-
+                Node directoryWhereFileUploadTo;
                 if (directoryName == null)
-                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetRootFolderForUser(owner.Id);
+                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetRootFolderForUser(callerUser.Id);
                 else
                     directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetNodeByName(directoryName);
 
                 // Validate current Node (folder that file uploading to) 
-                if (!ValidateNode(State, directoryWhereFileUploadTo, owner))
+                if (!ValidateNode(State, directoryWhereFileUploadTo, callerUser))
                 {
                     return State;
                 }
@@ -161,7 +161,7 @@ namespace FileStorage.Web.Services
                 {
                     Created = DateTime.Now,
                     IsDirectory = false,
-                    Owner = owner,
+                    Owner = callerUser,
                     Folder = directoryWhereFileUploadTo,
                     Name = file.FileName,
                     FileVersions = new List<FileVersion>(),
