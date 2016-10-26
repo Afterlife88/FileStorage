@@ -14,9 +14,11 @@ namespace FileStorage.DAL.Repositories
         {
             _dataDbContext = dataDbContext;
         }
-        public async Task<FileVersion> GetFileVersionByMd5HashAsync(string hash)
+        public async Task<FileVersion> GetFileVersionByMd5HashForUserAsync(string hash, string userId)
         {
-            return await _dataDbContext.FileVersions.FirstOrDefaultAsync(r => r.MD5Hash == hash);
+            var userNodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(r => r.FileVersions).ToArrayAsync();
+            var node = userNodes.FirstOrDefault(r => r.FileVersions.Any(s => s.MD5Hash == hash));
+            return node?.FileVersions.FirstOrDefault(r => r.MD5Hash == hash);
 
         }
 

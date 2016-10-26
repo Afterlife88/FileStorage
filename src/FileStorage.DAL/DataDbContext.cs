@@ -12,11 +12,6 @@ namespace FileStorage.DAL
         public DbSet<FileVersion> FileVersions { get; set; }
         public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
         { }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<FileVersion>().HasIndex(r => r.MD5Hash).IsUnique();
-            base.OnModelCreating(builder);
-        }
+     
     }
 }

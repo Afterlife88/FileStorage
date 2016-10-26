@@ -88,7 +88,7 @@ namespace FileStorage.Services.Services
                 }
                 // Check if file with concrete hash already exist in service
                 string md5Hash = GetMD5HashFromFile(file);
-                var checkIsFileWithHashExist = await _unitOfWork.FileVersionRepository.GetFileVersionByMd5HashAsync(md5Hash);
+                var checkIsFileWithHashExist = await _unitOfWork.FileVersionRepository.GetFileVersionByMd5HashForUserAsync(md5Hash, callerUser.Id);
                 if (checkIsFileWithHashExist != null)
                 {
                     State.ErrorMessage = "This version of file already exist!";
@@ -96,17 +96,18 @@ namespace FileStorage.Services.Services
                     return State;
                 }
 
-                string generateNameForAzureBlob = GenerateNameForTheAzureBlob(md5Hash, file.FileName);
+                string generateNameForAzureBlob = GenerateNameForTheAzureBlob(md5Hash, file.FileName, userEmail);
                 string contentType;
                 new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out contentType);
                 if (contentType == null)
                     contentType = "none";
 
-                var checkIsNodeAlreadyExistByName = await _unitOfWork.NodeRepository.GetNodeByName(file.FileName);
+                var allNodesForUser = await _unitOfWork.NodeRepository.GetAllNodesForUser(callerUser.Id);
+                var existedFile = allNodesForUser.FirstOrDefault(r => r.Name == file.FileName && r.IsDirectory == false);
                 // If file already exist - add new version
-                if (checkIsNodeAlreadyExistByName != null)
+                if (existedFile != null)
                 {
-                    await AddNewVersionOfFileAsync(file, checkIsNodeAlreadyExistByName, md5Hash,
+                    await AddNewVersionOfFileAsync(file, existedFile, md5Hash,
                                   generateNameForAzureBlob);
                     return State;
                 }
@@ -269,9 +270,9 @@ namespace FileStorage.Services.Services
             }
             return modelState.IsValid;
         }
-        private string GenerateNameForTheAzureBlob(string md5Hash, string fileName)
+        private string GenerateNameForTheAzureBlob(string md5Hash, string fileName, string userEmail)
         {
-            return $"{md5Hash}_{fileName}";
+            return $"{userEmail}_{md5Hash}_{fileName}";
         }
         private string GetMD5HashFromFile(IFormFile file)
         {
