@@ -56,10 +56,27 @@ namespace FileStorage.Services.Services
 
         public async Task<Tuple<Stream, NodeDto>> GetFile(Guid uniqFileId, string callerEmail, int? versionOfFile)
         {
+            var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+            var getFileNode = await _unitOfWork.NodeRepository.GetNodeById(uniqFileId);
+
+            if (getFileNode == null)
+            {
+                State.TypeOfError = TypeOfServiceError.NotFound;
+                State.ErrorMessage = "Requested file is not found!";
+                return Tuple.Create<Stream, NodeDto>(null, null);
+            }
+            // TODO: Later check share emails
+            if (owner.Id != getFileNode.OwnerId)
+            {
+                State.TypeOfError = TypeOfServiceError.Unathorized;
+                State.ErrorMessage = "You are not authorized to get this file!";
+                return Tuple.Create<Stream, NodeDto>(null, null);
+            }
+
             // Version of file not passed - then return last version
             if (versionOfFile == null)
-                return await GetLastVersionOfFile(uniqFileId, callerEmail);
-            return await GetConcreteVersionOfFile(uniqFileId, callerEmail, versionOfFile.GetValueOrDefault(-1));
+                return await GetLastVersionOfFile(getFileNode);
+            return await GetConcreteVersionOfFile(getFileNode, versionOfFile.GetValueOrDefault(-1));
         }
 
         public async Task<ServiceState> UploadAsync(IFormFile file, string directoryName, string userEmail)
@@ -152,7 +169,6 @@ namespace FileStorage.Services.Services
             }
         }
 
-
         #endregion
 
         #region Helpers methods 
@@ -177,26 +193,10 @@ namespace FileStorage.Services.Services
             await _blobService.UploadFileAsync(newfile, generatedName);
             return State;
         }
-        private async Task<Tuple<Stream, NodeDto>> GetConcreteVersionOfFile(Guid uniqFileId, string callerEmail, int versionOfFile)
+        private async Task<Tuple<Stream, NodeDto>> GetConcreteVersionOfFile(Node file, int versionOfFile)
         {
-            var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
-            var getFileNode = await _unitOfWork.NodeRepository.GetNodeById(uniqFileId);
-
-            if (getFileNode == null)
-            {
-                State.TypeOfError = TypeOfServiceError.NotFound;
-                State.ErrorMessage = "Requested file is not found!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
-            }
-            // TODO: Later check share emails
-            if (owner.Id != getFileNode.OwnerId)
-            {
-                State.TypeOfError = TypeOfServiceError.Unathorized;
-                State.ErrorMessage = "You are not authorized to get this file!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
-            }
             var getVersionOfFile =
-                await _unitOfWork.FileVersionRepository.GetFileVersionOfVersionNumber(getFileNode, versionOfFile);
+                await _unitOfWork.FileVersionRepository.GetFileVersionOfVersionNumber(file, versionOfFile);
 
             if (getVersionOfFile == null)
             {
@@ -214,27 +214,12 @@ namespace FileStorage.Services.Services
 
             // Set start position of the stream
             streamOfFileFromBlob.Position = 0;
-            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(getFileNode));
+            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(file));
         }
-        private async Task<Tuple<Stream, NodeDto>> GetLastVersionOfFile(Guid uniqFileId, string callerEmail)
+        private async Task<Tuple<Stream, NodeDto>> GetLastVersionOfFile(Node file)
         {
-            var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
-            var getFileNode = await _unitOfWork.NodeRepository.GetNodeById(uniqFileId);
-
-            if (getFileNode == null)
-            {
-                State.TypeOfError = TypeOfServiceError.NotFound;
-                State.ErrorMessage = "Requested file is not found!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
-            }
-            // TODO: Later check share emails
-            if (owner.Id != getFileNode.OwnerId)
-            {
-                State.TypeOfError = TypeOfServiceError.Unathorized;
-                State.ErrorMessage = "You are not authorized to get this file!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
-            }
-            var getLastVersionOfFile = await _unitOfWork.FileVersionRepository.GetLatestFileVersion(getFileNode);
+           
+            var getLastVersionOfFile = await _unitOfWork.FileVersionRepository.GetLatestFileVersion(file);
             if (getLastVersionOfFile == null)
             {
                 State.TypeOfError = TypeOfServiceError.NotFound;
@@ -251,7 +236,7 @@ namespace FileStorage.Services.Services
 
             // Set start position of the stream
             streamOfFileFromBlob.Position = 0;
-            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(getFileNode));
+            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(file));
         }
         private bool ValidateNode(ServiceState modelState, Node node, ApplicationUser user)
         {
