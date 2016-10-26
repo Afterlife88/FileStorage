@@ -11,5 +11,6 @@ namespace FileStorage.Domain.Infrastructure.Contracts.Repositories
         Task<Node> GetNodeById(Guid nodeId);
         Task<Node> GetNodeByName(string nodeName);
         Task<IEnumerable<Node>> GetAllNodesForUser(string userId);
+        Task<Node> GetRootFolderForUser(string userId);
     }
 }

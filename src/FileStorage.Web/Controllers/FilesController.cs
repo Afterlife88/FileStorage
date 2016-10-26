@@ -90,13 +90,13 @@ namespace FileStorage.Web.Controllers
         }
 
         /// <summary>
-        /// Action to upload file
+        /// 
         /// </summary>
-        /// <param name="directoryName">Root folder name</param>
         /// <param name="file"></param>
-        [Route("{directoryName}")]
+        /// <param name="directoryName">Optional directory name of the where file upload to</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Upload(string directoryName, IFormFile file)
+        public async Task<IActionResult> Upload(IFormFile file, [FromQuery]string directoryName = null)
         {
             try
             {

@@ -17,6 +17,11 @@ namespace FileStorage.Domain.Infrastructure.Repositories
             _dataDbContext = dataDbContext;
         }
 
+        public async Task<Node> GetRootFolderForUser(string userId)
+        {
+            var node = await _dataDbContext.Nodes.Where(r => r.IsDirectory && r.OwnerId == userId).FirstOrDefaultAsync();
+            return node;
+        }
         public void AddNode(Node node)
         {
             _dataDbContext.Nodes.Add(node);
@@ -29,7 +34,7 @@ namespace FileStorage.Domain.Infrastructure.Repositories
 
         public async Task<IEnumerable<Node>> GetAllNodesForUser(string userId)
         {
-            var nodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(s=>s.FileVersions).ToArrayAsync();
+            var nodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(s => s.FileVersions).ToArrayAsync();
             return nodes;
         }
         public async Task<Node> GetNodeByName(string nodeName)
