@@ -56,14 +56,14 @@ namespace FileStorage.Web
             app.UseJwtBearerAuthentication(new JwtBearerOptions
             {
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
+                AutomaticChallenge = false,
                 TokenValidationParameters = tokenValidationParameters
             });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
+                AutomaticChallenge = false,
                 AuthenticationScheme = "Cookie",
                 CookieName = "access_token",
                 TicketDataFormat = new CustomJwtDataFormat(
