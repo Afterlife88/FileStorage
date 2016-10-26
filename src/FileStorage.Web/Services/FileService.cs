@@ -17,8 +17,12 @@ namespace FileStorage.Web.Services
 {
     public class FileService : IFileService
     {
+        #region Variables
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBlobService _blobService;
+
+        #endregion
         /// <summary>
         /// Model state of the executed actions
         /// </summary>
@@ -30,26 +34,24 @@ namespace FileStorage.Web.Services
             _blobService = blobService;
             State = new ModelState();
         }
-
+        #region Methods
         public async Task<IEnumerable<NodeDto>> GetUserFiles(string userEmail)
         {
             try
             {
                 var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
-           
+
                 var files = await _unitOfWork.NodeRepository.GetAllNodesForUser(owner.Id);
-              
-                return Mapper.Map<IEnumerable<Node>, IEnumerable<NodeDto>>(files);
+
+                var filesWithoutFolders = files.Where(r => r.IsDirectory == false);
+                return Mapper.Map<IEnumerable<Node>, IEnumerable<NodeDto>>(filesWithoutFolders);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.CommitAsync();
                 State.ErrorMessage = ex.Message;
                 return null;
             }
         }
-
-
 
         public async Task<ModelState> UploadAsync(IFormFile file, int directoryId, string userEmail)
         {
@@ -63,6 +65,7 @@ namespace FileStorage.Web.Services
 
                 var baseDirectory = await _unitOfWork.NodeRepository.GetNodeById(directoryId);
                 var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
+
                 // Validate current Node (folder that file uploading to) 
                 if (!ValidateNode(State, baseDirectory, owner))
                 {
@@ -87,19 +90,11 @@ namespace FileStorage.Web.Services
                 // If file already exist - add new version
                 if (checkIsNodeAlreadyExistByName != null)
                 {
-                    var newFileVersion = new FileVersion
-                    {
-                        Node = checkIsNodeAlreadyExistByName,
-                        Created = DateTime.Now,
-                        MD5Hash = md5Hash,
-                        PathToFile = generateNameForAzureBlob,
-                        Size = file.Length
-                    };
-                    _unitOfWork.FileVersionRepository.AddFileVersion(newFileVersion);
-                    await _unitOfWork.CommitAsync();
-                    await _blobService.UploadFileAsync(file, generateNameForAzureBlob);
+                    await AddNewVersionOfFileAsync(file, checkIsNodeAlreadyExistByName, md5Hash,
+                                  generateNameForAzureBlob);
                     return State;
                 }
+
                 // else just create as first file on the system
                 var fileNode = new Node
                 {
@@ -117,7 +112,8 @@ namespace FileStorage.Web.Services
                     Created = DateTime.Now,
                     MD5Hash = md5Hash,
                     PathToFile = generateNameForAzureBlob,
-                    Size = file.Length
+                    Size = file.Length,
+                    VersionOfFile = 1
                 };
 
                 // Add to db
@@ -138,7 +134,39 @@ namespace FileStorage.Web.Services
                 return State;
             }
         }
+        #endregion
 
+        #region Helpers methods 
+
+        private async Task<ModelState> AddNewVersionOfFileAsync(IFormFile newfile, Node existedFile, string hash, string generatedName)
+        {
+            try
+            {
+                int getLastVersionOfFile =
+                     await _unitOfWork.FileVersionRepository.GetLastVersionOfTheFile(existedFile);
+                // Increment version of file
+                getLastVersionOfFile++;
+                var newFileVersion = new FileVersion
+                {
+                    Node = existedFile,
+                    Created = DateTime.Now,
+                    MD5Hash = hash,
+                    PathToFile = generatedName,
+                    Size = newfile.Length,
+                    VersionOfFile = getLastVersionOfFile
+                };
+                _unitOfWork.FileVersionRepository.AddFileVersion(newFileVersion);
+                await _unitOfWork.CommitAsync();
+                await _blobService.UploadFileAsync(newfile, generatedName);
+                return State;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.CommitAsync();
+                State.ErrorMessage = ex.Message;
+                return State;
+            }
+        }
 
         private bool ValidateNode(ModelState modelState, Node node, ApplicationUser user)
         {
@@ -180,5 +208,7 @@ namespace FileStorage.Web.Services
             }
             return md5Hash;
         }
+        #endregion
+
     }
 }

@@ -15,6 +15,7 @@ namespace FileStorage.Web.DTO
         public DateTime Created { get; set; }
         public bool IsDirectory { get; set; }
         public int DirectoryId { get; set; }
+        public string DirectoryName { get; set; }
         public string OwnerId { get; set; }
         public List<FileVersionDto> FileVersions { get; set; }
     }

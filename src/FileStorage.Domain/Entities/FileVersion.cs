@@ -9,6 +9,7 @@ namespace FileStorage.Domain.Entities
         public virtual Node Node { get; set; }
         public DateTime Created { get; set; }
         public string MD5Hash { get; set; }
+        public int VersionOfFile { get; set; }
         public string PathToFile { get; set; }
         public long Size { get; set; }
     }

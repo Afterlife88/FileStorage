@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Http;
 using FileStorage.Web.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.WindowsAzure.Storage.Blob.Protocol;
 
 
 namespace FileStorage.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
-    public class FileController : Controller
+    public class FilesController : Controller
     {
         private readonly IFileService _fileService;
 
-        public FileController(IFileService fileService)
+        public FilesController(IFileService fileService)
         {
             _fileService = fileService;
         }
-
         [HttpGet]
         public async Task<IActionResult> GetUserFiles()
         {
@@ -31,9 +32,15 @@ namespace FileStorage.Web.Controllers
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, ex.Message);
             }
+        }
+        [Route("{fileName}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFile(string fileName, [FromQuery]int? versionOfFile = null)
+        {
+            var obj = new {a = fileName, b = versionOfFile};
+            return Ok(obj);
         }
 
         /// <summary>
@@ -55,12 +62,10 @@ namespace FileStorage.Web.Controllers
                     return StatusCode(201);
                 }
                 return BadRequest(serviceResponse.ErrorMessage);
-               
             }
             catch (Exception exception)
             {
                 return StatusCode(500, exception.Message);
-
             }
         }
     }
