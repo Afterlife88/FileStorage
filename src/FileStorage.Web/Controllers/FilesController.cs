@@ -64,24 +64,20 @@ namespace FileStorage.Web.Controllers
             try
             {
                 var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                if (versionOfFile == null)
+
+                var responseFromService = await _fileService.GetFile(fileUniqId, userEmail, versionOfFile);
+                if (!_fileService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
+
+                HttpContext.Response.ContentLength = responseFromService.Item1.Length;
+
+                FileStreamResult result = new FileStreamResult(responseFromService.Item1,
+                    new MediaTypeHeaderValue(responseFromService.Item2.ContentType))
                 {
-                    var responseFromService = await _fileService.GetLastVersionOfFile(fileUniqId, userEmail);
-                    if (!_fileService.State.IsValid)
-                        return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
-
-                    HttpContext.Response.ContentLength = responseFromService.Item1.Length;
-
-                    FileStreamResult result = new FileStreamResult(responseFromService.Item1,
-                        new MediaTypeHeaderValue(responseFromService.Item2.ContentType))
-                    {
-                        FileDownloadName = responseFromService.Item2.Name,
-                        FileStream = responseFromService.Item1,
-                    };
-                    return result;
-                }
-                return Ok();
-
+                    FileDownloadName = responseFromService.Item2.Name,
+                    FileStream = responseFromService.Item1,
+                };
+                return result;
             }
             catch (Exception exception)
             {

@@ -27,6 +27,13 @@ namespace FileStorage.Domain.Infrastructure.Repositories
             return lastVersionOfFile;
         }
 
+        public async Task<FileVersion> GetFileVersionOfVersionNumber(Node file, int versionNumber)
+        {
+            return
+              await
+                  _dataDbContext.FileVersions.FirstOrDefaultAsync(
+                      r => r.Node == file && r.VersionOfFile == versionNumber);
+        }
         public async Task<FileVersion> GetLatestFileVersion(Node file)
         {
             int numberOfLastFileVersion = await GetNumberOfLastVersionFile(file);

@@ -9,5 +9,7 @@ namespace FileStorage.Domain.Infrastructure.Contracts.Repositories
         void AddFileVersion(FileVersion fileVersion);
         Task<int> GetNumberOfLastVersionFile(Node file);
         Task<FileVersion> GetLatestFileVersion(Node file);
+
+        Task<FileVersion> GetFileVersionOfVersionNumber(Node file, int versionNumber);
     }
 }

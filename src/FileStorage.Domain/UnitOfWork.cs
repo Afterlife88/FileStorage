@@ -17,13 +17,14 @@ namespace FileStorage.Domain
         }
 
         #endregion
+
         /// <summary>
 		/// Db context
 		/// </summary>
 		public DataDbContext DataDbContext { get; set; }
         public INodeRepository NodeRepository { get; }
         public IUserRepository UserRepository { get; }
-        public IFileVersionRepository  FileVersionRepository { get; }
+        public IFileVersionRepository FileVersionRepository { get; }
         /// <summary>
         /// Save pending changes to the database
         /// </summary>

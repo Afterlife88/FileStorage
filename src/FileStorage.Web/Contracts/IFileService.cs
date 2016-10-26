@@ -15,8 +15,7 @@ namespace FileStorage.Web.Contracts
     public interface IFileService
     {
 
-        Task<Tuple<Stream, NodeDto>> GetLastVersionOfFile(Guid uniqFileId, string callerEmail);
-        Task<Tuple<Stream, NodeDto>> GetConcreteVersionofFile(string fileName, int versionOfFile);
+        Task<Tuple<Stream, NodeDto>> GetFile(Guid uniqFileId, string callerEmail, int? versionOfFile);
         Task<IEnumerable<NodeDto>> GetUserFiles(string userEmail);
         ModelState State { get; }
         Task<ModelState> UploadAsync(IFormFile file, string directoryName, string userEmail);
