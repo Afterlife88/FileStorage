@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,6 +16,9 @@ using Microsoft.AspNetCore.StaticFiles;
 
 namespace FileStorage.Web.Services
 {
+    /// <summary>
+    /// Service for manage files
+    /// </summary>
     public class FileService : IFileService
     {
         #region Variables
@@ -28,6 +32,11 @@ namespace FileStorage.Web.Services
         /// </summary>
         public ModelState State { get; }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="unitOfWork"></param>
+        /// <param name="blobService"></param>
         public FileService(IUnitOfWork unitOfWork, IBlobService blobService)
         {
             _unitOfWork = unitOfWork;
@@ -35,12 +44,12 @@ namespace FileStorage.Web.Services
             State = new ModelState();
         }
         #region Methods
+
         public async Task<IEnumerable<NodeDto>> GetUserFiles(string userEmail)
         {
             try
             {
                 var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
-
                 var files = await _unitOfWork.NodeRepository.GetAllNodesForUser(owner.Id);
 
                 var filesWithoutFolders = files.Where(r => r.IsDirectory == false);
@@ -52,6 +61,54 @@ namespace FileStorage.Web.Services
                 return null;
             }
         }
+
+        public async Task<Tuple<Stream, NodeDto>> GetLastVersionOfFile(string fileName)
+        {
+            try
+            {
+                var getFileNode = await _unitOfWork.NodeRepository.GetNodeByName(fileName);
+                if (getFileNode == null)
+                {
+                    State.ErrorMessage = "Requested file is not found!";
+                    return Tuple.Create<Stream, NodeDto>(null, null);
+                }
+                var getLastVersionOfFile = await _unitOfWork.FileVersionRepository.GetLatestFileVersion(getFileNode);
+                if (getLastVersionOfFile == null)
+                {
+                    State.ErrorMessage = "Latest version of file not found!";
+                    return Tuple.Create<Stream, NodeDto>(null, null);
+                }
+                var streamOfFileFromBlob = await _blobService.DownloadFileAsync(getLastVersionOfFile.PathToFile);
+                if (streamOfFileFromBlob == null)
+                {
+                    State.ErrorMessage = "Error with getting file from Azure blob storage!";
+                    return Tuple.Create<Stream, NodeDto>(null, null);
+                }
+
+                // Set start position of the stream
+                streamOfFileFromBlob.Position = 0;
+                return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(getFileNode));
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public Task<Tuple<Stream, NodeDto>> GetConcreteVersionofFile(string fileName, int versionOfFile)
+        {
+            try
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                return null;
+            }
+        }
+
 
         public async Task<ModelState> UploadAsync(IFormFile file, int directoryId, string userEmail)
         {
@@ -134,6 +191,8 @@ namespace FileStorage.Web.Services
                 return State;
             }
         }
+
+
         #endregion
 
         #region Helpers methods 
@@ -143,7 +202,7 @@ namespace FileStorage.Web.Services
             try
             {
                 int getLastVersionOfFile =
-                     await _unitOfWork.FileVersionRepository.GetLastVersionOfTheFile(existedFile);
+                     await _unitOfWork.FileVersionRepository.GetNumberOfLastVersionFile(existedFile);
                 // Increment version of file
                 getLastVersionOfFile++;
                 var newFileVersion = new FileVersion

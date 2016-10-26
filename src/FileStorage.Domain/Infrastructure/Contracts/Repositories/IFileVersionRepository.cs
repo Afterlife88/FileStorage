@@ -7,6 +7,7 @@ namespace FileStorage.Domain.Infrastructure.Contracts.Repositories
     {
         Task<FileVersion> GetFileVersionByMd5HashAsync(string hash);
         void AddFileVersion(FileVersion fileVersion);
-        Task<int> GetLastVersionOfTheFile(Node file);
+        Task<int> GetNumberOfLastVersionFile(Node file);
+        Task<FileVersion> GetLatestFileVersion(Node file);
     }
 }

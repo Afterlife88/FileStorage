@@ -29,6 +29,7 @@ namespace FileStorage.Web.Configuration
                     .ForMember(dest => dest.FileVersions, opt => opt.MapFrom(src => src.FileVersions))
                     .ForMember(dest => dest.DirectoryId, opt => opt.MapFrom(src => src.FolderId))
                     .ForMember(dest => dest.DirectoryName, opt => opt.MapFrom(src => src.Folder.Name));
+                //.ForMember(dest => dest.IsDirectory, opt => opt.Condition(src => src.IsDirectory));
             });
         }
     }

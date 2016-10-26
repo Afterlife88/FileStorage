@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FileStorage.Web.DTO
 {
     public class NodeDto
     {
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string ContentType { get; set; }

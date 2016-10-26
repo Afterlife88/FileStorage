@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using FileStorage.Domain.Entities;
 using FileStorage.Domain.Infrastructure.Contracts.Repositories;
@@ -17,13 +18,23 @@ namespace FileStorage.Domain.Infrastructure.Repositories
         public async Task<FileVersion> GetFileVersionByMd5HashAsync(string hash)
         {
             return await _dataDbContext.FileVersions.FirstOrDefaultAsync(r => r.MD5Hash == hash);
-         
+
         }
 
-        public async Task<int> GetLastVersionOfTheFile(Node file)
+        public async Task<int> GetNumberOfLastVersionFile(Node file)
         {
-            int lastVersionOfFile =  await _dataDbContext.FileVersions.Where(r => r.Node == file).MaxAsync(r => r.VersionOfFile);
+            int lastVersionOfFile = await _dataDbContext.FileVersions.Where(r => r.Node == file).MaxAsync(r => r.VersionOfFile);
             return lastVersionOfFile;
+        }
+
+        public async Task<FileVersion> GetLatestFileVersion(Node file)
+        {
+            int numberOfLastFileVersion = await GetNumberOfLastVersionFile(file);
+
+            return
+                await
+                    _dataDbContext.FileVersions.FirstOrDefaultAsync(
+                        r => r.Node == file && r.VersionOfFile == numberOfLastFileVersion);
         }
         public void AddFileVersion(FileVersion fileVersion)
         {
