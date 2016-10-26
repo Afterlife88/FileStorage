@@ -15,8 +15,8 @@ namespace FileStorage.Domain.Entities
         public string ContentType { get; set; }
         public DateTime Created { get; set; }
         public bool IsDirectory { get; set; }
-        public int? RootId { get; set; }
-        public virtual Node Root { get; set; }
+        public int? FolderId { get; set; }
+        public virtual Node Folder{ get; set; }
         public string OwnerId { get; set; }
         public virtual ApplicationUser Owner { get; set; }
         public int? PermissionId { get; set; }

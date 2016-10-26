@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using FileStorage.Web.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -20,18 +18,22 @@ namespace FileStorage.Web.Controllers
         public FileController(IFileService fileService)
         {
             _fileService = fileService;
-
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> GetSmth()
+        public async Task<IActionResult> GetUserFiles()
         {
-            //User.Identity.
+            try
+            {
+                var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var response = await _fileService.GetUserFiles(userEmail);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
 
-            var obj = User;
-            var value = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return Ok(value);
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>

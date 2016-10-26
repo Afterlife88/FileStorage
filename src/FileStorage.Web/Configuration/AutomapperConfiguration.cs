@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using FileStorage.Domain.Entities;
 using FileStorage.Web.DTO;
 
@@ -16,6 +17,15 @@ namespace FileStorage.Web.Configuration
                 config.CreateMap<RegistrationModelDto, ApplicationUser>()
                     .ForMember(dest => dest.Email, dto => dto.MapFrom(src => src.Email))
                     .ForMember(dest => dest.UserName, dto => dto.MapFrom(src => src.Email));
+
+                config.CreateMap<FileVersion, FileVersionDto>()
+                    .ForMember(dest => dest.FileId, dto => dto.MapFrom(src => src.NodeId))
+                    .ForMember(dest => dest.Created, dto => dto.MapFrom(src => src.Created))
+                    .ForMember(dest => dest.UniqueFileName, dto => dto.MapFrom(src => src.PathToFile));
+
+                config.CreateMap<Node, NodeDto>()
+                    .ForMember(dest => dest.FileVersions, opt => opt.MapFrom(src => src.FileVersions))
+                    .ForMember(dest => dest.DirectoryId, opt => opt.MapFrom(src => src.FolderId));
             });
         }
     }

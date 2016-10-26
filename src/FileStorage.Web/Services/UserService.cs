@@ -31,7 +31,7 @@ namespace FileStorage.Web.Services
         {
             if (modelDto.Email.Split(' ').Length == 2)
             {
-                State.ErrorMessage = "Email should not contain spaces! ";
+                State.ErrorMessage = "Email should not contain spaces!";
                 return State;
             }
             if (string.IsNullOrWhiteSpace(modelDto.Password))
@@ -39,12 +39,12 @@ namespace FileStorage.Web.Services
                 State.ErrorMessage = "You must type a password.";
                 return State;
             }
-            //var checkIsUserAlreadyExistWithEmail = await _userRepository.GetUserAsync(modelDto.Email);
-            //if (checkIsUserAlreadyExistWithEmail != null)
-            //{
-            //    State.ErrorMessage = "The user already exists!";
-            //    return State;
-            //}
+            var checkIsUserAlreadyExistWithEmail = await _userRepository.GetUserAsync(modelDto.Email);
+            if (checkIsUserAlreadyExistWithEmail != null)
+            {
+                State.ErrorMessage = "The user already exists!";
+                return State;
+            }
             // Create user
             var user = new ApplicationUser()
             {

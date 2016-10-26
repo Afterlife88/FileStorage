@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using FileStorage.Domain.Entities;
 using FileStorage.Domain.Infrastructure.Contracts;
-using FileStorage.Domain.Infrastructure.Repositories;
 using FileStorage.Web.Contracts;
+using FileStorage.Web.DTO;
 using FileStorage.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
@@ -17,6 +19,10 @@ namespace FileStorage.Web.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBlobService _blobService;
+        /// <summary>
+        /// Model state of the executed actions
+        /// </summary>
+        public ModelState State { get; }
 
         public FileService(IUnitOfWork unitOfWork, IBlobService blobService)
         {
@@ -25,17 +31,37 @@ namespace FileStorage.Web.Services
             State = new ModelState();
         }
 
-        /// <summary>
-        /// Model state of the executed actions
-        /// </summary>
-        public ModelState State { get; }
+        public async Task<IEnumerable<NodeDto>> GetUserFiles(string userEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
+           
+                var files = await _unitOfWork.NodeRepository.GetAllNodesForUser(owner.Id);
+              
+                return Mapper.Map<IEnumerable<Node>, IEnumerable<NodeDto>>(files);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.CommitAsync();
+                State.ErrorMessage = ex.Message;
+                return null;
+            }
+        }
+
+
 
         public async Task<ModelState> UploadAsync(IFormFile file, int directoryId, string userEmail)
         {
             try
             {
-                var baseDirectory = await _unitOfWork.NodeRepository.GetNodeById(directoryId);
+                if (file == null)
+                {
+                    State.ErrorMessage = "No file attached!";
+                    return State;
+                }
 
+                var baseDirectory = await _unitOfWork.NodeRepository.GetNodeById(directoryId);
                 var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
                 // Validate current Node (folder that file uploading to) 
                 if (!ValidateNode(State, baseDirectory, owner))
@@ -80,7 +106,7 @@ namespace FileStorage.Web.Services
                     Created = DateTime.Now,
                     IsDirectory = false,
                     Owner = owner,
-                    Root = baseDirectory,
+                    Folder = baseDirectory,
                     Name = file.FileName,
                     FileVersions = new List<FileVersion>(),
                     ContentType = contentType,
@@ -118,7 +144,7 @@ namespace FileStorage.Web.Services
         {
             if (node == null)
             {
-                modelState.ErrorMessage = "Root folder is not found!";
+                modelState.ErrorMessage = "Folder is not found!";
 
                 return modelState.IsValid;
             }

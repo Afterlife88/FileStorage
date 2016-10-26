@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FileStorage.Domain.Entities;
 using FileStorage.Domain.Infrastructure.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,11 @@ namespace FileStorage.Domain.Infrastructure.Repositories
             return node;
         }
 
+        public async Task<IEnumerable<Node>> GetAllNodesForUser(string userId)
+        {
+            var nodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(s=>s.FileVersions).ToArrayAsync();
+            return nodes;
+        }
         public async Task<Node> GetNodeByName(string nodeName)
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Name == nodeName);
