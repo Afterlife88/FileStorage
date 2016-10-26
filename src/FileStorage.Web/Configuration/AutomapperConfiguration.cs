@@ -26,6 +26,7 @@ namespace FileStorage.Web.Configuration
 
 
                 config.CreateMap<Node, NodeDto>()
+                    .ForMember(dest => dest.UniqueFileId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.FileVersions, opt => opt.MapFrom(src => src.FileVersions))
                     .ForMember(dest => dest.DirectoryId, opt => opt.MapFrom(src => src.FolderId))
                     .ForMember(dest => dest.DirectoryName, opt => opt.MapFrom(src => src.Folder.Name));

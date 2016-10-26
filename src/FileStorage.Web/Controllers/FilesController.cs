@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FileStorage.Web.Contracts;
+using FileStorage.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,10 @@ using Microsoft.Net.Http.Headers;
 
 namespace FileStorage.Web.Controllers
 {
-    //[Authorize]
+    /// <summary>
+    /// 
+    /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     public class FilesController : Controller
     {
@@ -39,7 +42,7 @@ namespace FileStorage.Web.Controllers
 
                 var response = await _fileService.GetUserFiles(userEmail);
                 if (!_fileService.State.IsValid)
-                    return StatusCode(500, _fileService.State.ErrorMessage);
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
                 return Ok(response);
             }
@@ -48,20 +51,27 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [Route("{fileName}")]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileUniqId"></param>
+        /// <param name="versionOfFile"></param>
+        /// <returns></returns>
+        [Route("{fileUniqId}")]
         [HttpGet]
-        public async Task<IActionResult> GetFile(string fileName, [FromQuery]int? versionOfFile = null)
+        public async Task<IActionResult> GetFile(Guid fileUniqId, [FromQuery]int? versionOfFile = null)
         {
             try
             {
+                var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 if (versionOfFile == null)
                 {
-                    var responseFromService = await _fileService.GetLastVersionOfFile(fileName);
+                    var responseFromService = await _fileService.GetLastVersionOfFile(fileUniqId, userEmail);
                     if (!_fileService.State.IsValid)
-                        return StatusCode(500, _fileService.State.ErrorMessage);
+                        return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
                     HttpContext.Response.ContentLength = responseFromService.Item1.Length;
-                    
+
                     FileStreamResult result = new FileStreamResult(responseFromService.Item1,
                         new MediaTypeHeaderValue(responseFromService.Item2.ContentType))
                     {
@@ -82,23 +92,21 @@ namespace FileStorage.Web.Controllers
         /// <summary>
         /// Action to upload file
         /// </summary>
-        /// <param name="directoryId">Root folder ID</param>
+        /// <param name="directoryName">Root folder name</param>
         /// <param name="file"></param>
-        [Route("{directoryId}")]
+        [Route("{directoryName}")]
         [HttpPost]
-        public async Task<IActionResult> Upload(int directoryId, IFormFile file)
+        public async Task<IActionResult> Upload(string directoryName, IFormFile file)
         {
             try
             {
                 // TODO: Validate if content type is not form-data
                 var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var serviceResponse = await _fileService.UploadAsync(file, directoryId, userEmail);
+                await _fileService.UploadAsync(file, directoryName, userEmail);
+                if (!_fileService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
-                if (serviceResponse.IsValid)
-                {
-                    return StatusCode(201);
-                }
-                return BadRequest(serviceResponse.ErrorMessage);
+                return StatusCode(201);
             }
             catch (Exception exception)
             {

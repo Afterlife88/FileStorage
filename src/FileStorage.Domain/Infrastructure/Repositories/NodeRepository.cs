@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FileStorage.Domain.Entities;
@@ -20,7 +21,7 @@ namespace FileStorage.Domain.Infrastructure.Repositories
         {
             _dataDbContext.Nodes.Add(node);
         }
-        public async Task<Node> GetNodeById(int nodeId)
+        public async Task<Node> GetNodeById(Guid nodeId)
         {
             var node = await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == nodeId);
             return node;

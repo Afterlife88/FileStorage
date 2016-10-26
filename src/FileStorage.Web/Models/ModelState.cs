@@ -10,10 +10,12 @@
         public ModelState()
         {
             IsValid = true;
+            TypeOfError = TypeOfServiceError.Success;
         }
 
         public bool IsValid { get; set; }
 
+        public TypeOfServiceError TypeOfError { get; set; }
         public string ErrorMessage
         {
             get

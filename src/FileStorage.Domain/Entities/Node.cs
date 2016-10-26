@@ -8,14 +8,15 @@ namespace FileStorage.Domain.Entities
     public class Node
     {
         [Key]
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         // MIME mapping for the specified file name.
         public string ContentType { get; set; }
         public DateTime Created { get; set; }
         public bool IsDirectory { get; set; }
-        public int? FolderId { get; set; }
+        public Guid? FolderId { get; set; }
         public virtual Node Folder{ get; set; }
         public string OwnerId { get; set; }
         public virtual ApplicationUser Owner { get; set; }

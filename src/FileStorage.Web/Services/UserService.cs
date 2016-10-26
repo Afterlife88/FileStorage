@@ -55,7 +55,7 @@ namespace FileStorage.Web.Services
             // Create base folder for concrete user
             user.Nodes.Add(new Node()
             {
-                Name = modelDto.Email + "-root",
+                Name = modelDto.Email + "_RootFolder",
                 IsDirectory = true,
                 Created = DateTime.Now,
                 
