@@ -2,6 +2,6 @@
 {
     public enum TypeOfServiceError
     {
-        Unathorized, NotFound, Success, ConnectionError, BadRequest, ServiceError
+        Unathorized, NotFound, Success, ConnectionError, BadRequest, ServiceError, Forbidden
     }
 }

@@ -29,6 +29,9 @@ namespace FileStorage.Services.Utils
                 case TypeOfServiceError.Unathorized:
                     result = controller.Unauthorized();
                     break;
+                case TypeOfServiceError.Forbidden:
+                    result = controller.StatusCode(403, message);
+                    break;
                 case TypeOfServiceError.ServiceError:
                     result = controller.StatusCode(500, message);
                     break;

@@ -70,26 +70,16 @@ namespace FileStorage.Services.Implementation
             try
             {
                 var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
-                var getFileNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(uniqFileId);
+                var fileNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(uniqFileId);
 
-                if (getFileNode == null)
-                {
-                    State.TypeOfError = TypeOfServiceError.NotFound;
-                    State.ErrorMessage = "Requested file is not found!";
-                    return Tuple.Create<Stream, NodeDto>(null, null);
-                }
-                // TODO: Later check share emails
-                if (owner.Id != getFileNode.OwnerId)
-                {
-                    State.TypeOfError = TypeOfServiceError.Unathorized;
-                    State.ErrorMessage = "You are not authorized to get this file!";
-                    return Tuple.Create<Stream, NodeDto>(null, null);
-                }
+                // Validate if user have access to file and can edit it
+                if (!ValidateAccessToFile(State, fileNode, owner))
+                    return null;
 
                 // Version of file not passed - then return last version
                 if (versionOfFile == null)
-                    return await GetLastVersionOfFile(getFileNode);
-                return await GetConcreteVersionOfFile(getFileNode, versionOfFile.GetValueOrDefault(-1));
+                    return await GetLastVersionOfFile(fileNode);
+                return await GetConcreteVersionOfFile(fileNode, versionOfFile.GetValueOrDefault(-1));
             }
             catch (Exception ex)
             {
@@ -294,7 +284,7 @@ namespace FileStorage.Services.Implementation
             }
             if (node.OwnerId != user.Id)
             {
-                State.TypeOfError = TypeOfServiceError.Unathorized;
+                State.TypeOfError = TypeOfServiceError.Forbidden;
                 state.ErrorMessage = "You not have access to this file";
 
                 return state.IsValid;
@@ -334,7 +324,7 @@ namespace FileStorage.Services.Implementation
             }
             if (node.OwnerId != user.Id)
             {
-                State.TypeOfError = TypeOfServiceError.Unathorized;
+                State.TypeOfError = TypeOfServiceError.Forbidden;
                 modelState.ErrorMessage = "You not have access to this folder";
 
                 return modelState.IsValid;
