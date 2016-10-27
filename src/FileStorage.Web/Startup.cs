@@ -60,9 +60,10 @@ namespace FileStorage.Web
                 });
                 options.IncludeXmlComments(GetXmlCommentsPath(PlatformServices.Default.Application));
                 options.OperationFilter<FileOperation>();
+                options.DescribeAllEnumsAsStrings();
                 //options.OperationFilter<AddAuthorizationHeaderParameterOperationFilter>();
 
-                //options.DescribeAllEnumsAsStrings();
+
             });
 
             // DI
@@ -105,7 +106,7 @@ namespace FileStorage.Web
 
             app.UseSwaggerUi(baseRoute:"swagger", swaggerUrl: "/swagger/v1/swagger.json");
 
-            app.UseMvcWithDefaultRoute();
+         
             
 
             // Recreate db's

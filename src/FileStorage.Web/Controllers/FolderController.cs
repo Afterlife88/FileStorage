@@ -32,7 +32,7 @@ namespace FileStorage.Web.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public void Put(int id, [FromBody]string value)
         {
         }

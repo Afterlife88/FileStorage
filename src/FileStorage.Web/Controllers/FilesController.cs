@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -17,7 +18,7 @@ namespace FileStorage.Web.Controllers
     /// 
     /// </summary>
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/files")]
     public class FilesController : Controller
     {
         private readonly IFileService _fileService;
@@ -62,11 +63,25 @@ namespace FileStorage.Web.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Get file from file storage
         /// </summary>
-        /// <param name="fileUniqId"></param>
-        /// <param name="versionOfFile"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// ## Important
+        /// 
+        ///    <b>Vendor client documentation (swagger) that you use right now make respond file corrupt and increase size received from server by 2 (you can check it by compare content-length from server and downloaded file from documentation).  
+        ///    <br/>This is common bug and it will be solved with next updated I hope
+        ///    <br/>
+        ///    So use postman or fiddler if you want to test API with responded file</b>
+        /// 
+        /// </remarks>
+        /// <param name="fileUniqId">Unique file ID</param>
+        /// <param name="versionOfFile">You can chose version of the requseted file</param>
+        /// <response code="200">Return file</response>
+        /// <response code="400">Returns if passed value invalid</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="403">Returns if user have not access to requested file</response>
+        /// <response code="404">Returns if passed file are not exist</response>
+        /// <response code="500">Returns if server error has occurred</response>
         [Route("{fileUniqId}", Name = "GetFile")]
         [HttpGet]
         public async Task<IActionResult> GetFile(Guid fileUniqId, [FromQuery] int? versionOfFile = null)
@@ -103,8 +118,7 @@ namespace FileStorage.Web.Controllers
         /// <param name="fileUniqId"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPatch]
-        [Route("{fileUniqId}")]
+        [HttpPatch("rename/{fileUniqId}")]
         public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameFileDto model)
         {
             try
@@ -125,7 +139,33 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="fileUniqId"></param>
+        ///// <returns></returns>
+        //[HttpPatch]
+        //[Route("replace/{fileUniqId}")]
+        //public async Task<IActionResult> Replace(Guid fileUniqId)
+        //{
+        //    try
+        //    {
+        //        //if (!ModelState.IsValid)
+        //        //    return BadRequest(ModelState);
 
+        //        //var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //        //await _fileService.RenameFileAsync(fileUniqId, model.NewName, callerEmail);
+        //        //if (!_fileService.State.IsValid)
+        //        //    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+        //        //        _fileService.State.ErrorMessage);
+
+        //        return StatusCode(204);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
         /// <summary>
         /// 
         /// </summary>

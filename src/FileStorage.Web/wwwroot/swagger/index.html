@@ -40,7 +40,7 @@
       window.swaggerUi = new SwaggerUi({
         url: url,
         dom_id: "swagger-ui-container",
-        supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
         onComplete: function (swaggerApi, swaggerUi) {
           var tokenInfo = '<div id="infoContainer" class="dropDown">' +
             '<div class="header"><span>Token</span></div><div class="content"><h3>You must authenticate with your email and password to get token for using most of API requests. </h3>' +

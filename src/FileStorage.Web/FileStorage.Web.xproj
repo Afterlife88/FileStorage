@@ -4,7 +4,6 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>f3bb43cc-aa1e-45b7-9cfc-6fa04f19cde3</ProjectGuid>
@@ -13,13 +12,26 @@
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
-
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include="bower.json" />
     <DnxInvisibleContent Include=".bowerrc" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\backbone-min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\clipboard.min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\handlebars-1.0.0.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\highlight.7.3.pack.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\jquery-1.8.0.min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\jquery.ba-bbq.min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\jquery.leanModal.min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\jquery.slideto.min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\jquery.wiggle.min.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\shred.bundle.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\swagger-client.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\swagger-oauth.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\swagger.js" />
+    <DnxInvisibleContent Include="wwwroot\swagger\lib\underscore-min.js" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet.Web\Microsoft.DotNet.Web.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>
