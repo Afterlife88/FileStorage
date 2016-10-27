@@ -39,7 +39,7 @@ namespace FileStorage.Web.Controllers
         /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
         /// <response code="500">Returns if server error has occurred</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<NodeDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<FileDto>), 200)]
         [ProducesResponseType(typeof(UnauthorizedResult), 401)]
         [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
         public async Task<IActionResult> GetUserFiles()
@@ -185,6 +185,33 @@ namespace FileStorage.Web.Controllers
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
                 return CreatedAtRoute("GetFile", new { fileUniqId = responseFromService.UniqueFileId }, responseFromService);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileUniqId"></param>
+        /// <returns></returns>
+        [Route("{fileUniqId}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFile(Guid fileUniqId)
+        {
+            try
+            {
+                // TODO: Validate if content type is not form-data
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+              
+                await _fileService.RemoveFileAsync(fileUniqId, callerEmail);
+                if (!_fileService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+                        _fileService.State.ErrorMessage);
+
+                return StatusCode(204);
 
             }
             catch (Exception ex)

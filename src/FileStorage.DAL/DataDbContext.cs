@@ -10,6 +10,7 @@ namespace FileStorage.DAL
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<ShareEmail> ShareEmails { get; set; }
         public DbSet<FileVersion> FileVersions { get; set; }
+        public DbSet<RemovedNode> RemovedNodes { get; set; }
         public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
         { }
      

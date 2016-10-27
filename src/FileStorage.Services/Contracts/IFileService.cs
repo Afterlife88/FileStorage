@@ -13,11 +13,12 @@ namespace FileStorage.Services.Contracts
     /// </summary>
     public interface IFileService
     {
-        Task<Tuple<Stream, NodeDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile);
-        Task<IEnumerable<NodeDto>> GetUserFilesAsync(string userEmail);
+        Task<Tuple<Stream, FileDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile);
+        Task<IEnumerable<FileDto>> GetUserFilesAsync(string userEmail);
         ServiceState State { get; }
-        Task<NodeDto> UploadAsync(IFormFile file, string directoryName, string userEmail);
-        Task<NodeDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail);
-        Task<NodeDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model);
+        Task<FileDto> UploadAsync(IFormFile file, string directoryName, string userEmail);
+        Task<FileDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail);
+        Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model);
+        Task<ServiceState> RemoveFileAsync(Guid fileUniqId, string callerEmail);
     }
 }

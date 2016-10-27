@@ -75,6 +75,7 @@ namespace FileStorage.Web
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<INodeRepository, NodeRepository>();
             services.AddScoped<IFileVersionRepository, FileVersionRepository>();
+            services.AddScoped<IRemovedNodeRepository, RemovedNodeRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

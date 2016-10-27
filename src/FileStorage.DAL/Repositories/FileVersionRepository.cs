@@ -16,7 +16,7 @@ namespace FileStorage.DAL.Repositories
         }
         public async Task<FileVersion> GetFileVersionByMd5HashForUserAsync(string hash, string userId)
         {
-            var userNodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(r => r.FileVersions).ToArrayAsync();
+            var userNodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId && !r.IsDeleted).Include(r => r.FileVersions).ToArrayAsync();
             var node = userNodes.FirstOrDefault(r => r.FileVersions.Any(s => s.MD5Hash == hash));
             return node?.FileVersions.FirstOrDefault(r => r.MD5Hash == hash);
 

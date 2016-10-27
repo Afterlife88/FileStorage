@@ -19,7 +19,7 @@ namespace FileStorage.DAL.Repositories
 
         public async Task<Node> GetRootFolderForUserAsync(string userId)
         {
-            var node = await _dataDbContext.Nodes.Where(r => r.IsDirectory && r.OwnerId == userId).FirstOrDefaultAsync();
+            var node = await _dataDbContext.Nodes.Where(r => r.IsDirectory && r.OwnerId == userId && !r.IsDeleted).FirstOrDefaultAsync();
             return node;
         }
         public void AddNode(Node node)
@@ -28,13 +28,13 @@ namespace FileStorage.DAL.Repositories
         }
         public async Task<Node> GetNodeByIdAsync(Guid nodeId)
         {
-            var node = await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == nodeId);
+            var node = await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == nodeId && !r.IsDeleted);
             return node;
         }
 
         public async Task<IEnumerable<Node>> GetAllNodesForUserAsync(string userId)
         {
-            var nodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(s => s.FileVersions).ToArrayAsync();
+            var nodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId && !r.IsDeleted).Include(s => s.FileVersions).ToArrayAsync();
             return nodes;
         }
 
@@ -52,7 +52,7 @@ namespace FileStorage.DAL.Repositories
 
         public async Task<Node> GetNodeByNameAsync(string nodeName, string userId)
         {
-            return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Name == nodeName && r.OwnerId == userId);
+            return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Name == nodeName && r.OwnerId == userId && !r.IsDeleted);
         }
     }
 }

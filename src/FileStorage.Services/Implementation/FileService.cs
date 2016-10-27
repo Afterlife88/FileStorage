@@ -47,7 +47,7 @@ namespace FileStorage.Services.Implementation
 
         #region Methods
 
-        public async Task<IEnumerable<NodeDto>> GetUserFilesAsync(string userEmail)
+        public async Task<IEnumerable<FileDto>> GetUserFilesAsync(string userEmail)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace FileStorage.Services.Implementation
                 var files = await _unitOfWork.NodeRepository.GetAllNodesForUserAsync(owner.Id);
 
                 var filesWithoutFolders = files.Where(r => r.IsDirectory == false);
-                return Mapper.Map<IEnumerable<Node>, IEnumerable<NodeDto>>(filesWithoutFolders);
+                return Mapper.Map<IEnumerable<Node>, IEnumerable<FileDto>>(filesWithoutFolders);
             }
             catch (Exception ex)
             {
@@ -65,7 +65,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<Tuple<Stream, NodeDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile)
+        public async Task<Tuple<Stream, FileDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<NodeDto> UploadAsync(IFormFile file, string directoryName, string userEmail)
+        public async Task<FileDto> UploadAsync(IFormFile file, string directoryName, string userEmail)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace FileStorage.Services.Implementation
                 {
                     await AddNewVersionOfFileAsync(file, existedFile, md5Hash,
                         generateNameForAzureBlob);
-                    return Mapper.Map<Node, NodeDto>(existedFile);
+                    return Mapper.Map<Node, FileDto>(existedFile);
                 }
 
                 // else just create as first file on the system
@@ -170,7 +170,7 @@ namespace FileStorage.Services.Implementation
 
                 // Upload to azure blob
                 await _blobService.UploadFileAsync(file, generateNameForAzureBlob);
-                return Mapper.Map<Node, NodeDto>(fileNode);
+                return Mapper.Map<Node, FileDto>(fileNode);
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<NodeDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail)
+        public async Task<FileDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail)
         {
             try
             {
@@ -194,7 +194,7 @@ namespace FileStorage.Services.Implementation
 
                 _unitOfWork.NodeRepository.RenameNode(fileNode, newName);
                 await _unitOfWork.CommitAsync();
-                return Mapper.Map<Node, NodeDto>(fileNode);
+                return Mapper.Map<Node, FileDto>(fileNode);
             }
             catch (Exception ex)
             {
@@ -205,7 +205,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<NodeDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model)
+        public async Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model)
         {
             try
             {
@@ -227,7 +227,7 @@ namespace FileStorage.Services.Implementation
 
                 _unitOfWork.NodeRepository.ReplaceNodeFolder(fileNode, folderNode);
                 await _unitOfWork.CommitAsync();
-                return Mapper.Map<Node, NodeDto>(fileNode);
+                return Mapper.Map<Node, FileDto>(fileNode);
             }
             catch (Exception ex)
             {
@@ -238,6 +238,40 @@ namespace FileStorage.Services.Implementation
             }
         }
 
+        public async Task<ServiceState> RemoveFileAsync(Guid fileUniqId, string callerEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var fileNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(fileUniqId);
+
+                // Validate if user have access to file and can edit it
+                if (!ValidateAccessToFile(State, fileNode, owner))
+                    return null;
+
+
+                fileNode.IsDeleted = true;
+                var deletedNode = new RemovedNode()
+                {
+                    Node = fileNode,
+                    // Set full remove via one month
+                    DateOfRemoval = DateTime.Now.AddMonths(1),
+                    ExecutorUser = owner
+                };
+
+                _unitOfWork.RemovedNodeRepository.AddRemovedNode(deletedNode);
+
+                await _unitOfWork.CommitAsync();
+                return State;
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
         #endregion
 
         #region Helpers methods 
@@ -262,7 +296,7 @@ namespace FileStorage.Services.Implementation
             await _blobService.UploadFileAsync(newfile, generatedName);
             return State;
         }
-        private async Task<Tuple<Stream, NodeDto>> GetConcreteVersionOfFile(Node file, int versionOfFile)
+        private async Task<Tuple<Stream, FileDto>> GetConcreteVersionOfFile(Node file, int versionOfFile)
         {
             var getVersionOfFile =
                 await _unitOfWork.FileVersionRepository.GetFileVersionOfVersionNumber(file, versionOfFile);
@@ -271,21 +305,21 @@ namespace FileStorage.Services.Implementation
             {
                 State.TypeOfError = TypeOfServiceError.NotFound;
                 State.ErrorMessage = "Requeset version not found!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
+                return Tuple.Create<Stream, FileDto>(null, null);
             }
             var streamOfFileFromBlob = await _blobService.DownloadFileAsync(getVersionOfFile.PathToFile);
             if (streamOfFileFromBlob == null)
             {
                 State.TypeOfError = TypeOfServiceError.ConnectionError;
                 State.ErrorMessage = "Error with getting file from Azure blob storage!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
+                return Tuple.Create<Stream, FileDto>(null, null);
             }
 
             // Set start position of the stream
             streamOfFileFromBlob.Position = 0;
-            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(file));
+            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, FileDto>(file));
         }
-        private async Task<Tuple<Stream, NodeDto>> GetLastVersionOfFile(Node file)
+        private async Task<Tuple<Stream, FileDto>> GetLastVersionOfFile(Node file)
         {
 
             var getLastVersionOfFile = await _unitOfWork.FileVersionRepository.GetLatestFileVersion(file);
@@ -293,19 +327,19 @@ namespace FileStorage.Services.Implementation
             {
                 State.TypeOfError = TypeOfServiceError.NotFound;
                 State.ErrorMessage = "Latest version of file not found!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
+                return Tuple.Create<Stream, FileDto>(null, null);
             }
             var streamOfFileFromBlob = await _blobService.DownloadFileAsync(getLastVersionOfFile.PathToFile);
             if (streamOfFileFromBlob == null)
             {
                 State.TypeOfError = TypeOfServiceError.ConnectionError;
                 State.ErrorMessage = "Error with getting file from Azure blob storage!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
+                return Tuple.Create<Stream, FileDto>(null, null);
             }
 
             // Set start position of the stream
             streamOfFileFromBlob.Position = 0;
-            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(file));
+            return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, FileDto>(file));
         }
 
         private bool ValidateAccessToFile(ServiceState state, Node node, ApplicationUser user)
@@ -325,7 +359,7 @@ namespace FileStorage.Services.Implementation
             }
             return state.IsValid;
         }
-  
+
         private string GenerateNameForTheAzureBlob(string md5Hash, string fileName, string userEmail)
         {
             return $"{userEmail}_{md5Hash}_{fileName}";

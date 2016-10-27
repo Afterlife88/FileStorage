@@ -5,6 +5,6 @@ namespace FileStorage.Services.DTO
     public class WorkPlaceDto
     {
         public int FolderId { get; set; }
-        public IList<NodeDto> Items { get; set; }
+        public IList<FileDto> Items { get; set; }
     }
 }

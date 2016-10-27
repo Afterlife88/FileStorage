@@ -18,6 +18,7 @@ namespace FileStorage.Domain.Entities
         public bool IsDirectory { get; set; }
         public Guid? FolderId { get; set; }
         public virtual Node Folder{ get; set; }
+        public bool IsDeleted { get; set; }
         public string OwnerId { get; set; }
         public virtual ApplicationUser Owner { get; set; }
         public int? PermissionId { get; set; }

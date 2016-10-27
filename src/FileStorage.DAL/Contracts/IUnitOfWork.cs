@@ -11,6 +11,7 @@ namespace FileStorage.DAL.Contracts
         INodeRepository NodeRepository { get; }
         IUserRepository UserRepository { get; }
         IFileVersionRepository FileVersionRepository { get; }
+        IRemovedNodeRepository RemovedNodeRepository { get; }
         /// <summary>
         /// Save changes in database
         /// </summary>
