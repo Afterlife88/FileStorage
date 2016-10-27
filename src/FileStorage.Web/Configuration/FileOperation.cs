@@ -16,10 +16,10 @@ namespace FileStorage.Web.Configuration
         /// <param name="context"></param>
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            if (operation.OperationId.ToLower() == "apifilebyrootfolderidpost")
+            if (operation.OperationId.ToLower() == "ApiFilesPost".ToLower())
             {
                 var counter = operation.Parameters.ToArray().Length;
-                for (int i = counter - 1; i >= 1; i--)
+                for (int i = counter -2; i >= 0; i--)
                     operation.Parameters.RemoveAt(i);
 
 

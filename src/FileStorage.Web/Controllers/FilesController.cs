@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Http;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Utils;
@@ -29,11 +31,17 @@ namespace FileStorage.Web.Controllers
             _fileService = fileService;
         }
 
+        // GET api/files
         /// <summary>
-        /// 
+        /// Returns all files for user
         /// </summary>
-        /// <returns></returns>
+        /// <response code="200">Return array of user files</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="500">Returns if server error has occurred</response>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<NodeDto>), 200)]
+        [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+        [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
         public async Task<IActionResult> GetUserFiles()
         {
             try

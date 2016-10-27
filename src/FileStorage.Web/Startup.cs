@@ -60,7 +60,7 @@ namespace FileStorage.Web
                 });
                 options.IncludeXmlComments(GetXmlCommentsPath(PlatformServices.Default.Application));
                 options.OperationFilter<FileOperation>();
-                options.DescribeAllEnumsAsStrings();
+                //options.DescribeAllEnumsAsStrings();
             });
 
             // DI
@@ -74,7 +74,6 @@ namespace FileStorage.Web
             services.AddScoped<IFileVersionRepository, FileVersionRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
