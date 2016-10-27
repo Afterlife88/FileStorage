@@ -13,5 +13,7 @@ namespace FileStorage.DAL.Contracts.Repositories
         Task<IEnumerable<Node>> GetAllNodesForUserAsync(string userId);
         Task<Node> GetRootFolderForUserAsync(string userId);
         Node RenameNode(Node node, string newName);
+
+        Node ReplaceNodeFolder(Node node, Node destinationFolder);
     }
 }

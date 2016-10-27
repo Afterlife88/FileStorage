@@ -43,6 +43,13 @@ namespace FileStorage.DAL.Repositories
             node.Name = newName;
             return node;
         }
+
+        public Node ReplaceNodeFolder(Node node, Node destinationFolder)
+        {
+            node.Folder = destinationFolder;
+            return node;
+        }
+
         public async Task<Node> GetNodeByNameAsync(string nodeName, string userId)
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Name == nodeName && r.OwnerId == userId);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -139,33 +138,34 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="fileUniqId"></param>
-        ///// <returns></returns>
-        //[HttpPatch]
-        //[Route("replace/{fileUniqId}")]
-        //public async Task<IActionResult> Replace(Guid fileUniqId)
-        //{
-        //    try
-        //    {
-        //        //if (!ModelState.IsValid)
-        //        //    return BadRequest(ModelState);
+        /// <summary>
+        /// 
+        /// </summary>
+      
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("replace/{fileUniqId}")]
+        public async Task<IActionResult> Replace(Guid fileUniqId, [FromBody]ReplaceFileDto model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-        //        //var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        //        //await _fileService.RenameFileAsync(fileUniqId, model.NewName, callerEmail);
-        //        //if (!_fileService.State.IsValid)
-        //        //    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
-        //        //        _fileService.State.ErrorMessage);
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _fileService.ReplaceFileAsync(callerEmail, fileUniqId, model);
+                if (!_fileService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+                        _fileService.State.ErrorMessage);
 
-        //        return StatusCode(204);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>

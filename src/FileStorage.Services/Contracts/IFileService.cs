@@ -17,7 +17,7 @@ namespace FileStorage.Services.Contracts
         Task<IEnumerable<NodeDto>> GetUserFilesAsync(string userEmail);
         ServiceState State { get; }
         Task<NodeDto> UploadAsync(IFormFile file, string directoryName, string userEmail);
-
-        Task<NodeDto> RenameFileAsync (Guid fileUniqId, string newName, string callerEmail);
+        Task<NodeDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail);
+        Task<NodeDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model);
     }
 }

@@ -191,7 +191,41 @@ namespace FileStorage.Services.Implementation
                 if (!ValidateAccessToFile(State, fileNode, owner))
                     return null;
 
+
                 _unitOfWork.NodeRepository.RenameNode(fileNode, newName);
+                await _unitOfWork.CommitAsync();
+                return Mapper.Map<Node, NodeDto>(fileNode);
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
+
+        public async Task<NodeDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var fileNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(fileUniqId);
+
+                var folderNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(model.DestanationFolderId);
+
+                if (folderNode == null || !folderNode.IsDirectory)
+                {
+                    State.TypeOfError = TypeOfServiceError.NotFound;
+                    State.ErrorMessage = "Requeset folder not found!";
+                    return null;
+                }
+
+                // Validate if user have access to file and can edit it
+                if (!ValidateAccessToFile(State, fileNode, owner))
+                    return null;
+
+                _unitOfWork.NodeRepository.ReplaceNodeFolder(fileNode, folderNode);
                 await _unitOfWork.CommitAsync();
                 return Mapper.Map<Node, NodeDto>(fileNode);
             }
