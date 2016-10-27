@@ -13,9 +13,11 @@ namespace FileStorage.Services.Contracts
     /// </summary>
     public interface IFileService
     {
-        Task<Tuple<Stream, NodeDto>> GetFile(Guid uniqFileId, string callerEmail, int? versionOfFile);
-        Task<IEnumerable<NodeDto>> GetUserFiles(string userEmail);
+        Task<Tuple<Stream, NodeDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile);
+        Task<IEnumerable<NodeDto>> GetUserFilesAsync(string userEmail);
         ServiceState State { get; }
-        Task<ServiceState> UploadAsync(IFormFile file, string directoryName, string userEmail);
+        Task<NodeDto> UploadAsync(IFormFile file, string directoryName, string userEmail);
+
+        Task<NodeDto> RenameFileAsync (Guid fileUniqId, string newName, string callerEmail);
     }
 }

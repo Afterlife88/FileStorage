@@ -7,7 +7,7 @@ using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Models;
 
-namespace FileStorage.Services.Services
+namespace FileStorage.Services.Implementation
 {
     public class UserService : IUserService
     {

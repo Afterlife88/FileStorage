@@ -17,7 +17,7 @@ namespace FileStorage.DAL.Repositories
             _dataDbContext = dataDbContext;
         }
 
-        public async Task<Node> GetRootFolderForUser(string userId)
+        public async Task<Node> GetRootFolderForUserAsync(string userId)
         {
             var node = await _dataDbContext.Nodes.Where(r => r.IsDirectory && r.OwnerId == userId).FirstOrDefaultAsync();
             return node;
@@ -26,18 +26,24 @@ namespace FileStorage.DAL.Repositories
         {
             _dataDbContext.Nodes.Add(node);
         }
-        public async Task<Node> GetNodeById(Guid nodeId)
+        public async Task<Node> GetNodeByIdAsync(Guid nodeId)
         {
             var node = await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == nodeId);
             return node;
         }
 
-        public async Task<IEnumerable<Node>> GetAllNodesForUser(string userId)
+        public async Task<IEnumerable<Node>> GetAllNodesForUserAsync(string userId)
         {
             var nodes = await _dataDbContext.Nodes.Where(r => r.OwnerId == userId).Include(s => s.FileVersions).ToArrayAsync();
             return nodes;
         }
-        public async Task<Node> GetNodeByName(string nodeName)
+
+        public Node RenameNode(Node node, string newName)
+        {
+            node.Name = newName;
+            return node;
+        }
+        public async Task<Node> GetNodeByNameAsync(string nodeName)
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Name == nodeName);
         }

@@ -8,7 +8,7 @@ using FileStorage.DAL.Contracts.Repositories;
 using FileStorage.DAL.Repositories;
 using FileStorage.Domain.Entities;
 using FileStorage.Services.Contracts;
-using FileStorage.Services.Services;
+using FileStorage.Services.Implementation;
 using FileStorage.Web.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

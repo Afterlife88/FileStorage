@@ -14,7 +14,7 @@ using FileStorage.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 
-namespace FileStorage.Services.Services
+namespace FileStorage.Services.Implementation
 {
     /// <summary>
     /// Service for manage files
@@ -27,6 +27,7 @@ namespace FileStorage.Services.Services
         private readonly IBlobService _blobService;
 
         #endregion
+
         /// <summary>
         /// Model state of the executed actions
         /// </summary>
@@ -43,74 +44,94 @@ namespace FileStorage.Services.Services
             _blobService = blobService;
             State = new ServiceState();
         }
+
         #region Methods
 
-        public async Task<IEnumerable<NodeDto>> GetUserFiles(string userEmail)
+        public async Task<IEnumerable<NodeDto>> GetUserFilesAsync(string userEmail)
         {
-            var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
-            var files = await _unitOfWork.NodeRepository.GetAllNodesForUser(owner.Id);
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
+                var files = await _unitOfWork.NodeRepository.GetAllNodesForUserAsync(owner.Id);
 
-            var filesWithoutFolders = files.Where(r => r.IsDirectory == false);
-            return Mapper.Map<IEnumerable<Node>, IEnumerable<NodeDto>>(filesWithoutFolders);
+                var filesWithoutFolders = files.Where(r => r.IsDirectory == false);
+                return Mapper.Map<IEnumerable<Node>, IEnumerable<NodeDto>>(filesWithoutFolders);
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
         }
 
-        public async Task<Tuple<Stream, NodeDto>> GetFile(Guid uniqFileId, string callerEmail, int? versionOfFile)
+        public async Task<Tuple<Stream, NodeDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile)
         {
-            var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
-            var getFileNode = await _unitOfWork.NodeRepository.GetNodeById(uniqFileId);
-
-            if (getFileNode == null)
+            try
             {
-                State.TypeOfError = TypeOfServiceError.NotFound;
-                State.ErrorMessage = "Requested file is not found!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
-            }
-            // TODO: Later check share emails
-            if (owner.Id != getFileNode.OwnerId)
-            {
-                State.TypeOfError = TypeOfServiceError.Unathorized;
-                State.ErrorMessage = "You are not authorized to get this file!";
-                return Tuple.Create<Stream, NodeDto>(null, null);
-            }
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var getFileNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(uniqFileId);
 
-            // Version of file not passed - then return last version
-            if (versionOfFile == null)
-                return await GetLastVersionOfFile(getFileNode);
-            return await GetConcreteVersionOfFile(getFileNode, versionOfFile.GetValueOrDefault(-1));
+                if (getFileNode == null)
+                {
+                    State.TypeOfError = TypeOfServiceError.NotFound;
+                    State.ErrorMessage = "Requested file is not found!";
+                    return Tuple.Create<Stream, NodeDto>(null, null);
+                }
+                // TODO: Later check share emails
+                if (owner.Id != getFileNode.OwnerId)
+                {
+                    State.TypeOfError = TypeOfServiceError.Unathorized;
+                    State.ErrorMessage = "You are not authorized to get this file!";
+                    return Tuple.Create<Stream, NodeDto>(null, null);
+                }
+
+                // Version of file not passed - then return last version
+                if (versionOfFile == null)
+                    return await GetLastVersionOfFile(getFileNode);
+                return await GetConcreteVersionOfFile(getFileNode, versionOfFile.GetValueOrDefault(-1));
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
         }
 
-        public async Task<ServiceState> UploadAsync(IFormFile file, string directoryName, string userEmail)
+        public async Task<NodeDto> UploadAsync(IFormFile file, string directoryName, string userEmail)
         {
             try
             {
                 if (file == null)
                 {
                     State.ErrorMessage = "No file attached!";
-                    State.TypeOfError = TypeOfServiceError.BadRequest; ;
-                    return State;
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    return null;
                 }
 
                 var callerUser = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
 
                 Node directoryWhereFileUploadTo;
                 if (directoryName == null)
-                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetRootFolderForUser(callerUser.Id);
+                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetRootFolderForUserAsync(callerUser.Id);
                 else
-                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetNodeByName(directoryName);
+                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetNodeByNameAsync(directoryName);
 
                 // Validate current Node (folder that file uploading to) 
-                if (!ValidateNode(State, directoryWhereFileUploadTo, callerUser))
+                if (!ValidateAccessToFolder(State, directoryWhereFileUploadTo, callerUser))
                 {
-                    return State;
+                    return null;
                 }
                 // Check if file with concrete hash already exist in service
                 string md5Hash = GetMD5HashFromFile(file);
-                var checkIsFileWithHashExist = await _unitOfWork.FileVersionRepository.GetFileVersionByMd5HashForUserAsync(md5Hash, callerUser.Id);
+                var checkIsFileWithHashExist =
+                    await _unitOfWork.FileVersionRepository.GetFileVersionByMd5HashForUserAsync(md5Hash, callerUser.Id);
                 if (checkIsFileWithHashExist != null)
                 {
                     State.ErrorMessage = "This version of file already exist!";
                     State.TypeOfError = TypeOfServiceError.BadRequest;
-                    return State;
+                    return null;
                 }
 
                 string generateNameForAzureBlob = GenerateNameForTheAzureBlob(md5Hash, file.FileName, userEmail);
@@ -119,14 +140,14 @@ namespace FileStorage.Services.Services
                 if (contentType == null)
                     contentType = "none";
 
-                var allNodesForUser = await _unitOfWork.NodeRepository.GetAllNodesForUser(callerUser.Id);
+                var allNodesForUser = await _unitOfWork.NodeRepository.GetAllNodesForUserAsync(callerUser.Id);
                 var existedFile = allNodesForUser.FirstOrDefault(r => r.Name == file.FileName && r.IsDirectory == false);
                 // If file already exist - add new version
                 if (existedFile != null)
                 {
                     await AddNewVersionOfFileAsync(file, existedFile, md5Hash,
-                                  generateNameForAzureBlob);
-                    return State;
+                        generateNameForAzureBlob);
+                    return Mapper.Map<Node, NodeDto>(existedFile);
                 }
 
                 // else just create as first file on the system
@@ -159,12 +180,36 @@ namespace FileStorage.Services.Services
 
                 // Upload to azure blob
                 await _blobService.UploadFileAsync(file, generateNameForAzureBlob);
-                return State;
+                return Mapper.Map<Node, NodeDto>(fileNode);
             }
             catch (Exception ex)
             {
                 State.ErrorMessage = ex.Message;
-                State.TypeOfError = TypeOfServiceError.ConnectionError;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
+
+        public async Task<NodeDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var fileNode = await _unitOfWork.NodeRepository.GetNodeByIdAsync(fileUniqId);
+
+                // Validate if user have access to file and can edit it
+                if (!ValidateAccessToFile(State, fileNode, owner))
+                    return null;
+
+                _unitOfWork.NodeRepository.RenameNode(fileNode, newName);
+                await _unitOfWork.CommitAsync();
+                return Mapper.Map<Node, NodeDto>(fileNode);
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
                 return null;
             }
         }
@@ -218,7 +263,7 @@ namespace FileStorage.Services.Services
         }
         private async Task<Tuple<Stream, NodeDto>> GetLastVersionOfFile(Node file)
         {
-           
+
             var getLastVersionOfFile = await _unitOfWork.FileVersionRepository.GetLatestFileVersion(file);
             if (getLastVersionOfFile == null)
             {
@@ -238,23 +283,25 @@ namespace FileStorage.Services.Services
             streamOfFileFromBlob.Position = 0;
             return Tuple.Create(streamOfFileFromBlob, Mapper.Map<Node, NodeDto>(file));
         }
-        private bool ValidateNode(ServiceState modelState, Node node, ApplicationUser user)
+
+        private bool ValidateAccessToFile(ServiceState state, Node node, ApplicationUser user)
         {
             if (node == null)
             {
-                modelState.ErrorMessage = "Folder is not found!";
-                modelState.TypeOfError = TypeOfServiceError.NotFound;
-                return modelState.IsValid;
+                state.ErrorMessage = "File not found!";
+                state.TypeOfError = TypeOfServiceError.NotFound;
+                return state.IsValid;
             }
             if (node.OwnerId != user.Id)
             {
                 State.TypeOfError = TypeOfServiceError.Unathorized;
-                modelState.ErrorMessage = "Access denied";
+                state.ErrorMessage = "You not have access to this file";
 
-                return modelState.IsValid;
+                return state.IsValid;
             }
-            return modelState.IsValid;
+            return state.IsValid;
         }
+  
         private string GenerateNameForTheAzureBlob(string md5Hash, string fileName, string userEmail)
         {
             return $"{userEmail}_{md5Hash}_{fileName}";
@@ -276,6 +323,23 @@ namespace FileStorage.Services.Services
                 }
             }
             return md5Hash;
+        }
+        private bool ValidateAccessToFolder(ServiceState modelState, Node node, ApplicationUser user)
+        {
+            if (node == null)
+            {
+                modelState.ErrorMessage = "Folder is not found!";
+                modelState.TypeOfError = TypeOfServiceError.NotFound;
+                return modelState.IsValid;
+            }
+            if (node.OwnerId != user.Id)
+            {
+                State.TypeOfError = TypeOfServiceError.Unathorized;
+                modelState.ErrorMessage = "You not have access to this folder";
+
+                return modelState.IsValid;
+            }
+            return modelState.IsValid;
         }
         #endregion
 

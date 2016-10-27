@@ -2,12 +2,12 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FileStorage.Services.Contracts;
+using FileStorage.Services.DTO;
 using FileStorage.Services.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
-
 
 namespace FileStorage.Web.Controllers
 {
@@ -38,11 +38,12 @@ namespace FileStorage.Web.Controllers
         {
             try
             {
-                var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                var response = await _fileService.GetUserFiles(userEmail);
+                var response = await _fileService.GetUserFilesAsync(callerEmail);
                 if (!_fileService.State.IsValid)
-                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+                        _fileService.State.ErrorMessage);
 
                 return Ok(response);
             }
@@ -51,23 +52,25 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="fileUniqId"></param>
         /// <param name="versionOfFile"></param>
         /// <returns></returns>
-        [Route("{fileUniqId}")]
+        [Route("{fileUniqId}", Name = "GetFile")]
         [HttpGet]
-        public async Task<IActionResult> GetFile(Guid fileUniqId, [FromQuery]int? versionOfFile = null)
+        public async Task<IActionResult> GetFile(Guid fileUniqId, [FromQuery] int? versionOfFile = null)
         {
             try
             {
-                var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                var responseFromService = await _fileService.GetFile(fileUniqId, userEmail, versionOfFile);
+                var responseFromService = await _fileService.GetFileAsync(fileUniqId, callerEmail, versionOfFile);
                 if (!_fileService.State.IsValid)
-                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+                        _fileService.State.ErrorMessage);
 
                 HttpContext.Response.ContentLength = responseFromService.Item1.Length;
 
@@ -79,9 +82,39 @@ namespace FileStorage.Web.Controllers
                 };
                 return result;
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, exception.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileUniqId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{fileUniqId}")]
+        public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameFileDto model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _fileService.RenameFileAsync(fileUniqId, model.NewName, callerEmail);
+                if (!_fileService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+                        _fileService.State.ErrorMessage);
+
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -97,16 +130,18 @@ namespace FileStorage.Web.Controllers
             try
             {
                 // TODO: Validate if content type is not form-data
-                var userEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                await _fileService.UploadAsync(file, directoryName, userEmail);
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var responseFromService = await _fileService.UploadAsync(file, directoryName, callerEmail);
                 if (!_fileService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
-                return StatusCode(201);
+                return CreatedAtRoute("GetFile", new { fileUniqId = responseFromService.UniqueFileId }, responseFromService);
+
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, exception.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
