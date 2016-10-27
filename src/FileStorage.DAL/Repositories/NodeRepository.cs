@@ -54,5 +54,11 @@ namespace FileStorage.DAL.Repositories
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Name == nodeName && r.OwnerId == userId && !r.IsDeleted);
         }
+
+        public async Task<Node> GetNodeThatWasRemoved(Guid nodeId)
+        {
+            var node = await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == nodeId && r.IsDeleted);
+            return node;
+        }
     }
 }

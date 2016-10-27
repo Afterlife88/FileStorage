@@ -272,6 +272,42 @@ namespace FileStorage.Services.Implementation
                 return null;
             }
         }
+
+        public async Task<FileDto> RestoreRemovedFileAsync(Guid fileUniqId, string callerEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var checkIsFileAreNotRemoved = await _unitOfWork.NodeRepository.GetNodeByIdAsync(fileUniqId);
+                if (checkIsFileAreNotRemoved != null)
+                {
+                    State.ErrorMessage = "Requested file are not removed!";
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    return null;
+                }
+
+                var getRemovedNode = await _unitOfWork.NodeRepository.GetNodeThatWasRemoved(fileUniqId);
+
+                // Validate if user have access to file and can edit it
+                if (!ValidateAccessToFile(State, getRemovedNode, owner))
+                    return null;
+
+                getRemovedNode.IsDeleted = false;
+
+                await _unitOfWork.RemovedNodeRepository.DeleteRemovedNodeRecord(getRemovedNode);
+                await _unitOfWork.CommitAsync();
+
+                return Mapper.Map<Node, FileDto>(getRemovedNode);
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
+
         #endregion
 
         #region Helpers methods 
@@ -357,6 +393,8 @@ namespace FileStorage.Services.Implementation
 
                 return state.IsValid;
             }
+
+
             return state.IsValid;
         }
 

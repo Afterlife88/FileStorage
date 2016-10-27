@@ -1,5 +1,7 @@
-﻿using FileStorage.DAL.Contracts.Repositories;
+﻿using System.Threading.Tasks;
+using FileStorage.DAL.Contracts.Repositories;
 using FileStorage.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FileStorage.DAL.Repositories
 {
@@ -14,6 +16,12 @@ namespace FileStorage.DAL.Repositories
         public void AddRemovedNode(RemovedNode node)
         {
             _dataDbContext.RemovedNodes.Add(node);
+        }
+
+        public async Task DeleteRemovedNodeRecord(Node node)
+        {
+            var getNode = await _dataDbContext.RemovedNodes.FirstOrDefaultAsync(r => r.Node == node);
+            _dataDbContext.RemovedNodes.Remove(getNode);
         }
     }
 }

@@ -20,5 +20,6 @@ namespace FileStorage.Services.Contracts
         Task<FileDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail);
         Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model);
         Task<ServiceState> RemoveFileAsync(Guid fileUniqId, string callerEmail);
+        Task<FileDto> RestoreRemovedFileAsync(Guid fileUniqId, string callerEmail);
     }
 }

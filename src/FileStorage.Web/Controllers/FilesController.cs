@@ -81,8 +81,8 @@ namespace FileStorage.Web.Controllers
         /// <response code="403">Returns if user have not access to requested file</response>
         /// <response code="404">Returns if passed file are not exist</response>
         /// <response code="500">Returns if server error has occurred</response>
-        [Route("{fileUniqId}", Name = "GetFile")]
         [HttpGet]
+        [Route("{fileUniqId}", Name = "GetFile")]
         public async Task<IActionResult> GetFile(Guid fileUniqId, [FromQuery] int? versionOfFile = null)
         {
             try
@@ -110,14 +110,40 @@ namespace FileStorage.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="directoryName">Optional directory name of the where file upload to</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Upload(IFormFile file, [FromQuery]string directoryName = null)
+        {
+            try
+            {
+                // TODO: Validate if content type is not form-data
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+                var responseFromService = await _fileService.UploadAsync(file, directoryName, callerEmail);
+                if (!_fileService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
+
+                return CreatedAtRoute("GetFile", new { fileUniqId = responseFromService.UniqueFileId }, responseFromService);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="fileUniqId"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPatch("rename/{fileUniqId}")]
+        [HttpPatch]
+        [Route("rename/{fileUniqId}")]
         public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameFileDto model)
         {
             try
@@ -166,26 +192,27 @@ namespace FileStorage.Web.Controllers
             }
         }
 
+   
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="directoryName">Optional directory name of the where file upload to</param>
+        /// <param name="fileUniqId"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file, [FromQuery]string directoryName = null)
+        [HttpPut]
+        [Route("restore/{fileUniqId}")]
+        public async Task<IActionResult> ResotreDeletedFile(Guid fileUniqId)
         {
             try
             {
-                // TODO: Validate if content type is not form-data
-                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                var responseFromService = await _fileService.UploadAsync(file, directoryName, callerEmail);
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var restoredFile = await _fileService.RestoreRemovedFileAsync(fileUniqId, callerEmail);
                 if (!_fileService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
-                return CreatedAtRoute("GetFile", new { fileUniqId = responseFromService.UniqueFileId }, responseFromService);
-
+                return CreatedAtRoute("GetFile", new { fileUniqId = restoredFile.UniqueFileId }, restoredFile);
             }
             catch (Exception ex)
             {

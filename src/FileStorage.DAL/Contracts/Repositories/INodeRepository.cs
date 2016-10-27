@@ -15,5 +15,6 @@ namespace FileStorage.DAL.Contracts.Repositories
         Node RenameNode(Node node, string newName);
 
         Node ReplaceNodeFolder(Node node, Node destinationFolder);
+        Task<Node> GetNodeThatWasRemoved(Guid nodeId);
     }
 }
