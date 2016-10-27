@@ -9,7 +9,7 @@ namespace FileStorage.DAL.Contracts.Repositories
     {
         void AddNode(Node node);
         Task<Node> GetNodeByIdAsync(Guid nodeId);
-        Task<Node> GetNodeByNameAsync(string nodeName);
+        Task<Node> GetNodeByNameAsync(string nodeName, string userId);
         Task<IEnumerable<Node>> GetAllNodesForUserAsync(string userId);
         Task<Node> GetRootFolderForUserAsync(string userId);
         Node RenameNode(Node node, string newName);

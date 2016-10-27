@@ -116,7 +116,7 @@ namespace FileStorage.Services.Implementation
                 if (directoryName == null)
                     directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetRootFolderForUserAsync(callerUser.Id);
                 else
-                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetNodeByNameAsync(directoryName);
+                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetNodeByNameAsync(directoryName, callerUser.Id);
 
                 // Validate current Node (folder that file uploading to) 
                 if (!ValidateAccessToFolder(State, directoryWhereFileUploadTo, callerUser))
