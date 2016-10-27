@@ -60,6 +60,8 @@ namespace FileStorage.Web
                 });
                 options.IncludeXmlComments(GetXmlCommentsPath(PlatformServices.Default.Application));
                 options.OperationFilter<FileOperation>();
+                options.OperationFilter<AddAuthorizationHeaderParameterOperationFilter>();
+
                 //options.DescribeAllEnumsAsStrings();
             });
 
@@ -95,15 +97,16 @@ namespace FileStorage.Web
             // Add MVC to the request pipeline.
             app.UseDeveloperExceptionPage();
             app.UseMvc();
-
+           
             app.UseSwagger((httpRequest, swaggerDoc) =>
             {
                 swaggerDoc.Host = httpRequest.Host.Value;
             });
 
-            app.UseSwaggerUi();
-            app.UseMvcWithDefaultRoute();
+            app.UseSwaggerUi(baseRoute:"swagger", swaggerUrl: "/swagger/v1/swagger.json");
 
+            app.UseMvcWithDefaultRoute();
+            
 
             // Recreate db's
             databaseInitializer.Seed().GetAwaiter().GetResult();

@@ -16,6 +16,7 @@ namespace FileStorage.Web.Configuration
         /// <param name="context"></param>
         public void Apply(Operation operation, OperationFilterContext context)
         {
+
             if (operation.OperationId.ToLower() == "ApiFilesPost".ToLower())
             {
                 var counter = operation.Parameters.ToArray().Length;
