@@ -76,3 +76,9 @@
     border-radius: 4px;
     width: 13%;
 }
+#loggedAs {
+    text-decoration: none;
+    color: white;
+    font-size: 0.98em;
+     
+}

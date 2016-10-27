@@ -91,6 +91,13 @@
               $("#givenTokenDrop").css("display", "block");
               $("#givenToken").val(pastedToken);
               $(".modal_close").click();
+
+              swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("Authorization", pastedToken, "header"));
+
+              $('#getToken').remove();
+              // Add loggedAs header
+              var loggedAs = '<div class="input"><a id="loggedAs" href="#" data-sw-translate>Logged as ' + username + '</a></div>';
+              $(loggedAs).insertBefore('#api_selector div.input:last-child');
             },
             error: function (xhr, ajaxoptions, thrownerror) {
               alert("Login failed!");

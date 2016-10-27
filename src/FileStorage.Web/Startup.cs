@@ -60,7 +60,7 @@ namespace FileStorage.Web
                 });
                 options.IncludeXmlComments(GetXmlCommentsPath(PlatformServices.Default.Application));
                 options.OperationFilter<FileOperation>();
-                options.OperationFilter<AddAuthorizationHeaderParameterOperationFilter>();
+                //options.OperationFilter<AddAuthorizationHeaderParameterOperationFilter>();
 
                 //options.DescribeAllEnumsAsStrings();
             });
