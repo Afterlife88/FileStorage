@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using AutoMapper;
 using FileStorage.Domain.Entities;
 using FileStorage.Services.DTO;
 
@@ -31,7 +33,22 @@ namespace FileStorage.Web.Configuration
                     .ForMember(dest => dest.FileVersions, opt => opt.MapFrom(src => src.FileVersions))
                     .ForMember(dest => dest.DirectoryId, opt => opt.MapFrom(src => src.FolderId))
                     .ForMember(dest => dest.DirectoryName, opt => opt.MapFrom(src => src.Folder.Name));
+                //.AfterMap((src, dest) => src.Siblings.Where(r => r.IsDirectory))
+
                 //.ForMember(dest => dest.IsDirectory, opt => opt.Condition(src => src.IsDirectory));
+
+                config.CreateMap<Node, FolderDto>()
+                    .ForMember(dest=>dest.FolderName, opt=>opt.MapFrom(src=>src.Name))
+                    .ForMember(dest => dest.ParentFolderName, opt => opt.MapFrom(src => src.Folder.Name))
+                    .ForMember(dest => dest.ParentFolderId, opt => opt.MapFrom(src => src.Folder.Id))
+                    .ForMember(src => src.UniqueFolderId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(src => src.OwnerId, opt => opt.MapFrom(src => src.OwnerId));
+                //config.CreateMap<Node, FolderDto>()
+                //    //.ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Id))
+                //    .AfterMap((src, dest) => dest.Files = src.Siblings.Where(r => !r.IsDirectory))
+                //    //.ForMember(dest => dest.Folders, opt => opt.MapFrom(src => src.Id))
+                //    .AfterMap((src, dest) => dest.Folders = src.Siblings.Where(r => r.IsDirectory));
+
             });
         }
     }

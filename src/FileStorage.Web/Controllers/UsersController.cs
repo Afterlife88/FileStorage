@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FileStorage.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UsersController : Controller
     {
         private readonly IUserService _userService;

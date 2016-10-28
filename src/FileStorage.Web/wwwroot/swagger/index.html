@@ -45,7 +45,7 @@
           var tokenInfo = '<div id="infoContainer" class="dropDown">' +
             '<div class="header"><span>Token</span></div><div class="content"><h3>You must authenticate with your email and password to get token for using most of API requests. </h3>' +
             '<strong>Getting token:</strong><br>You have two options to get token<ol>' +
-            '<li>1. You can do it through this page by pressing Get Token button and use your login and password </li>' +
+            '<li>1. You can do it through this page by pressing Authenticate button and use your login and password </li>' +
             '<li>2. You must make POST request to authentication service by calling <b>/api/token</b><br>To header add <code><b>ConctentType: \'application/x-www-form-urlencoded\'</code></b><br> In body set <b>username=yourUserName&password=yourPassword</b>. <br>On succesfull request you will get on response the acces_token.</li></ol><strong>Using token:</strong><br>After you receive token add this header in your request <br> <b style="font-size: 0.9em">Authorization: Bearer yourToken</b></div></div>';
           $('#api_info').after(tokenInfo);
           $('#infoContainer').after('<br><div class="dropDown" id="givenTokenDrop" style="display:none"><div class="header"><span>Your token</span></div><div class="content"><input id="givenToken"><button class="btn" id="copy-button" data-clipboard-target="#givenToken">Copy</button></div></div>');
@@ -115,7 +115,7 @@
       <a id="logo" style="color: white">File storage documentation</a>
 
       <form id='api_selector'>
-        <div class='input'><a id="getToken" href="#modal">Get Token</a></div>
+        <div class='input'><a id="getToken" href="#modal">Authenticate</a></div>
       </form>
     </div>
   </div>

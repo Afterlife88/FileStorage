@@ -65,10 +65,10 @@ namespace FileStorage.Web
 
 
             });
-
-            // DI
+           
             // Max lenght of file is 4 GB
             services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 4294967295);
+            // DI
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
             services.AddScoped<IBlobService, AzureBlobService>();
             services.AddScoped<IFileService, FileService>();
@@ -77,6 +77,7 @@ namespace FileStorage.Web
             services.AddScoped<IFileVersionRepository, FileVersionRepository>();
             services.AddScoped<IRemovedNodeRepository, RemovedNodeRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFolderService, FolderService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
@@ -99,16 +100,16 @@ namespace FileStorage.Web
             // Add MVC to the request pipeline.
             app.UseDeveloperExceptionPage();
             app.UseMvc();
-           
+
             app.UseSwagger((httpRequest, swaggerDoc) =>
             {
                 swaggerDoc.Host = httpRequest.Host.Value;
             });
 
-            app.UseSwaggerUi(baseRoute:"swagger", swaggerUrl: "/swagger/v1/swagger.json");
+            app.UseSwaggerUi(baseRoute: "swagger", swaggerUrl: "/swagger/v1/swagger.json");
 
-         
-            
+
+
 
             // Recreate db's
             databaseInitializer.Seed().GetAwaiter().GetResult();
