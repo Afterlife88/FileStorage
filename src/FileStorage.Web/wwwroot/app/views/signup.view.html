@@ -1,0 +1,10 @@
+﻿<form class="form-signin" role="form">
+  <h2 class="form-signin-heading">Sign up</h2>
+  <input type="email" class="form-control email-input" placeholder="Email" ng-model="registration.email" required autofocus>
+  <input type="password" class="form-control password-input" placeholder="Password" ng-model="registration.password" required>
+  <input type="password" class="form-control password-input" placeholder="Confirm Password" ng-model="registration.confirmPassword" required>
+  <div ng-hide="message == ''" ng-class="(savedSuccessfully) ? 'alert alert-success' : 'alert alert-danger'">
+    {{message}}
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signUp()">Submit</button>
+</form>
