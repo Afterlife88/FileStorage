@@ -29,7 +29,17 @@
         <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
         <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
         <td ng-if="!node.contentType"><a href="javascript:void(0);" ng-click="vm.changeFolder(node.uniqueFolderId)">{{node.name}}</a></td>
-        <td ng-if="node.contentType"><a href="javascript:void(0);">{{node.name}}</a></td>
+        <td ng-if="node.contentType" uib-dropdown>
+          <a href="javascript:void(0);" uib-dropdown-toggle>{{node.name}}</a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li role="menuitem"><a href="javascript:void(0);">Download latest version</a></li>
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.getFileVersions(node)">Display all versions</a></li>
+            <li role="menuitem"><a href="javascript:void(0);">Rename</a></li>
+            <li role="menuitem"><a href="javascript:void(0);">Replace</a></li>
+            <li class="divider"></li>
+            <li role="menuitem"><a href="javascript:void(0);">Remove</a></li>
+          </ul>
+        </td>
         <td>{{node.contentType}}</td>
         <td>{{node.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
       </tr>

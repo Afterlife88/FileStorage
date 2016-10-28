@@ -11,10 +11,12 @@
     var vm = this;
     var modal = null;
     vm.changeFolder = changeFolder;
-    vm.currentFolder = {};
+    vm.getFileVersions = getFileVersions;
+
     vm.workPlaceItems = {
       filesAndFolders: []
     };
+
     vm.uploader = new FileUploader({
       headers: { "Authorization": Session.accessToken },
       url: '/api/files/',
@@ -42,6 +44,10 @@
         });
     }
 
+    function getFileVersions(node) {
+      //console.log(node);
+      openFileVesrionsModal(node);
+    }
     function setupUploader(uploader) {
       uploader.onAfterAddingFile = function (item) {
         item.url = '/api/files/?directoryUniqId=' + vm.workPlaceItems.uniqueFolderId;
@@ -81,5 +87,20 @@
       });
       return modal;
     };
+
+    function openFileVesrionsModal(item) {
+      var fileVersionsModal = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/views/file-versions.html',
+        backdrop: 'static',
+        controller: 'fileVersionsController as vm',
+        resolve: {
+          data: function () {
+            return item;
+          }
+        }
+      });
+      return fileVersionsModal;
+    }
   }
 })();
