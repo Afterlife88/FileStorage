@@ -11,6 +11,7 @@ using FileStorage.Domain.Entities;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Models;
+using FileStorage.Services.RequestModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -89,7 +90,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<FileDto> UploadAsync(IFormFile file, string directoryName, string userEmail)
+        public async Task<FileDto> UploadAsync(IFormFile file, Guid? directoryUniqId, string userEmail)
         {
             try
             {
@@ -103,10 +104,10 @@ namespace FileStorage.Services.Implementation
                 var callerUser = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
 
                 Node directoryWhereFileUploadTo;
-                if (directoryName == null)
+                if (directoryUniqId == null)
                     directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetRootFolderForUserAsync(callerUser.Id);
                 else
-                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetNodeByNameAsync(directoryName, callerUser.Id);
+                    directoryWhereFileUploadTo = await _unitOfWork.NodeRepository.GetFolderByIdForUserAsync(directoryUniqId.Value, callerUser.Id);
 
                 // Validate current Node (folder that file uploading to) 
                 if (!ValidateAccessToFolder(State, directoryWhereFileUploadTo, callerUser))
@@ -205,7 +206,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model)
+        public async Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileRequest model)
         {
             try
             {

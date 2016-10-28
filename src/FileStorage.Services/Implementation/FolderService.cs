@@ -8,6 +8,7 @@ using FileStorage.Domain.Entities;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Models;
+using FileStorage.Services.RequestModels;
 
 namespace FileStorage.Services.Implementation
 {
@@ -61,7 +62,7 @@ namespace FileStorage.Services.Implementation
 
 
                 var parentFolder = await _unitOfWork.NodeRepository.GetNodeByIdAsync(node.FolderId.GetValueOrDefault(node.Id));
-               
+
                 // TODO: Later make check with permission manager
                 var res = new FolderDto()
                 {
@@ -82,7 +83,7 @@ namespace FileStorage.Services.Implementation
                 return null;
             }
         }
-        public async Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderDto folder)
+        public async Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderRequest folder)
         {
             try
             {
@@ -105,6 +106,7 @@ namespace FileStorage.Services.Implementation
                 if (existedFolder != null)
                 {
                     State.ErrorMessage = "Folder with this name already exist!";
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
                     return null;
                 }
 
@@ -122,7 +124,7 @@ namespace FileStorage.Services.Implementation
 
                 await _unitOfWork.CommitAsync();
                 //return Mapper.Map<Node, FolderDto>(folder);
-                return null;
+                return Mapper.Map<Node, FolderDto>(newFolder);
             }
             catch (Exception ex)
             {
@@ -138,11 +140,9 @@ namespace FileStorage.Services.Implementation
             var nextNode = _unitOfWork.NodeRepository.GetNodeByIdAsync(node.Id).Result;
             if (nextNode.IsDirectory)
             {
-                if (folder.Files == null && folder.Files == null)
-                {
-                    folder.Files = new List<FileDto>();
-                    folder.Folders = new List<FolderDto>();
-                }
+                folder.Files = new List<FileDto>();
+                folder.Folders = new List<FolderDto>();
+
                 var siblings = nextNode.Siblings.ToList();
                 foreach (var child in siblings)
                 {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
+using FileStorage.Services.RequestModels;
 using FileStorage.Services.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FileStorage.Web.Controllers
 {
+    /// <summary>
+    /// Resource for manage folders in file storage system
+    /// </summary>
     [Authorize]
     [Route("api/folders")]
     public class FoldersController : Controller
     {
         private readonly IFolderService _folderService;
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="folderService"></param>
         public FoldersController(IFolderService folderService)
         {
             _folderService = folderService;
@@ -87,32 +95,29 @@ namespace FileStorage.Web.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="folder"></param>
+        /// <param name="requst"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateFolder([FromBody]CreateFolderDto folder)
+        public async Task<IActionResult> CreateFolder([FromBody]CreateFolderRequest requst)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var response = await _folderService.AddFolderAsync(callerEmail, requst);
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
 
-
-                var response = await _folderService.AddFolderAsync(callerEmail, folder);
-                return Ok(response);
-
+                return CreatedAtRoute("GetFolder", new { uniqFolderId = response.UniqueFolderId }, response);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        //// GET api/values/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
 
         //// PUT api/values/5
         //[HttpPatch("{id}")]

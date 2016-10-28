@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
+using FileStorage.Services.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FileStorage.Web.Controllers
@@ -32,7 +33,7 @@ namespace FileStorage.Web.Controllers
         [ProducesResponseType(typeof(StatusCodeResult), 201)]
         [ProducesResponseType(typeof(BadRequestResult), 400)]
         [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
-        public async Task<IActionResult> Register([FromBody] RegistrationModelDto model)
+        public async Task<IActionResult> Register([FromBody] RegistrationRequest model)
         {
             try
             {

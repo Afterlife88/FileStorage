@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
+using FileStorage.Services.RequestModels;
 using FileStorage.Services.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +15,7 @@ using Microsoft.Net.Http.Headers;
 namespace FileStorage.Web.Controllers
 {
     /// <summary>
-    /// 
+    /// Resource for manage files in file storage system
     /// </summary>
     [Authorize]
     [Route("api/files")]
@@ -87,6 +88,9 @@ namespace FileStorage.Web.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 var responseFromService = await _fileService.GetFileAsync(fileUniqId, callerEmail, versionOfFile);
@@ -117,14 +121,17 @@ namespace FileStorage.Web.Controllers
         /// <param name="directoryName">Optional directory name of the where file upload to</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file, [FromQuery]string directoryName = null)
+        public async Task<IActionResult> Upload(IFormFile file, [FromQuery]Guid? directoryUniqId = null)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 // TODO: Validate if content type is not form-data
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                var responseFromService = await _fileService.UploadAsync(file, directoryName, callerEmail);
+                var responseFromService = await _fileService.UploadAsync(file, directoryUniqId, callerEmail);
                 if (!_fileService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
 
@@ -140,11 +147,11 @@ namespace FileStorage.Web.Controllers
         /// 
         /// </summary>
         /// <param name="fileUniqId"></param>
-        /// <param name="model"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPatch]
         [Route("rename/{fileUniqId}")]
-        public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameFileDto model)
+        public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameFileRequest request)
         {
             try
             {
@@ -152,7 +159,7 @@ namespace FileStorage.Web.Controllers
                     return BadRequest(ModelState);
 
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                await _fileService.RenameFileAsync(fileUniqId, model.NewName, callerEmail);
+                await _fileService.RenameFileAsync(fileUniqId, request.NewName, callerEmail);
                 if (!_fileService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
                         _fileService.State.ErrorMessage);
@@ -171,7 +178,7 @@ namespace FileStorage.Web.Controllers
         /// <returns></returns>
         [HttpPatch]
         [Route("replace/{fileUniqId}")]
-        public async Task<IActionResult> Replace(Guid fileUniqId, [FromBody]ReplaceFileDto model)
+        public async Task<IActionResult> Replace(Guid fileUniqId, [FromBody]ReplaceFileRequest request)
         {
             try
             {
@@ -179,7 +186,7 @@ namespace FileStorage.Web.Controllers
                     return BadRequest(ModelState);
 
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                await _fileService.ReplaceFileAsync(callerEmail, fileUniqId, model);
+                await _fileService.ReplaceFileAsync(callerEmail, fileUniqId, request);
                 if (!_fileService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
                         _fileService.State.ErrorMessage);
@@ -230,6 +237,9 @@ namespace FileStorage.Web.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 // TODO: Validate if content type is not form-data
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
               

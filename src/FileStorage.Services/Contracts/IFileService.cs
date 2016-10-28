@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Models;
+using FileStorage.Services.RequestModels;
 using Microsoft.AspNetCore.Http;
 
 namespace FileStorage.Services.Contracts
@@ -16,9 +17,9 @@ namespace FileStorage.Services.Contracts
         Task<Tuple<Stream, FileDto>> GetFileAsync(Guid uniqFileId, string callerEmail, int? versionOfFile);
         Task<IEnumerable<FileDto>> GetUserFilesAsync(string userEmail);
         ServiceState State { get; }
-        Task<FileDto> UploadAsync(IFormFile file, string directoryName, string userEmail);
+        Task<FileDto> UploadAsync(IFormFile file, Guid? directoryId, string userEmail);
         Task<FileDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail);
-        Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileDto model);
+        Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileRequest model);
         Task<ServiceState> RemoveFileAsync(Guid fileUniqId, string callerEmail);
         Task<FileDto> RestoreRemovedFileAsync(Guid fileUniqId, string callerEmail);
     }

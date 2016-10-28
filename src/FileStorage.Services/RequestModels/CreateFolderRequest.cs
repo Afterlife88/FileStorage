@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FileStorage.Services.DTO
+namespace FileStorage.Services.RequestModels
 {
-    public class CreateFolderDto
+    public class CreateFolderRequest
     {
         /// <summary>
         /// Identificator for parent folder, can be null, when value not passed - folder will be created at root user folder

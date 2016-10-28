@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using FileStorage.Domain.Entities;
 using FileStorage.Services.DTO;
+using FileStorage.Services.RequestModels;
 
 
 namespace FileStorage.Web.Configuration
 {
+    /// <summary>
+    /// Mapping entity to DTO
+    /// </summary>
     public class AutomapperConfiguration
     {
         /// <summary>
@@ -16,7 +18,7 @@ namespace FileStorage.Web.Configuration
         {
             Mapper.Initialize(config =>
             {
-                config.CreateMap<RegistrationModelDto, ApplicationUser>()
+                config.CreateMap<RegistrationRequest, ApplicationUser>()
                     .ForMember(dest => dest.Email, dto => dto.MapFrom(src => src.Email))
                     .ForMember(dest => dest.UserName, dto => dto.MapFrom(src => src.Email));
 

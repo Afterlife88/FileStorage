@@ -6,6 +6,7 @@ using FileStorage.Domain.Entities;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Models;
+using FileStorage.Services.RequestModels;
 
 namespace FileStorage.Services.Implementation
 {
@@ -26,7 +27,7 @@ namespace FileStorage.Services.Implementation
         /// </summary>
         public ServiceState State { get; }
 
-        public async Task<ServiceState> CreateAsync(RegistrationModelDto modelDto)
+        public async Task<ServiceState> CreateAsync(RegistrationRequest modelDto)
         {
             if (modelDto.Email.Split(' ').Length == 2)
             {

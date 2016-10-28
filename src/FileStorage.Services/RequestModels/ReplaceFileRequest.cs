@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FileStorage.Services.DTO
+namespace FileStorage.Services.RequestModels
 {
-    public class ReplaceFileDto
+    public class ReplaceFileRequest
     {
         [Required]
         public Guid DestanationFolderId { get; set; }

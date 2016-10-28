@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FileStorage.Services.DTO
+namespace FileStorage.Services.RequestModels
 {
-    public class RegistrationModelDto
+    public class RegistrationRequest
     {
         [Required]
         [EmailAddress]
