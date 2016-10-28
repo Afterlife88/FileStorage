@@ -15,6 +15,8 @@ namespace FileStorage.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
 
+
+
         public ServiceState State { get; }
 
         public FolderService(IUnitOfWork unitOfWork)
@@ -28,23 +30,10 @@ namespace FileStorage.Services.Implementation
             try
             {
                 var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
-
                 var rootFolder = await _unitOfWork.NodeRepository.GetRootFolderForUserAsync(owner.Id);
-
-                List<FileDto> filesInFolder = new List<FileDto>();
-                List<FolderDto> foldersInFolder = new List<FolderDto>();
-                //foreach (var child in rootFolder.Siblings)
-                //{
-                //    if (!child.IsDirectory)
-                //        filesInFolder.Add(Mapper.Map<Node, FileDto>(child));
-                //    else
-                //        foldersInFolder.Add(Mapper.Map<Node, FolderDto>(child));
-                //}
 
                 var res = new FolderDto()
                 {
-                    Files = filesInFolder,
-                    Folders = foldersInFolder,
                     OwnerId = owner.Id,
                     FolderName = rootFolder.Name,
                     UniqueFolderId = rootFolder.Id,
@@ -52,11 +41,8 @@ namespace FileStorage.Services.Implementation
                     Created = rootFolder.Created,
                     ParentFolderName = rootFolder.Name
                 };
-                //var res = Mapper.Map<Node, FolderDto>(rootFolder);
-                DisplayRecurFolderSibling(rootFolder, res);
-
+                RecursivelyDisplayFolderSibling(rootFolder, res);
                 return res;
-
             }
             catch (Exception ex)
             {
@@ -66,28 +52,34 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        private void DisplayRecurFolderSibling(Node node, FolderDto folder)
+        public async Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId)
         {
-            // Right now EF core do not support full nested objects loading. So get next object every time
-            var nextNode = _unitOfWork.NodeRepository.GetNodeByIdAsync(node.Id).Result;
-            if (nextNode.IsDirectory)
+            try
             {
-                if (folder.Files == null && folder.Files == null)
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(userEmail);
+                var node = await _unitOfWork.NodeRepository.GetNodeByIdAsync(folderId);
+
+
+                var parentFolder = await _unitOfWork.NodeRepository.GetNodeByIdAsync(node.FolderId.GetValueOrDefault(node.Id));
+               
+                // TODO: Later make check with permission manager
+                var res = new FolderDto()
                 {
-                    folder.Files = new List<FileDto>();
-                    folder.Folders = new List<FolderDto>();
-                }
-                var siblings = nextNode.Siblings.ToList();
-                foreach (var child in siblings)
-                {
-                    if (!child.IsDirectory)
-                        folder.Files.Add(Mapper.Map<Node, FileDto>(child));
-                    else
-                    {
-                        folder.Folders.Add(Mapper.Map<Node, FolderDto>(child));
-                        DisplayRecurFolderSibling(child, folder.Folders.FirstOrDefault());
-                    }
-                }
+                    OwnerId = owner.Id,
+                    FolderName = node.Name,
+                    UniqueFolderId = node.Id,
+                    ParentFolderId = parentFolder.Id.ToString(),
+                    Created = node.Created,
+                    ParentFolderName = parentFolder.Name
+                };
+                RecursivelyDisplayFolderSibling(node, res);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
             }
         }
         public async Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderDto folder)
@@ -140,6 +132,30 @@ namespace FileStorage.Services.Implementation
             }
         }
 
+        private void RecursivelyDisplayFolderSibling(Node node, FolderDto folder)
+        {
+            // Right now EF core do not support full nested objects loading. So get next object every time
+            var nextNode = _unitOfWork.NodeRepository.GetNodeByIdAsync(node.Id).Result;
+            if (nextNode.IsDirectory)
+            {
+                if (folder.Files == null && folder.Files == null)
+                {
+                    folder.Files = new List<FileDto>();
+                    folder.Folders = new List<FolderDto>();
+                }
+                var siblings = nextNode.Siblings.ToList();
+                foreach (var child in siblings)
+                {
+                    if (!child.IsDirectory)
+                        folder.Files.Add(Mapper.Map<Node, FileDto>(child));
+                    else
+                    {
+                        folder.Folders.Add(Mapper.Map<Node, FolderDto>(child));
+                        RecursivelyDisplayFolderSibling(child, folder.Folders.FirstOrDefault());
+                    }
+                }
+            }
+        }
         private bool ValidateAccessToFolder(ServiceState modelState, Node node, ApplicationUser user)
         {
             if (node == null)

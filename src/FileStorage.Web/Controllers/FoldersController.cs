@@ -34,10 +34,10 @@ namespace FileStorage.Web.Controllers
         /// <response code="200">Return Root user folder with all existed data that user have on his workplace</response>
         /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
         /// <response code="500">Returns if server error has occurred</response>
+        [HttpGet]
         [ProducesResponseType(typeof(FolderDto), 200)]
         [ProducesResponseType(typeof(UnauthorizedResult), 401)]
         [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
-        [HttpGet]
         public async Task<IActionResult> GetFoldersForUser()
         {
             try
@@ -50,6 +50,33 @@ namespace FileStorage.Web.Controllers
                         _folderService.State.ErrorMessage);
 
                 return Ok(folders);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uniqFolderId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{uniqFolderId}", Name = "GetFolder")]
+        public async Task<IActionResult> GetConcreteFolder(Guid uniqFolderId)
+        {
+            try
+            {
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var folder = await _folderService.GetFolderForUserAsync(callerEmail, uniqFolderId);
+         
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
+
+                return Ok(folder);
 
             }
             catch (Exception ex)
@@ -86,7 +113,7 @@ namespace FileStorage.Web.Controllers
         //    return "value";
         //}
 
-        
+
         //// PUT api/values/5
         //[HttpPatch("{id}")]
         //public void Put(int id, [FromBody]string value)

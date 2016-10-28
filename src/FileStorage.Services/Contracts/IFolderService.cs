@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FileStorage.Domain.Entities;
 using FileStorage.Services.DTO;
@@ -10,6 +11,7 @@ namespace FileStorage.Services.Contracts
     {
         Task<FolderDto> GetFoldersForUserAsync(string userEmail);
         Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderDto folder);
+        Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId);
         ServiceState State { get; }
     }
 }
