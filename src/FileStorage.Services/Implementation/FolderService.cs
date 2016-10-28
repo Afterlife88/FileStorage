@@ -156,7 +156,12 @@ namespace FileStorage.Services.Implementation
                     else
                     {
                         folder.Folders.Add(Mapper.Map<Node, FolderDto>(child));
-                        RecursivelyDisplayFolderSibling(child, folder.Folders.FirstOrDefault());
+                        var siblingsFolders = folder.Folders.ToList();
+                        foreach (var a in siblingsFolders)
+                        {
+                            RecursivelyDisplayFolderSibling(child, a);
+                        }
+                       
                     }
                 }
             }
