@@ -5,7 +5,9 @@
   angular.module('app', [
     'ngRoute',
     'Alertify',
-    'angularSpinner'
+    'angularSpinner',
+    'angularFileUpload',
+    'ui.bootstrap'
   ]);
 
   angular.module('app').run(['Session', '$rootScope',

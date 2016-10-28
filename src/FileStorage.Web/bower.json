@@ -8,6 +8,8 @@
     "bootstrap": "^3.3.7",
     "angular-spinner": "^0.8.1",
     "angular-local-storage": "^0.5.2",
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "angular-file-upload": "^2.3.4",
+    "angular-bootstrap": "^2.2.0"
   }
 }
