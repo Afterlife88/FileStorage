@@ -15,38 +15,14 @@
     vm.workPlaceItems = {
       filesAndFolders: []
     };
-    activate();
-
-
     vm.uploader = new FileUploader({
       headers: { "Authorization": Session.accessToken },
       url: '/api/files/',
       removeAfterUpload: true
     });
-  
-    vm.uploader.onAfterAddingFile = function (item) {
-      item.url = '/api/files/?directoryUniqId=' + vm.workPlaceItems.uniqueFolderId;
-      modal = openProgressModal(item);
-    };
 
-    vm.uploader.onSuccessItem = function () {
-      setTimeout(function () {
-        modal.close();
-        $scope.progress = 0;
-      }, 500);
-      changeFolder(vm.workPlaceItems.uniqueFolderId);
-    };
-
-    vm.uploader.onProgressItem = function (item, progress) {
-      $scope.progress = progress;
-    };
-    vm.uploader.onErrorItem = function (item, response) {
-      setTimeout(function () {
-        modal.close();
-        $scope.progress = 0;
-      }, 500);
-      Alertify.error(response);
-    };
+    setupUploader(vm.uploader);
+    activate();
 
     function activate() {
       return folderService.getAllFolders().then(function (response) {
@@ -56,7 +32,6 @@
         Alertify.error(err.data);
       });
     }
-
     function changeFolder(folderId) {
       return folderService.getFolder(folderId)
         .then(function (response) {
@@ -65,6 +40,32 @@
         }).catch(function (err) {
           Alertify.error(err.data);
         });
+    }
+
+    function setupUploader(uploader) {
+      uploader.onAfterAddingFile = function (item) {
+        item.url = '/api/files/?directoryUniqId=' + vm.workPlaceItems.uniqueFolderId;
+        modal = openProgressModal(item);
+      };
+
+      uploader.onSuccessItem = function () {
+        setTimeout(function () {
+          modal.close();
+          $scope.progress = 0;
+        }, 500);
+        changeFolder(vm.workPlaceItems.uniqueFolderId);
+      };
+
+      uploader.onProgressItem = function (item, progress) {
+        $scope.progress = progress;
+      };
+      uploader.onErrorItem = function (item, response) {
+        setTimeout(function () {
+          modal.close();
+          $scope.progress = 0;
+        }, 500);
+        Alertify.error(response);
+      };
     }
 
     function openProgressModal(item) {
@@ -78,7 +79,6 @@
       modal.opened.then(function () {
         item.upload();
       });
-
       return modal;
     };
   }
