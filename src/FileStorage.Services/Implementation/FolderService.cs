@@ -140,9 +140,14 @@ namespace FileStorage.Services.Implementation
             var nextNode = _unitOfWork.NodeRepository.GetNodeByIdAsync(node.Id).Result;
             if (nextNode.IsDirectory)
             {
-                folder.Files = new List<FileDto>();
-                folder.Folders = new List<FolderDto>();
-
+                if (folder.Folders == null)
+                {
+                    folder.Folders = new List<FolderDto>();
+                }
+                if (folder.Files == null)
+                {
+                    folder.Files = new List<FileDto>();
+                }
                 var siblings = nextNode.Siblings.ToList();
                 foreach (var child in siblings)
                 {
