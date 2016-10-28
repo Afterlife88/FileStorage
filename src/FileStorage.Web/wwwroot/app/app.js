@@ -8,9 +8,9 @@
     'angularSpinner'
   ]);
 
-  angular.module('app').run(['$rootScope',
-    function ($rootScope) {
-      $rootScope.somevalue = 'adasda';
+  angular.module('app').run(['Session',
+    function (Session) {
+      Session.fillAuthData();
     }
   ]);
 })(angular);

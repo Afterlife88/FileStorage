@@ -5,9 +5,9 @@
       .module('app')
       .controller('loginController', loginController);
 
-  loginController.$inject = ['$location', 'userService', 'Session'];
+  loginController.$inject = ['$location', 'userService', 'Session', '$rootScope'];
 
-  function loginController($location, userService, Session) {
+  function loginController($location, userService, Session, $rootScope) {
     var vm = this;
     vm.loginData = {};
     vm.login = login;
@@ -18,7 +18,9 @@
         console.log(result);
         var token = 'Bearer ' + result.access_token;
         Session.create(token, data.username);
-        $location.path('/home');
+        $rootScope.isAuth = true;
+        
+        $location.path('/');
        
       }).catch(function (err) {
         vm.created = false;

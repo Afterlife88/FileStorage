@@ -16,7 +16,7 @@
 
 <body ng-cloak>
   <span spinner-on="spinnerShown" us-spinner="{radius:30, width:8, length: 16}"></span>
-  <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="indexController">
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="indexController as vm">
     <div class="container">
 
       <div class="collapse navbar-collapse">
@@ -24,10 +24,10 @@
           <li><a href="/swagger">API Documentation</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#/">Welcome {{authentication.userName}}</a></li>
-          <li><a href="" data-ng-click="logOut()">Logout</a></li>
-          <li> <a href="#/login">Login</a></li>
-          <li> <a href="#/signup">Sign Up</a></li>
+          <li ng-if="isAuth"><a href="#/">Welcome {{vm.userName}}</a></li>
+          <li ng-if="isAuth"><a href="" data-ng-click="vm.logout()">Logout</a></li>
+          <li ng-if="!isAuth"> <a href="#/login">Login</a></li>
+          <li ng-if="!isAuth"> <a href="#/signup">Sign Up</a></li>
         </ul>
       </div>
     </div>
