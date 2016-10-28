@@ -20,7 +20,7 @@
     };
     this.fillAuthData = function () {
       var userName = localStorage.getItem("userName");
-
+      console.log(userName);
       if (userName != null) {
         this.isAuth = true;
         this.userName = userName;

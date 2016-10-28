@@ -7,7 +7,7 @@ namespace FileStorage.Services.DTO
     {
         public Guid UniqueFolderId { get; set; }
         public DateTime Created { get; set; }
-        public string FolderName { get; set; }
+        public string Name { get; set; }
         public string ParentFolderName { get; set; }
         public string ParentFolderId { get; set; }
         public string OwnerId { get; set; }

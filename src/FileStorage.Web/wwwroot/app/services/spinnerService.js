@@ -1,10 +1,19 @@
-﻿angular.module('app').service('spinnerService', ['$rootScope', function ($rootScope) {
-  this.showSpinner = function () {
+﻿(function () {
+  'use strict';
 
-    $rootScope.spinnerShown = true;
-  }
-  this.hideSpinner = function () {
+  angular.module('app')
+    .service('spinnerService', spinnerService);
 
-    $rootScope.spinnerShown = false;
+  spinnerService.$inject = ['$rootScope'];
+
+  function spinnerService($rootScope) {
+    this.showSpinner = function () {
+
+      $rootScope.spinnerShown = true;
+    }
+    this.hideSpinner = function () {
+
+      $rootScope.spinnerShown = false;
+    }
   }
-}]);
+})();

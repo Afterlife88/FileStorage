@@ -36,7 +36,7 @@ namespace FileStorage.Services.Implementation
                 var res = new FolderDto()
                 {
                     OwnerId = owner.Id,
-                    FolderName = rootFolder.Name,
+                    Name = rootFolder.Name,
                     UniqueFolderId = rootFolder.Id,
                     ParentFolderId = rootFolder.Id.ToString(),
                     Created = rootFolder.Created,
@@ -67,7 +67,7 @@ namespace FileStorage.Services.Implementation
                 var res = new FolderDto()
                 {
                     OwnerId = owner.Id,
-                    FolderName = node.Name,
+                    Name = node.Name,
                     UniqueFolderId = node.Id,
                     ParentFolderId = parentFolder.Id.ToString(),
                     Created = node.Created,

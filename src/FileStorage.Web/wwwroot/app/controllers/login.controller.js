@@ -19,9 +19,9 @@
         var token = 'Bearer ' + result.access_token;
         Session.create(token, data.username);
         $rootScope.isAuth = true;
-        
+        $rootScope.userName = data.username;
         $location.path('/');
-       
+
       }).catch(function (err) {
         vm.created = false;
         vm.message = err.data;

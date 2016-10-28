@@ -8,9 +8,10 @@
     'angularSpinner'
   ]);
 
-  angular.module('app').run(['Session',
-    function (Session) {
+  angular.module('app').run(['Session', '$rootScope',
+    function (Session, $rootScope) {
       Session.fillAuthData();
+      $rootScope.isAuth = Session.isAuth;
     }
   ]);
 })(angular);

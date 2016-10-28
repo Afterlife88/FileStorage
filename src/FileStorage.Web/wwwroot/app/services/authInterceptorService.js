@@ -11,7 +11,6 @@
         if (!request.headers['Authorization'] && Session.accessToken) {
           request.headers['Authorization'] = Session.accessToken;
         }
-        console.log(request);
         return request;
       },
       response: function (response) {

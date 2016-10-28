@@ -9,12 +9,11 @@
 
   function indexController($location, userService, Session, $rootScope) {
     var vm = this;
-    vm.userName = Session.userName;
+    $rootScope.userName = Session.userName;
     $rootScope.isAuth = Session.isAuth;
     vm.logout = logout;
-    console.log(vm.userName);
-
-    if (!vm.isAuth) {
+   
+    if (!$rootScope.isAuth) {
       Session.isAuth = false;
       $rootScope.isAuth = false;
       $location.path('/login');

@@ -1,1 +1,33 @@
-﻿adasdasd
+﻿<span class="btn btn-success btn-file">
+  <i class="glyphicon glyphicon-plus"></i>
+  <span>Add file...</span>
+  <input type="file" nv-file-select uploader="uploader">
+</span>
+<span class="btn btn-success" ng-click="addFolder()">
+  <i class="glyphicon glyphicon-plus"></i>
+  <span>Add folder...</span>
+</span>
+
+<br />
+<div clas="table-responsive" style="margin-top: 1em">
+  <table class="table table-responsive table-condensed table-hover table-striped">
+    <thead>
+      <tr>
+        <td></td>
+        <td>Name</td>
+        <td>Type</td>
+        <td>Creation date</td>
+      </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="node in vm.initData.filesAndFolders">
+      
+      <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
+      <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
+      <td>{{node.name}}</td>
+      <td>{{node.contentType}}</td>
+      <td>{{node.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
