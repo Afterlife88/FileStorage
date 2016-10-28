@@ -1,19 +1,32 @@
-﻿(function () {
+﻿(function (angular) {
   'use strict';
 
   angular
       .module('app')
       .factory('userService', userService);
 
-  userService.$inject = ['spinnerService'];
+  userService.$inject = ['$http', '$q', 'spinnerService'];
 
-  function userService(spinnerService) {
+  function userService($http, $q, spinnerService) {
 
     var service = {
       signUp: signUp,
       login: login
     };
     return service;
+
+
+    function signUp(credentials) {
+      spinnerService.showSpinner();
+      return $http.post('/api/users', credentials).then(function (response) {
+        spinnerService.hideSpinner();
+        console.log(response);
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
+    }
 
     function login(credentials) {
       spinnerService.showSpinner();
@@ -34,4 +47,4 @@
       return 'login=' + credentials.login + '&password=' + credentials.password;
     }
   }
-})();
+})(angular);

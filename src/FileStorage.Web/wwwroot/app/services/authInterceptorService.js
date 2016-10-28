@@ -18,10 +18,11 @@
         return response;
       },
       responseError: function (rejection) {
+        console.log(rejection);
         if (rejection.status === 401) {
           $location.path('/login');
         }
-        $q.reject(rejection);
+        return $q.reject(rejection);
       }
     };
   }
