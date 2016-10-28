@@ -244,3 +244,5 @@ _Pvt_Extensions
 TestResults/
 
 PublishProfiles/
+
+app/lib/

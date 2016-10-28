@@ -3,7 +3,8 @@
 
   // Angular module for the application
   angular.module('app', [
-    'ngRoute'
+    'ngRoute',
+    'Alertify'
   ]);
 
   angular.module('app').run(['$rootScope',
