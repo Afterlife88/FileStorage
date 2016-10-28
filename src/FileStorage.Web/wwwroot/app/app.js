@@ -4,7 +4,8 @@
   // Angular module for the application
   angular.module('app', [
     'ngRoute',
-    'Alertify'
+    'Alertify',
+    'angularSpinner'
   ]);
 
   angular.module('app').run(['$rootScope',
