@@ -85,7 +85,7 @@ namespace FileStorage.Web
         public void Configure(IApplicationBuilder app, IDatabaseInitializer databaseInitializer, IServiceProvider services)
         {
             ConfigureAuth(app, services);
-
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors(builder =>
                     // This will allow any request from any server. 
@@ -97,7 +97,6 @@ namespace FileStorage.Web
 
             AutomapperConfiguration.Load();
 
-            // Add MVC to the request pipeline.
             app.UseDeveloperExceptionPage();
             app.UseMvc();
 
@@ -107,6 +106,9 @@ namespace FileStorage.Web
             });
 
             app.UseSwaggerUi(baseRoute: "swagger", swaggerUrl: "/swagger/v1/swagger.json");
+            app.UseMvcWithDefaultRoute();
+
+          
 
 
 

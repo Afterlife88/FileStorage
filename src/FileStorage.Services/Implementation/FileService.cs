@@ -401,6 +401,7 @@ namespace FileStorage.Services.Implementation
 
         private string GenerateNameForTheAzureBlob(string md5Hash, string fileName, string userEmail)
         {
+            
             return $"{userEmail}_{md5Hash}_{fileName}";
         }
         private string GetMD5HashFromFile(IFormFile file)
