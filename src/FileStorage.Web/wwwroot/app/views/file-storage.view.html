@@ -8,8 +8,13 @@
   <span>Add folder...</span>
 </span>
 
+<span class="btn btn-success" ng-click="vm.changeFolder(vm.workPlaceItems.parentFolderId)" ng-disabled="!vm.workPlaceItems.parentFolderId">
+  <i class="glyphicon glyphicon-arrow-left"></i>
+  <span>Back</span>
+</span>
+
 <br />
-<div clas="table-responsive" style="margin-top: 1em">
+<div clas="table-responsive" style="margin-top: 2em">
   <table class="table table-responsive table-condensed table-hover table-striped">
     <thead>
       <tr>
@@ -20,14 +25,14 @@
       </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="node in vm.initData.filesAndFolders">
-      
-      <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
-      <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
-      <td>{{node.name}}</td>
-      <td>{{node.contentType}}</td>
-      <td>{{node.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
-    </tr>
+      <tr ng-repeat="node in vm.workPlaceItems.filesAndFolders">
+        <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
+        <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
+        <td ng-if="!node.contentType"><a href="javascript:void(0);" ng-click="vm.changeFolder(node.uniqueFolderId)">{{node.name}}</a></td>
+        <td ng-if="node.contentType"><a href="javascript:void(0);">{{node.name}}</a></td>
+        <td>{{node.contentType}}</td>
+        <td>{{node.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
+      </tr>
     </tbody>
   </table>
 </div>

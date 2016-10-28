@@ -10,23 +10,35 @@
   function folderService($http, $q, spinnerService) {
 
     var service = {
-      getAllFolders: getAllFolders
+      getAllFolders: getAllFolders,
+      getFolder: getFolder
     };
     return service;
 
     function getAllFolders() {
       spinnerService.showSpinner();
-
       return $http.get('/api/folders')
-        .then(function(response) {
+        .then(function (response) {
           spinnerService.hideSpinner();
 
           return response.data;
-        }).catch(function(data) {
+        }).catch(function (data) {
           spinnerService.hideSpinner();
           return $q.reject(data);
         });
     }
-    
+
+    function getFolder(id) {
+      spinnerService.showSpinner();
+      return $http.get('/api/folders/' + id)
+        .then(function (respinse) {
+          spinnerService.hideSpinner();
+          return respinse.data;
+        })
+        .catch(function (data) {
+          spinnerService.hideSpinner();
+          return $q.reject(data);
+        });
+    }
   }
 })(angular);
