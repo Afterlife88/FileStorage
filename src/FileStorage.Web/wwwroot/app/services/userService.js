@@ -44,7 +44,7 @@
     }
 
     function getPostTokenBodyForUser(credentials) {
-      return 'login=' + credentials.login + '&password=' + credentials.password;
+      return 'username=' + credentials.username + '&password=' + credentials.password;
     }
   }
 })(angular);

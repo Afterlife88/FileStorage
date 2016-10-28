@@ -5,15 +5,25 @@
       .module('app')
       .controller('loginController', loginController);
 
-  loginController.$inject = ['$location', 'userService'];
+  loginController.$inject = ['$location', 'userService', 'Session'];
 
-  function loginController($location, userService) {
-    /* jshint validthis:true */
+  function loginController($location, userService, Session) {
     var vm = this;
-    vm.title = 'index';
+    vm.loginData = {};
+    vm.login = login;
+    vm.message = "";
 
-    activate();
-
-    function activate() { }
+    function login(data) {
+      return userService.login(data).then(function (result) {
+        console.log(result);
+        var token = 'Bearer ' + result.access_token;
+        Session.create(token, data.username);
+        $location.path('/home');
+       
+      }).catch(function (err) {
+        vm.created = false;
+        vm.message = err.data;
+      });
+    }
   }
 })();

@@ -3,9 +3,8 @@
     this.accessToken = localStorage.getItem('accessToken');
     this.userName = localStorage.getItem('userName');
     
-    this.create = function (accessToken, tokenType, userName, roles) {
+    this.create = function (accessToken, userName) {
       this.accessToken = accessToken;
-      this.tokenType = tokenType;
       this.userName = userName;
 
       localStorage.setItem('accessToken', accessToken);
@@ -18,4 +17,6 @@
       localStorage.removeItem('accessToken');
       localStorage.removeItem('userName');
     };
+
+
   });
