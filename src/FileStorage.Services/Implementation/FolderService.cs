@@ -155,20 +155,12 @@ namespace FileStorage.Services.Implementation
                     State.ErrorMessage = "Destination folder not found!";
                     return null;
                 }
-                //if (currentFolder.Siblings.Count != 0)
-                //{
-                //    foreach (var child in currentFolder.Siblings)
-                //    {
-                //        child.Folder = destFolder;
-                //    }
-                //}
                 currentFolder.Folder = destFolder;
                 await _unitOfWork.CommitAsync();
                 return Mapper.Map<Node, FolderDto>(currentFolder);
             }
             catch (Exception ex)
             {
-
                 State.ErrorMessage = ex.Message;
                 State.TypeOfError = TypeOfServiceError.ServiceError;
                 return null;

@@ -3,7 +3,7 @@
   <span>Add file...</span>
   <input type="file" nv-file-select uploader="vm.uploader">
 </span>
-<span class="btn btn-success" ng-click="addFolder()">
+<span class="btn btn-success" ng-click="vm.addFolder(vm.workPlaceItems.uniqueFolderId)">
   <i class="glyphicon glyphicon-plus"></i>
   <span>Add folder...</span>
 </span>
@@ -34,7 +34,7 @@
           <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
             <li role="menuitem"><a href="javascript:void(0);">Download latest version</a></li>
             <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.getFileVersions(node)">Display all versions</a></li>
-            <li role="menuitem"><a href="javascript:void(0);">Rename</a></li>
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.renameFile(node)">Rename</a></li>
             <li role="menuitem"><a href="javascript:void(0);">Replace</a></li>
             <li class="divider"></li>
             <li role="menuitem"><a href="javascript:void(0);">Remove</a></li>

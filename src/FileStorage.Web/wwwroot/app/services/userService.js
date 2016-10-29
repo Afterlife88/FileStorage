@@ -33,10 +33,8 @@
       return $http.post('/api/token', getPostTokenBodyForUser(credentials), {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
       }).then(function (response) {
-        console.log(response);
-        var data = response.data;
         spinnerService.hideSpinner();
-        return data;
+        return response.data;
       }).catch(function (data) {
         spinnerService.hideSpinner();
         return $q.reject(data);

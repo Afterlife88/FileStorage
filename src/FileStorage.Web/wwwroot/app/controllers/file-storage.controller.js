@@ -12,10 +12,13 @@
     var modal = null;
     vm.changeFolder = changeFolder;
     vm.getFileVersions = getFileVersions;
+    vm.addFolder = addFolder;
 
     vm.workPlaceItems = {
       filesAndFolders: []
     };
+
+
 
     vm.uploader = new FileUploader({
       headers: { "Authorization": Session.accessToken },
@@ -44,10 +47,20 @@
         });
     }
 
+    function addFolder(folderId) {
+      console.log(folderId);
+      openAddFolderModal(folderId);
+    }
+
     function getFileVersions(node) {
       //console.log(node);
       openFileVesrionsModal(node);
     }
+
+    $scope.$on('folder-added', function (event, data) {
+      changeFolder(data);
+    });
+
     function setupUploader(uploader) {
       uploader.onAfterAddingFile = function (item) {
         item.url = '/api/files/?directoryUniqId=' + vm.workPlaceItems.uniqueFolderId;
@@ -87,6 +100,23 @@
       });
       return modal;
     };
+
+
+    function openAddFolderModal(folderId) {
+      var addFolderModal = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/views/addFolder.html',
+        backdrop: 'static',
+        controller: 'addFolderController as vm',
+        scope: $scope,
+        resolve: {
+          data: function () {
+            return folderId;
+          }
+        }
+      });
+      return addFolderModal;
+    }
 
     function openFileVesrionsModal(item) {
       var fileVersionsModal = $uibModal.open({

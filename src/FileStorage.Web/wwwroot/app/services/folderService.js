@@ -11,7 +11,8 @@
 
     var service = {
       getAllFolders: getAllFolders,
-      getFolder: getFolder
+      getFolder: getFolder,
+      addfolder: addfolder
     };
     return service;
 
@@ -31,14 +32,24 @@
     function getFolder(id) {
       spinnerService.showSpinner();
       return $http.get('/api/folders/' + id)
-        .then(function (respinse) {
+        .then(function (response) {
           spinnerService.hideSpinner();
-          return respinse.data;
+          return response.data;
         })
         .catch(function (data) {
           spinnerService.hideSpinner();
           return $q.reject(data);
         });
+    }
+    function addfolder(data) {
+      spinnerService.showSpinner();
+      return $http.post('/api/folders/', data).then(function (response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (err) {
+        spinnerService.hideSpinner();
+        return $q.reject(err);
+      });
     }
   }
 })(angular);

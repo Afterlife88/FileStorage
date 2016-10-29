@@ -13,7 +13,7 @@
     this.downloadConcreteVersion = downloadConcreteVersion;
 
     function downloadConcreteVersion(fileName, item) {
-      
+
       return fileService.getConcreteVersion(item.fileId, item.versionOfFile).then(function (response) {
         var url = URL.createObjectURL(new Blob([response]));
         var a = document.createElement('a');
@@ -26,9 +26,6 @@
       });
     }
 
-    //function getDowloandLink(parameters) {
-    //  return pathToFiles + parameters.fileId + '?versionOfFile=' + parameters.versionOfFile;
-    //}
     function cancel() {
       $uibModalInstance.close();
     }

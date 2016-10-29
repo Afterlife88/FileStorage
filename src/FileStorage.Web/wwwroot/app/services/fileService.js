@@ -10,7 +10,8 @@
   function fileService($http, $q, spinnerService) {
 
     var service = {
-      getConcreteVersion: getConcreteVersion
+      getConcreteVersion: getConcreteVersion,
+      renameFile: renameFile
     };
     return service;
 
@@ -20,12 +21,21 @@
         { responseType: 'arraybuffer' })
         .then(function (response) {
           spinnerService.hideSpinner();
-
           return response.data;
         }).catch(function (data) {
           spinnerService.hideSpinner();
           return $q.reject(data);
         });
+    }
+    function renameFile(fileId, renameBody) {
+      spinnerService.showSpinner();
+      return $http.post('/api/files/rename/' + fileId, renameBody).then(function (response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
     }
   }
 })(angular);
