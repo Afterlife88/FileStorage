@@ -13,7 +13,8 @@
       getAllFolders: getAllFolders,
       getFolder: getFolder,
       addfolder: addfolder,
-      getListOfFolders: getListOfFolders
+      getListOfFolders: getListOfFolders,
+      replaceFolder: replaceFolder
     };
     return service;
 
@@ -55,6 +56,19 @@
           return $q.reject(data);
         });
     }
+
+    function replaceFolder(folderId, destBody) {
+      spinnerService.showSpinner();
+      return $http.patch('/api/folders/replace/' + folderId, destBody)
+      .then(function (response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
+    }
+
     function addfolder(data) {
       spinnerService.showSpinner();
       return $http.post('/api/folders/', data).then(function (response) {
