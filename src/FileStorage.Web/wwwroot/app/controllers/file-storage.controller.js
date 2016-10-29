@@ -75,7 +75,6 @@
       changeFolder(data);
     });
     $scope.$on('file-renamed', function (event, data) {
-      console.log(data);
       changeFolder(data);
     });
 
