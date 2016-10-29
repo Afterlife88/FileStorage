@@ -27,6 +27,7 @@
         <ul class="nav navbar-nav navbar-right">
           <li ng-if="isAuth"><a href="#/">Welcome {{userName}}</a></li>
           <li ng-if="isAuth"><a href="#/files">Files</a></li>
+          <li ng-if="isAuth"><a href="#/search">Search</a></li>
           <li><a href="/swagger" target="_blank">API Documentation</a></li>
           <li ng-if="isAuth"><a href="" data-ng-click="vm.logout()">Logout</a></li>
           <li ng-if="!isAuth"> <a href="#/login">Login</a></li>
@@ -69,6 +70,7 @@
   <script src="app/controllers/modals-controllers/file-versions.controller.js"></script>
   <script src="app/controllers/modals-controllers/rename-folder.controller.js"></script>
   <script src="app/controllers/recycle-bin.controller.js"></script>
+  <script src="app/controllers/search.controller.js"></script>
 
   <!-- services, filters, factories -->
   <script src="app/services/authInterceptorService.js"></script>

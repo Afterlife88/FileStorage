@@ -22,6 +22,12 @@
         controller: 'recycleBinController',
         controllerAs: 'vm'
       })
+      .when('/search',
+      {
+        templateUrl: './app/views/search.view.html',
+        controller: 'searchController',
+        controllerAs: 'vm'
+      })
       .otherwise({
         redirectTo: "/files"
       });

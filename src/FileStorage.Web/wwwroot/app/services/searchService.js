@@ -15,9 +15,10 @@
     return service;
 
     function search(query, searchRemoved) {
+      console.log(searchRemoved);
       var request = getRequest(query, searchRemoved);
-   
-      return $http.get('/api/search?query' + request.query + '&includeRemoved=' + request.search).then(function (response) {
+
+      return $http.get('/api/search?query=' + request.query + '&includeRemoved=' + request.search).then(function (response) {
         spinnerService.hideSpinner();
         return response.data;
       }).catch(function (data) {
@@ -41,11 +42,7 @@
         request.query = query;
       }
 
-      if (isEmpty(searchRemoved)) {
-        request.search = false;
-      } else {
-        request.search = true;
-      }
+      request.search = searchRemoved;
       return request;
     }
   }
