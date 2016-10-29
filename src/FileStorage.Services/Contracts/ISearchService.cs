@@ -6,6 +6,6 @@ namespace FileStorage.Services.Contracts
 {
     public interface ISearchService
     {
-        Task<IEnumerable<SearchResultDto>> SearchFiles(string user, string query, bool isRemoved = false);
+        Task<IEnumerable<SearchResultDto>> SearchFilesAsync(string user, string query, bool isRemoved = false);
     }
 }

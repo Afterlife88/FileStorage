@@ -10,20 +10,30 @@ namespace FileStorage.Services.Implementation
 {
     public class SearchService : ISearchService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         public SearchService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<SearchResultDto>> SearchFiles(string user, string query, bool isRemoved = false)
+        public async Task<IEnumerable<SearchResultDto>> SearchFilesAsync(string user, string query, bool isRemoved = false)
         {
             var caller = await _unitOfWork.UserRepository.GetUserByNameAsync(user);
-            var res = await _unitOfWork.NodeRepository.GetAllFolUserWithQuery(query, caller.Id, isRemoved);
+            IEnumerable<Node> res;
+
+            if (string.IsNullOrEmpty(query))
+            {
+                res = await _unitOfWork.NodeRepository.GetAllNodesForUserWithPredicate(caller.Id, isRemoved);
+            }
+            else
+            {
+                res = await _unitOfWork.NodeRepository.GetAllFolUserWithQuery(query, caller.Id, isRemoved);
+            }
+           
 
             var dtoList = new List<SearchResultDto>();
 
             var searchFiles = res as Node[] ?? res.ToArray();
-            foreach (var item in searchFiles.ToArray())
+            foreach (var item in searchFiles)
             {
                 if (isRemoved)
                 {
@@ -51,10 +61,7 @@ namespace FileStorage.Services.Implementation
                         IsDeleted = item.IsDeleted
                     });
                 }
-               
             }
-
-
             return dtoList;
 
 

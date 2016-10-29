@@ -61,6 +61,11 @@ namespace FileStorage.DAL.Repositories
             return nodes;
         }
 
+        public async Task<IEnumerable<Node>> GetAllNodesForUserWithPredicate(string userId, bool takeDeleted)
+        {
+            return await _dataDbContext.Nodes
+              .Where(m => m.IsDeleted == takeDeleted && m.OwnerId == userId).ToArrayAsync();
+        }
         public Node RenameNode(Node node, string newName)
         {
             node.Name = newName;

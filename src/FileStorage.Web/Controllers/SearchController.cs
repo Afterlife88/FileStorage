@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Http;
 using FileStorage.Services.Contracts;
+using FileStorage.Services.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,30 +18,44 @@ namespace FileStorage.Web.Controllers
     [Authorize]
     public class SearchController : Controller
     {
-        private ISearchService _searchService;
+        private readonly ISearchService _searchService;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchService"></param>
         public SearchController(ISearchService searchService)
         {
             _searchService = searchService;
         }
+
         /// <summary>
-        /// Searching files and folders
-        /// If query parameters do not passed, returns all not removed 
-        /// files and folders that user have
+        /// Searching files and folders  
         /// </summary>
         /// <remarks>
         /// # Description 
         ///  If query parameters do not passed, returns all not removed files and folders that user have
         /// </remarks>
-        /// <param name="name"></param>
+        /// <param name="query"></param>
         /// <param name="includeRemoved"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]string name = null, [FromQuery]bool includeRemoved = false)
+        [ProducesResponseType(typeof(IEnumerable<SearchResultDto>), 200)]
+        [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+        [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
+        public async Task<IActionResult> Get([FromQuery] string query = null, [FromQuery] bool includeRemoved = false)
         {
-            var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var response = await _searchService.SearchFiles(callerEmail, name, includeRemoved);
-            return Ok(response);
+                var response = await _searchService.SearchFilesAsync(callerEmail, query, includeRemoved);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
