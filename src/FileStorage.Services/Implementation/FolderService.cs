@@ -164,6 +164,7 @@ namespace FileStorage.Services.Implementation
 
                 var destFolder = await _unitOfWork.NodeRepository.GetNodeByIdAsync(model.DestanationFolderId);
 
+               
                 if (currentFolder == null || !currentFolder.IsDirectory)
                 {
                     State.TypeOfError = TypeOfServiceError.BadRequest;
@@ -174,6 +175,13 @@ namespace FileStorage.Services.Implementation
                 {
                     State.TypeOfError = TypeOfServiceError.NotFound;
                     State.ErrorMessage = "Destination folder not found!";
+                    return null;
+                }
+
+                if (destFolder.Folder == currentFolder)
+                {
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    State.ErrorMessage = "Destination folder cannot be inside requested folder";
                     return null;
                 }
                 currentFolder.Folder = destFolder;
