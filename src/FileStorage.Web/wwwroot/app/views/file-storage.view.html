@@ -22,8 +22,8 @@
 <div clas="table-responsive" style="margin-top: 2em">
   <table class="table table-responsive table-condensed table-hover table-striped">
     <thead>
-      <tr>
-        <td></td>
+      <tr >
+        <td width="4%"></td>
         <td>Name</td>
         <td>Type</td>
         <td>Creation date</td>
@@ -33,15 +33,16 @@
       <tr ng-repeat="node in vm.workPlaceItems.filesAndFolders">
         <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
         <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
+        <!-- Folder actions -->
         <td ng-if="!node.contentType" uib-dropdown>
-            <a href="javascript:void(0);" uib-dropdown-toggle>{{node.name}}</a>
-            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-              <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.changeFolder(node.uniqueFolderId)">Open</a></li>
-              <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.renameFile(node)">Rename</a></li>
-              <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.replaceFile(node)">Replace</a></li>
-              <li class="divider"></li>
-              <li role="menuitem"><a href="javascript:void(0);">Remove</a></li>
-            </ul>
+          <a href="javascript:void(0);" uib-dropdown-toggle>{{node.name}}</a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.changeFolder(node.uniqueFolderId)">Open</a></li>
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.renameFile(node)">Rename</a></li>
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.replaceFile(node)">Replace</a></li>
+            <li class="divider"></li>
+            <li role="menuitem"><a href="javascript:void(0);">Remove</a></li>
+          </ul>
         </td>
 
         <!-- File actions -->

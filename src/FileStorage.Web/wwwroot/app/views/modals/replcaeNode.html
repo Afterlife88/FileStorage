@@ -6,13 +6,16 @@
 
     <div class="form-group" ng-class="{ 'has-error': modalForm.selectRequired.$invalid }">
 
-      <label>Current folder:</label><p>{{vm.data.directoryName}}</p><br />
+      <label>Current folder:</label>
+      <p ng-if="vm.data.directoryName">{{vm.data.directoryName}}</p>
+      <p ng-if="vm.data.parentFolderName">{{vm.data.parentFolderName}}</p>
+      <br />
 
       <label>Destination folder:</label><br />
       <select name="selectRequired" class="form-control" ng-model="vm.directoryToMove" ng-options="o as o.name for o in vm.arrOfFolders" required>
-        <option value="" selected>Select folder...</option> 
+        <option value="" selected>Select folder...</option>
       </select>
-     
+
       <span ng-show="modalForm.selectRequired.$error.required" class="help-block">Folder name is required.</span>
     </div>
   </div>
