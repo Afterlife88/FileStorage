@@ -47,7 +47,8 @@ namespace FileStorage.Services.Implementation
                         Name = item.Name,
                         IsDeleted = item.IsDeleted,
                         WillBeRemovedAt = removedNodeInfo.DateOfRemoval,
-                        RemovedOn = removedNodeInfo.RemovedOn
+                        RemovedOn = removedNodeInfo.RemovedOn,
+                        ParentDirectoryId = item.FolderId
                     });
                 }
                 else
@@ -59,7 +60,8 @@ namespace FileStorage.Services.Implementation
                         ContentType = item.ContentType,
                         Created = item.Created,
                         Name = item.Name,
-                        IsDeleted = item.IsDeleted
+                        IsDeleted = item.IsDeleted,
+                        ParentDirectoryId = item.FolderId
                     });
                 }
             }

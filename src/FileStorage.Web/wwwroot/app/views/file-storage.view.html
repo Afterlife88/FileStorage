@@ -13,16 +13,28 @@
   <span>Back</span>
 </span>
 
-<span class="btn btn-success pull-right" ng-click="vm.recycleBin()" >
+<span class="btn btn-success pull-right" ng-click="vm.recycleBin()">
   <i class="glyphicon glyphicon-trash"></i>
   <span>Recycle Bin (Trash)</span>
 </span>
 
 <br />
+<br />
+<div class="row">
+  <div class="col-md-12">
+    <div class="input-group">
+      <input width="70%" type="text" class="form-control" placeholder="Search for...">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button">Search!</button>
+      </span>
+    </div>
+  </div>
+</div>
+
 <div clas="table-responsive" style="margin-top: 2em">
   <table class="table table-responsive table-condensed table-hover table-striped">
     <thead>
-      <tr >
+      <tr>
         <td width="4%"></td>
         <td>Name</td>
         <td>Type</td>

@@ -9,6 +9,8 @@ namespace FileStorage.Services.DTO
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string ContentType { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Guid? ParentDirectoryId { get; set; }
         public  DateTime Created { get; set; }
         public bool IsDirectory { get; set; }
         public bool IsDeleted { get; set; }
