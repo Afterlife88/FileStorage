@@ -19,6 +19,7 @@
       return $http.get('/api/files/' + fileId + '?versionOfFile=' + vesrionId,
         { responseType: 'arraybuffer' })
         .then(function (response) {
+          //console.log(response)
           spinnerService.hideSpinner();
 
           return response.data;

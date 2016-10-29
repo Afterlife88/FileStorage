@@ -129,7 +129,7 @@ namespace FileStorage.Services.Implementation
                 string contentType;
                 new FileExtensionContentTypeProvider().TryGetContentType(file.FileName, out contentType);
                 if (contentType == null)
-                    contentType = "none";
+                    contentType = "application/octet-stream";
 
                 var allNodesForUser = await _unitOfWork.NodeRepository.GetAllNodesForUserAsync(callerUser.Id);
                 var existedFile = allNodesForUser.FirstOrDefault(r => r.Name == file.FileName && r.IsDirectory == false);

@@ -60,16 +60,16 @@ namespace FileStorage.Web
                 TokenValidationParameters = tokenValidationParameters
             });
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = false,
-                AuthenticationScheme = "Cookie",
-                CookieName = "access_token",
-                TicketDataFormat = new CustomJwtDataFormat(
-                    SecurityAlgorithms.HmacSha256,
-                    tokenValidationParameters)
-            });
+            //app.UseCookieAuthentication(new CookieAuthenticationOptions
+            //{
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = false,
+            //    AuthenticationScheme = "Cookie",
+            //    CookieName = "access_token",
+            //    TicketDataFormat = new CustomJwtDataFormat(
+            //        SecurityAlgorithms.HmacSha256,
+            //        tokenValidationParameters)
+            //});
         }
 
         private async Task<ClaimsIdentity> GetIdentity(string username, string password, IServiceProvider serviceProvider)

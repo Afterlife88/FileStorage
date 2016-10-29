@@ -118,7 +118,7 @@ namespace FileStorage.Web.Controllers
         /// 
         /// </summary>
         /// <param name="file"></param>
-        /// <param name="directoryName">Optional directory name of the where file upload to</param>
+        /// <param name="directoryUniqId">Optional directory id of the where file upload to</param>
         /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file, [FromQuery]Guid? directoryUniqId = null)
