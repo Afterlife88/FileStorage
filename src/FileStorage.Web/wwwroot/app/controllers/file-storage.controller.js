@@ -5,20 +5,19 @@
       .module('app')
       .controller('fileStorageController', fileStorageController);
 
-  fileStorageController.$inject = ['folderService', 'Alertify', 'FileUploader', '$uibModal', '$scope', 'Session'];
+  fileStorageController.$inject = ['folderService', 'Alertify', 'FileUploader', '$uibModal', '$scope', 'Session', 'fileService'];
 
-  function fileStorageController(folderService, Alertify, FileUploader, $uibModal, $scope, Session) {
+  function fileStorageController(folderService, Alertify, FileUploader, $uibModal, $scope, Session, fileService) {
     var vm = this;
     var modal = null;
     vm.changeFolder = changeFolder;
     vm.getFileVersions = getFileVersions;
     vm.addFolder = addFolder;
+    vm.downloadFile = downloadFile;
 
     vm.workPlaceItems = {
       filesAndFolders: []
     };
-
-
 
     vm.uploader = new FileUploader({
       headers: { "Authorization": Session.accessToken },
@@ -46,20 +45,32 @@
           Alertify.error(err.data);
         });
     }
+    function downloadFile(file) {
+      return fileService.downloadLatest(file.uniqueFileId).then(function (response) {
+        var url = URL.createObjectURL(new Blob([response]));
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        a.target = '_blank';
+        a.click();
+      }).catch(function (err) {
+        Alertify.error(err.data);
+      });
+    }
 
     function addFolder(folderId) {
-      console.log(folderId);
       openAddFolderModal(folderId);
     }
 
     function getFileVersions(node) {
-      //console.log(node);
       openFileVesrionsModal(node);
     }
 
     $scope.$on('folder-added', function (event, data) {
       changeFolder(data);
     });
+
+    /// Helpers, modals etc
 
     function setupUploader(uploader) {
       uploader.onAfterAddingFile = function (item) {
@@ -99,8 +110,7 @@
         item.upload();
       });
       return modal;
-    };
-
+    }
 
     function openAddFolderModal(folderId) {
       var addFolderModal = $uibModal.open({
