@@ -16,4 +16,5 @@
       $rootScope.isAuth = Session.isAuth;
     }
   ]);
+  angular.module('app').constant('pathToFiles', "/api/files/");
 })(angular);

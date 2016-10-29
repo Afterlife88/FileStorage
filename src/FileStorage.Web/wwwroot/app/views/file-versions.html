@@ -19,7 +19,7 @@
         <td>{{item.versionOfFile}}</td>
         <td>{{item.size | bytes}}</td>
         <td>{{item.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
-        <td><a href="javascript:void(0);" class="btn btn-xs btn-primary" ng-click="vm.downloadConcreteVersion(item)">Download</a></td>
+        <td><a href="javascript:void(0);" class="btn btn-xs btn-primary" ng-click="vm.downloadConcreteVersion(vm.data.name, item)">Download</a></td>
       </tr>
     </tbody>
   </table>

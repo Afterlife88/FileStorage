@@ -71,7 +71,7 @@ namespace FileStorage.Web.Controllers
         ///    <b>Vendor client documentation (swagger) that you use right now make respond file corrupt and increase size received from server by 2 (you can check it by compare content-length from server and downloaded file from documentation).  
         ///    <br/>This is common bug and it will be solved with next updated I hope
         ///    <br/>
-        ///    So use postman or fiddler if you want to test API with responded file</b>
+        ///    So use postman, fiddler or client application if you want to test API with responded file</b>
         /// 
         /// </remarks>
         /// <param name="fileUniqId">Unique file ID</param>
@@ -174,7 +174,7 @@ namespace FileStorage.Web.Controllers
         /// <summary>
         /// 
         /// </summary>
-      
+
         /// <returns></returns>
         [HttpPatch]
         [Route("replace/{fileUniqId}")]
@@ -199,7 +199,7 @@ namespace FileStorage.Web.Controllers
             }
         }
 
-   
+
         /// <summary>
         /// 
         /// </summary>
@@ -242,7 +242,7 @@ namespace FileStorage.Web.Controllers
 
                 // TODO: Validate if content type is not form-data
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-              
+
                 await _fileService.RemoveFileAsync(fileUniqId, callerEmail);
                 if (!_fileService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
