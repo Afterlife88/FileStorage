@@ -13,6 +13,7 @@ namespace FileStorage.Services.Contracts
         Task<FolderDto> GetFoldersForUserAsync(string userEmail);
         Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderRequest folder);
         Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId);
+        Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceFileRequest model);
         ServiceState State { get; }
     }
 }

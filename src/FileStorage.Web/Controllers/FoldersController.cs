@@ -118,7 +118,34 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uniqFolderId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("replace/{uniqFolderId}")]
+        public async Task<IActionResult> Replace(Guid uniqFolderId, [FromBody] ReplaceFileRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _folderService.ReplaceFolderAsync(callerEmail, uniqFolderId, request);
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
+
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         //// PUT api/values/5
         //[HttpPatch("{id}")]
         //public void Put(int id, [FromBody]string value)

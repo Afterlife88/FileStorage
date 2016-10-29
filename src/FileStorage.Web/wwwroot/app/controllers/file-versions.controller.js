@@ -15,7 +15,6 @@
     function downloadConcreteVersion(fileName, item) {
       
       return fileService.getConcreteVersion(item.fileId, item.versionOfFile).then(function (response) {
-        console.log(response);
         var url = URL.createObjectURL(new Blob([response]));
         var a = document.createElement('a');
         a.href = url;

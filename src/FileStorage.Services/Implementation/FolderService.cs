@@ -17,7 +17,6 @@ namespace FileStorage.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
 
 
-
         public ServiceState State { get; }
 
         public FolderService(IUnitOfWork unitOfWork)
@@ -134,6 +133,48 @@ namespace FileStorage.Services.Implementation
             }
         }
 
+        public async Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceFileRequest model)
+        {
+            try
+            {
+                // Make something with permission manager
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var currentFolder = await _unitOfWork.NodeRepository.GetNodeByIdAsync(folderId);
+
+                var destFolder = await _unitOfWork.NodeRepository.GetNodeByIdAsync(model.DestanationFolderId);
+
+                if (currentFolder == null || !currentFolder.IsDirectory)
+                {
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    State.ErrorMessage = "Source folder not found!";
+                    return null;
+                }
+                if (destFolder == null || !destFolder.IsDirectory)
+                {
+                    State.TypeOfError = TypeOfServiceError.NotFound;
+                    State.ErrorMessage = "Destination folder not found!";
+                    return null;
+                }
+                //if (currentFolder.Siblings.Count != 0)
+                //{
+                //    foreach (var child in currentFolder.Siblings)
+                //    {
+                //        child.Folder = destFolder;
+                //    }
+                //}
+                currentFolder.Folder = destFolder;
+                await _unitOfWork.CommitAsync();
+                return Mapper.Map<Node, FolderDto>(currentFolder);
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
+
         private void RecursivelyDisplayFolderSibling(Node node, FolderDto folder)
         {
             // Right now EF core do not support full nested objects loading. So get next object every time
@@ -161,7 +202,7 @@ namespace FileStorage.Services.Implementation
                         {
                             RecursivelyDisplayFolderSibling(child, a);
                         }
-                       
+
                     }
                 }
             }
