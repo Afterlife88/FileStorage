@@ -20,7 +20,7 @@
         newName: name
       };
       return folderService.renameFolder(vm.data.uniqueFolderId, request).then(function () {
-        Alertify.success('File renamed successfully!');
+        Alertify.success('Folder renamed successfully!');
         $uibModalInstance.close();
         $scope.$emit('updateFolder', vm.data.parentFolderId);
       }).catch(function (err) {

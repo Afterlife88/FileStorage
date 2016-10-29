@@ -13,7 +13,8 @@
       getConcreteVersion: getConcreteVersion,
       renameFile: renameFile,
       downloadLatest: downloadLatest,
-      replaceFile: replaceFile
+      replaceFile: replaceFile,
+      deleteFile: deleteFile
     };
     return service;
 
@@ -41,7 +42,7 @@
     }
     function replaceFile(fileId, destBody) {
       spinnerService.showSpinner();
-      return $http.patch('/api/files/replace/' + fileId, destBody).then(function(response) {
+      return $http.patch('/api/files/replace/' + fileId, destBody).then(function (response) {
         spinnerService.hideSpinner();
         return response.data;
       }).catch(function (data) {
@@ -53,6 +54,17 @@
     function downloadLatest(fileId) {
       spinnerService.showSpinner();
       return $http.get('/api/files/' + fileId, { responseType: 'arraybuffer' }).then(function (response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
+    }
+
+    function deleteFile(fileId) {
+      spinnerService.showSpinner();
+      return $http.delete('/api/files/' + fileId).then(function (response) {
         spinnerService.hideSpinner();
         return response.data;
       }).catch(function (data) {

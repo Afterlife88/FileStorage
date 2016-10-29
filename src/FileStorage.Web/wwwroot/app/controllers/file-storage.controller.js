@@ -5,9 +5,10 @@
       .module('app')
       .controller('fileStorageController', fileStorageController);
 
-  fileStorageController.$inject = ['folderService', 'Alertify', 'FileUploader', '$uibModal', '$scope', 'Session', 'fileService'];
+  fileStorageController.$inject = ['folderService', 'Alertify', 'FileUploader', '$uibModal', '$scope', 'Session', 'fileService',
+  'confirmModalFactory'];
 
-  function fileStorageController(folderService, Alertify, FileUploader, $uibModal, $scope, Session, fileService) {
+  function fileStorageController(folderService, Alertify, FileUploader, $uibModal, $scope, Session, fileService, confirmModalFactory) {
     var vm = this;
     var modal = null;
     vm.changeFolder = changeFolder;
@@ -17,6 +18,7 @@
     vm.renameFile = renameFile;
     vm.replaceFile = replaceFile;
     vm.renameFolder = renameFolder;
+    vm.removeNode = removeNode;
 
     vm.workPlaceItems = {
       filesAndFolders: []
@@ -61,6 +63,18 @@
       });
     }
 
+    function removeNode(file) {
+      deleteModal(function (result) {
+        if (result) {
+          return fileService.deleteFile(file.uniqueFileId).then(function () {
+            Alertify.success('File deleted successfully!');
+            changeFolder(file.directoryId);
+          }).catch(function (err) {
+            Alertify.error(err.data);
+          });
+        }
+      });
+    }
     function addFolder(folderId) {
       openAddFolderModal(folderId);
     }
@@ -82,7 +96,6 @@
     $scope.$on('updateFolder', function (event, data) {
       changeFolder(data);
     });
-
 
     /// Helpers, modals etc
 
@@ -204,5 +217,18 @@
       });
       return renameFolderModal;
     }
+
+    function deleteModal(callback) {
+      var modal = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/views/modals/confirmModal.html',
+        controller: confirmModalFactory.createModalController("Are you sure?", "The file will be deleted"),
+        size: 'sm'
+      });
+
+      modal.result.then(callback);
+
+      return modal;
+    };
   }
 })();

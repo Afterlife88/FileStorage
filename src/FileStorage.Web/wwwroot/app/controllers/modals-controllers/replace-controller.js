@@ -51,7 +51,7 @@
           destanationFolderId: directoryToMove.uniqueFolderId
         };
         return folderService.replaceFolder(nodeData.uniqueFolderId, folderChangeRequest).then(function (response) {
-          Alertify.success('File moved successfully!');
+          Alertify.success('Folder moved successfully!');
           $uibModalInstance.close();
           $scope.$emit('updateFolder', data.parentFolderId);
         }).catch(function (err) {

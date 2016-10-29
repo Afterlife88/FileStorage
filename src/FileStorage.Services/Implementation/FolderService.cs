@@ -233,17 +233,19 @@ namespace FileStorage.Services.Implementation
                 var siblings = nextNode.Siblings.ToList();
                 foreach (var child in siblings)
                 {
-                    if (!child.IsDirectory)
-                        folder.Files.Add(Mapper.Map<Node, FileDto>(child));
-                    else
+                    if (!child.IsDeleted)
                     {
-                        folder.Folders.Add(Mapper.Map<Node, FolderDto>(child));
-                        var siblingsFolders = folder.Folders.ToList();
-                        foreach (var a in siblingsFolders)
+                        if (!child.IsDirectory)
+                            folder.Files.Add(Mapper.Map<Node, FileDto>(child));
+                        else
                         {
-                            RecursivelyDisplayFolderSibling(child, a);
+                            folder.Folders.Add(Mapper.Map<Node, FolderDto>(child));
+                            var siblingsFolders = folder.Folders.ToList();
+                            foreach (var a in siblingsFolders)
+                            {
+                                RecursivelyDisplayFolderSibling(child, a);
+                            }
                         }
-
                     }
                 }
             }
