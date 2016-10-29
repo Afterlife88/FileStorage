@@ -20,7 +20,6 @@
       spinnerService.showSpinner();
       return $http.post('/api/users', credentials).then(function (response) {
         spinnerService.hideSpinner();
-        console.log(response);
         return response.data;
       }).catch(function (data) {
         spinnerService.hideSpinner();

@@ -33,7 +33,6 @@
           destanationFolderId: directoryToMove.uniqueFolderId
         }
         return fileService.replaceFile(nodeData.uniqueFileId, request).then(function (response) {
-          console.log(response);
           Alertify.success('File moved successfully!');
           $uibModalInstance.close();
           $scope.$emit('node-replaced', data.directoryId);
