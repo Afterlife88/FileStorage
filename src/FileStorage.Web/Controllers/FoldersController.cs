@@ -76,6 +76,9 @@ namespace FileStorage.Web.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 var folder = await _folderService.GetFolderForUserAsync(callerEmail, uniqFolderId);

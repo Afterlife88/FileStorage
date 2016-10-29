@@ -8,9 +8,14 @@
   <span>Add folder</span>
 </span>
 
-<span class="btn btn-success" ng-click="vm.changeFolder(vm.workPlaceItems.parentFolderId)" ng-disabled="!vm.workPlaceItems.parentFolderId">
+<span class="btn btn-success" ng-click="vm.changeFolder(vm.workPlaceItems.parentFolderId)">
   <i class="glyphicon glyphicon-arrow-left"></i>
   <span>Back</span>
+</span>
+
+<span class="btn btn-success pull-right">
+  <i class="glyphicon glyphicon-trash"></i>
+  <span> Deleted files</span>
 </span>
 
 <br />
@@ -29,7 +34,7 @@
         <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
         <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
         <td ng-if="!node.contentType"><a href="javascript:void(0);" ng-click="vm.changeFolder(node.uniqueFolderId)">{{node.name}}</a></td>
-       
+
         <!-- File actions -->
         <td ng-if="node.contentType" uib-dropdown>
           <a href="javascript:void(0);" uib-dropdown-toggle>{{node.name}}</a>
@@ -37,7 +42,7 @@
             <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.downloadFile(node)">Download latest version</a></li>
             <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.getFileVersions(node)">Display all versions</a></li>
             <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.renameFile(node)">Rename</a></li>
-            <li role="menuitem"><a href="javascript:void(0);">Replace</a></li>
+            <li role="menuitem"><a href="javascript:void(0);" ng-click="vm.replaceFile(node)">Replace</a></li>
             <li class="divider"></li>
             <li role="menuitem"><a href="javascript:void(0);">Remove</a></li>
           </ul>

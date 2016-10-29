@@ -30,7 +30,7 @@
     }
     function renameFile(fileId, renameBody) {
       spinnerService.showSpinner();
-      return $http.post('/api/files/rename/' + fileId, renameBody).then(function (response) {
+      return $http.patch('/api/files/rename/' + fileId, renameBody).then(function (response) {
         spinnerService.hideSpinner();
         return response.data;
       }).catch(function (data) {

@@ -14,6 +14,7 @@
     vm.getFileVersions = getFileVersions;
     vm.addFolder = addFolder;
     vm.downloadFile = downloadFile;
+    vm.renameFile = renameFile;
 
     vm.workPlaceItems = {
       filesAndFolders: []
@@ -65,10 +66,19 @@
     function getFileVersions(node) {
       openFileVesrionsModal(node);
     }
+    function renameFile(file) {
+      openRenameFileModal(file);
+    }
 
+    // Listeners
     $scope.$on('folder-added', function (event, data) {
       changeFolder(data);
     });
+    $scope.$on('file-renamed', function (event, data) {
+      console.log(data);
+      changeFolder(data);
+    });
+
 
     /// Helpers, modals etc
 
@@ -101,7 +111,7 @@
     function openProgressModal(item) {
       var modal = $uibModal.open({
         animation: true,
-        templateUrl: '/app/views/uploadFile.html',
+        templateUrl: '/app/views/modals/uploadFile.html',
         scope: $scope,
         backdrop: 'static'
       });
@@ -115,7 +125,7 @@
     function openAddFolderModal(folderId) {
       var addFolderModal = $uibModal.open({
         animation: true,
-        templateUrl: '/app/views/addFolder.html',
+        templateUrl: '/app/views/modals/addFolder.html',
         backdrop: 'static',
         controller: 'addFolderController as vm',
         scope: $scope,
@@ -131,7 +141,7 @@
     function openFileVesrionsModal(item) {
       var fileVersionsModal = $uibModal.open({
         animation: true,
-        templateUrl: '/app/views/file-versions.html',
+        templateUrl: '/app/views/modals/file-versions.html',
         backdrop: 'static',
         controller: 'fileVersionsController as vm',
         size: 'lg',
@@ -142,6 +152,22 @@
         }
       });
       return fileVersionsModal;
+    }
+
+    function openRenameFileModal(item) {
+      var renameFileModal = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/views/modals/renameFile.html',
+        backdrop: 'static',
+        controller: 'renameFileController as vm',
+        scope: $scope,
+        resolve: {
+          data: function () {
+            return item;
+          }
+        }
+      });
+      return renameFileModal;
     }
   }
 })();

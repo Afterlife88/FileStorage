@@ -1,7 +1,7 @@
 ﻿body {
-  padding-top: 105px;
-  padding-bottom: 40px;
-  background-color: #eee;
+    padding-top: 105px;
+    padding-bottom: 40px;
+    background-color: #eee;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -11,32 +11,35 @@
 }
 
 .form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
-}
-.form-signin .form-signin-heading{
-  margin-bottom: 10px;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
 }
 
-.form-signin .form-control {
-  position: relative;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
+    .form-signin .form-signin-heading {
+        margin-bottom: 10px;
+    }
+
+    .form-signin .form-control {
+        position: relative;
+        height: auto;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
 
 .email-input {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
+
 .password-input {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .form-signin button[type="submit"] {
@@ -48,20 +51,20 @@
     overflow: hidden;
 }
 
-.btn-file input {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
-    opacity: 0;
-}
+    .btn-file input {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+        opacity: 0;
+    }
 
 .upload-area {
     border: solid 1px #aaa;
@@ -81,29 +84,29 @@
     padding-top: 5px;
 }
 
-.active{
+.active {
     background-color: deepskyblue;
     border-color: dodgerblue;
     border-style: solid;
 }
 
-.active span {
-    white-space: normal !important;
-}
+    .active span {
+        white-space: normal !important;
+    }
 
 .file-item span {
-    display:inline-block;
+    display: inline-block;
     text-align: center;
     margin: auto;
     word-wrap: break-word;
     max-width: 90%;
-    text-overflow:ellipsis;
-    overflow:hidden; 
+    text-overflow: ellipsis;
+    overflow: hidden;
     white-space: nowrap;
 }
 
 .file-item input {
-    display:inline-block;
+    display: inline-block;
     text-align: center;
     margin: 5px auto;
     word-wrap: break-word;
@@ -117,11 +120,11 @@
     margin: auto;
 }
 
-.modal-header{
+.modal-header {
     text-align: center;
 }
 
-#menu-item{
+#menu-item {
     position: fixed;
 }
 
@@ -136,32 +139,33 @@
     min-height: 60px;
 }
 
-#memory-info{
+#memory-info {
     padding-top: 30px;
 }
 
-#memory-info .progress{
-    margin-bottom: 5px !important;
-    max-width: 250px;
-}
+    #memory-info .progress {
+        margin-bottom: 5px !important;
+        max-width: 250px;
+    }
 
-#property-row .common-info{
+#property-row .common-info {
     padding-top: 50px;
 }
 
-#property-row .specific-info{
+#property-row .specific-info {
     margin-top: 10px;
 }
 
-@media(max-width:767px){
-     #memory-info{
+@media(max-width:767px) {
+    #memory-info {
         padding-top: 5px;
-     }
+    }
 
-     #property-row .common-info{
+    #property-row .common-info {
         padding-top: 5px;
     }
 }
+
 .spinner:before {
     background-color: rgba(49, 37, 37, 0.2);
     border-radius: 6px;
@@ -172,6 +176,7 @@
     position: fixed;
     content: " ";
 }
-.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
     vertical-align: inherit;
 }
