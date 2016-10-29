@@ -46,7 +46,8 @@ namespace FileStorage.Services.Implementation
                         Created = item.Created,
                         Name = item.Name,
                         IsDeleted = item.IsDeleted,
-                        WillBeRemovedAt = removedNodeInfo.DateOfRemoval
+                        WillBeRemovedAt = removedNodeInfo.DateOfRemoval,
+                        RemovedOn = removedNodeInfo.RemovedOn
                     });
                 }
                 else

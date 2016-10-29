@@ -14,7 +14,8 @@
       renameFile: renameFile,
       downloadLatest: downloadLatest,
       replaceFile: replaceFile,
-      deleteFile: deleteFile
+      deleteFile: deleteFile,
+      restoreFile: restoreFile
     };
     return service;
 
@@ -65,6 +66,17 @@
     function deleteFile(fileId) {
       spinnerService.showSpinner();
       return $http.delete('/api/files/' + fileId).then(function (response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
+    }
+
+    function restoreFile(fileId) {
+      spinnerService.showSpinner();
+      return $http.put('/api/files/restore/' + fileId).then(function (response) {
         spinnerService.hideSpinner();
         return response.data;
       }).catch(function (data) {

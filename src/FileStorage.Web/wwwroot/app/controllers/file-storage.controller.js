@@ -6,9 +6,9 @@
       .controller('fileStorageController', fileStorageController);
 
   fileStorageController.$inject = ['folderService', 'Alertify', 'FileUploader', '$uibModal', '$scope', 'Session', 'fileService',
-  'confirmModalFactory'];
+  'confirmModalFactory', '$location'];
 
-  function fileStorageController(folderService, Alertify, FileUploader, $uibModal, $scope, Session, fileService, confirmModalFactory) {
+  function fileStorageController(folderService, Alertify, FileUploader, $uibModal, $scope, Session, fileService, confirmModalFactory, $location) {
     var vm = this;
     var modal = null;
     vm.changeFolder = changeFolder;
@@ -19,6 +19,7 @@
     vm.replaceFile = replaceFile;
     vm.renameFolder = renameFolder;
     vm.removeNode = removeNode;
+    vm.recycleBin = recycleBin;
 
     vm.workPlaceItems = {
       filesAndFolders: []
@@ -74,6 +75,9 @@
           });
         }
       });
+    }
+    function recycleBin() {
+      $location.path('/recycle-bin');
     }
     function addFolder(folderId) {
       openAddFolderModal(folderId);

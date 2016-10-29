@@ -1,0 +1,27 @@
+﻿<h1 class="page-header" style="margin: -2px 0 23px">Recycle bin</h1>
+
+<div clas="table-responsive" style="margin-top: 2em">
+  <table class="table table-responsive table-condensed table-hover table-striped">
+    <thead>
+      <tr>
+        <td width="4%"></td>
+        <td>Name</td>
+        <td>Type</td>
+        <td>Removed</td>
+        <td>Store until</td>
+        <td>Actions</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="node in vm.items">
+        <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
+        <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
+        <td>{{node.name}}</td>
+        <td>{{node.contentType}}</td>
+        <td>{{node.removedOn | date:'HH:mm:ss MM/dd/yyyy'}}</td>
+        <td>{{node.willBeRemovedAt | date:'HH:mm:ss dd/MM/yyyy'}}</td>
+        <td><a href="javascript:void(0);" class="btn btn-xs btn-primary" ng-click="vm.restoreNode(node)">Restore</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

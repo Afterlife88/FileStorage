@@ -14,5 +14,7 @@ namespace FileStorage.Services.DTO
         public bool IsDeleted { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? WillBeRemovedAt { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? RemovedOn { get; set; }
     }
 }

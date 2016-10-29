@@ -11,13 +11,19 @@
         controller: 'signupController',
         controllerAs: 'vm'
       })
-      .when('/home', {
+      .when('/files', {
         templateUrl: './app/views/file-storage.view.html',
         controller: 'fileStorageController',
         controllerAs: 'vm'
       })
+      .when('/recycle-bin',
+      {
+        templateUrl: './app/views/recycle-bin.view.html',
+        controller: 'recycleBinController',
+        controllerAs: 'vm'
+      })
       .otherwise({
-        redirectTo: "/home"
+        redirectTo: "/files"
       });
 
     $locationProvider.hashPrefix('');

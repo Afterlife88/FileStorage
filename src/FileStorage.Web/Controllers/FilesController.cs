@@ -128,7 +128,6 @@ namespace FileStorage.Web.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                // TODO: Validate if content type is not form-data
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 var responseFromService = await _fileService.UploadAsync(file, directoryUniqId, callerEmail);

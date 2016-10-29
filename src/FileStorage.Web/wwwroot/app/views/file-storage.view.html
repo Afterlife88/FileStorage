@@ -13,7 +13,7 @@
   <span>Back</span>
 </span>
 
-<span class="btn btn-success pull-right">
+<span class="btn btn-success pull-right" ng-click="vm.recycleBin()" >
   <i class="glyphicon glyphicon-trash"></i>
   <span>Recycle Bin (Trash)</span>
 </span>
@@ -58,7 +58,7 @@
           </ul>
         </td>
         <td>{{node.contentType}}</td>
-        <td>{{node.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
+        <td>{{node.created | date:'HH:mm:ss dd/MM/yyyy'}}</td>
       </tr>
     </tbody>
   </table>
