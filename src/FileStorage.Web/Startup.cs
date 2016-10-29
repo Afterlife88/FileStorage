@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.Swagger.Model;
 
@@ -47,7 +48,10 @@ namespace FileStorage.Web
                  }).AddEntityFrameworkStores<DataDbContext>();
 
 
-            services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+            services.AddMvc().AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });
 
             services.AddSwaggerGen(options =>
             {
@@ -65,7 +69,7 @@ namespace FileStorage.Web
 
 
             });
-           
+
             // Max lenght of file is 4 GB
             services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 4294967295);
             // DI
@@ -78,6 +82,7 @@ namespace FileStorage.Web
             services.AddScoped<IRemovedNodeRepository, RemovedNodeRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFolderService, FolderService>();
+            services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
@@ -107,11 +112,6 @@ namespace FileStorage.Web
 
             app.UseSwaggerUi(baseRoute: "swagger", swaggerUrl: "/swagger/v1/swagger.json");
             app.UseMvcWithDefaultRoute();
-
-          
-
-
-
 
             // Recreate db's
             databaseInitializer.Seed().GetAwaiter().GetResult();

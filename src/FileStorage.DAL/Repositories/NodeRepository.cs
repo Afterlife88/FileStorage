@@ -17,7 +17,11 @@ namespace FileStorage.DAL.Repositories
             _dataDbContext = dataDbContext;
         }
 
-
+        public async Task<IEnumerable<Node>> GetAllFolUserWithQuery(string query, string userId, bool takeDeleted = false)
+        {
+            return await _dataDbContext.Nodes
+                .Where(m => m.Name.Contains(query) && m.IsDeleted == takeDeleted && m.OwnerId == userId).ToArrayAsync();
+        }
         public async Task<Node> GetFolderByNameForUserAsync(string name, string userId)
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.IsDirectory && r.Name == name && r.OwnerId == userId);

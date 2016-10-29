@@ -18,5 +18,6 @@ namespace FileStorage.DAL.Contracts.Repositories
         Task<Node> GetNodeThatWasRemoved(Guid nodeId);
         Task<Node> GetFolderByNameForUserAsync(string name, string userId);
         Task<Node> GetFolderByIdAsync(Guid id);
+        Task<IEnumerable<Node>> GetAllFolUserWithQuery(string query, string userId, bool takeDeleted = false);
     }
 }
