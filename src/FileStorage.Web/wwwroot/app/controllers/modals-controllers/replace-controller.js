@@ -24,7 +24,6 @@
           var filteredArrayFromCallerFolder = vm.arrOfFolders.filter(function (el) {
             return el.uniqueFolderId !== vm.data.uniqueFolderId && el.parentFolderId !== vm.data.uniqueFolderId;
           });
-          console.log(filteredArrayFromCallerFolder);
           vm.arrOfFolders = filteredArrayFromCallerFolder;
         }
       }).catch(function (err) {
@@ -35,7 +34,6 @@
 
     function ok(nodeData, directoryToMove) {
       if (nodeData.contentType) {
-        console.log(nodeData);
         var request = {
           destanationFolderId: directoryToMove.uniqueFolderId
         }
