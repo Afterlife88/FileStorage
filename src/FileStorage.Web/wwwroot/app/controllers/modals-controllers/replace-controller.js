@@ -5,9 +5,9 @@
       .module('app')
       .controller('replaceNodeController', replaceNodeController);
 
-  replaceNodeController.$inject = ['data', '$uibModalInstance', 'folderService', 'Alertify', '$scope', 'fileService', 'filterFilter'];
+  replaceNodeController.$inject = ['data', '$uibModalInstance', 'folderService', 'Alertify', '$scope', 'fileService'];
 
-  function replaceNodeController(data, $uibModalInstance, folderService, Alertify, $scope, fileService, filterFilter) {
+  function replaceNodeController(data, $uibModalInstance, folderService, Alertify, $scope, fileService) {
 
     var vm = this;
     vm.data = data;
@@ -17,11 +17,8 @@
     vm.ok = ok;
     activate();
 
-    console.log(data);
-
     function activate() {
       return folderService.getListOfFolders().then(function (response) {
-        console.log(response);
         vm.arrOfFolders = response;
         if (vm.data.uniqueFolderId) {
           var filteredArrayFromCallerFolder = vm.arrOfFolders.filter(function (el) {
@@ -45,20 +42,18 @@
         return fileService.replaceFile(nodeData.uniqueFileId, request).then(function (response) {
           Alertify.success('File moved successfully!');
           $uibModalInstance.close();
-          $scope.$emit('node-replaced', data.directoryId);
+          $scope.$emit('updateFolder', data.directoryId);
         }).catch(function (err) {
           Alertify.error(err.data);
         });
       } else {
         var folderChangeRequest = {
           destanationFolderId: directoryToMove.uniqueFolderId
-        }
-        console.log(nodeData);
+        };
         return folderService.replaceFolder(nodeData.uniqueFolderId, folderChangeRequest).then(function (response) {
           Alertify.success('File moved successfully!');
           $uibModalInstance.close();
-          console.log(data);
-          $scope.$emit('node-replaced', data.parentFolderId);
+          $scope.$emit('updateFolder', data.parentFolderId);
         }).catch(function (err) {
           Alertify.error(err.data);
         });

@@ -21,6 +21,7 @@ namespace FileStorage.Web.Controllers
     public class FoldersController : Controller
     {
         private readonly IFolderService _folderService;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -29,6 +30,7 @@ namespace FileStorage.Web.Controllers
         {
             _folderService = folderService;
         }
+
         /// <summary>
         /// Return all folders that exist in root user folder, with releated files and folders that exist on user file storage
         /// 
@@ -125,13 +127,14 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="requst"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateFolder([FromBody]CreateFolderRequest requst)
+        public async Task<IActionResult> CreateFolder([FromBody] CreateFolderRequest requst)
         {
             try
             {
@@ -151,6 +154,7 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -159,7 +163,7 @@ namespace FileStorage.Web.Controllers
         /// <returns></returns>
         [HttpPatch]
         [Route("replace/{uniqFolderId}")]
-        public async Task<IActionResult> Replace(Guid uniqFolderId, [FromBody] ReplaceFileRequest request)
+        public async Task<IActionResult> Replace(Guid uniqFolderId, [FromBody] ReplaceRequest request)
         {
             try
             {
@@ -177,6 +181,35 @@ namespace FileStorage.Web.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uniqFolderId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("rename/{uniqFolderId}")]
+        public async Task<IActionResult> RenameFolder(Guid uniqFolderId, [FromBody] RenameRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _folderService.RenameFolderAsync(uniqFolderId, request.NewName, callerEmail);
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
+
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+
             }
         }
         //// PUT api/values/5

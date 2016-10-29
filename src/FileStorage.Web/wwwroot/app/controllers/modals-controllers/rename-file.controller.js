@@ -21,7 +21,7 @@
       return fileService.renameFile(data.uniqueFileId, request).then(function () {
         Alertify.success('File renamed successfully!');
         $uibModalInstance.close();
-        $scope.$emit('file-renamed', data.directoryId);
+        $scope.$emit('updateFolder', data.directoryId);
       }).catch(function (err) {
         Alertify.error(err.data);
       });

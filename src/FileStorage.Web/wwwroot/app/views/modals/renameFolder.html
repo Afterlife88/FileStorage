@@ -1,0 +1,18 @@
+﻿<div class="modal-header">
+  <h3 class="modal-title">Rename folder</h3>
+</div>
+<form name="modalForm">
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error': modalForm.modalInput.$invalid }">
+      <input name="modalInput" type="text" class="form-control" placeholder="File name" ng-model="vm.name" required autofocus />
+      <span ng-show="modalForm.modalInput.$error.required" class="help-block">Folder name is required.</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="modalForm.$invalid" ng-class="{ 'disabled': modalForm.$invalid }"
+            type="button" ng-click="vm.ok(vm.name)">
+      OK
+    </button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+  </div>
+</form>

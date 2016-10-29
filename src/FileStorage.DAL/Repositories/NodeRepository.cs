@@ -22,6 +22,12 @@ namespace FileStorage.DAL.Repositories
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.IsDirectory && r.Name == name && r.OwnerId == userId);
         }
+
+        public async Task<Node> GetFolderByIdAsync(Guid id)
+        {
+            return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.IsDirectory && r.Id == id);
+        }
+
         public async Task<Node> GetFolderByIdForUserAsync(Guid id, string userId)
         {
             return await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == id && r.IsDirectory && r.OwnerId == userId);

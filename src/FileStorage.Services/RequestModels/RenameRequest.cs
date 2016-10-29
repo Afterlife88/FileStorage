@@ -2,7 +2,7 @@
 
 namespace FileStorage.Services.RequestModels
 {
-    public class RenameFileRequest
+    public class RenameRequest
     {
         [Required]
         public string NewName { get; set; }

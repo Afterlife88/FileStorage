@@ -151,7 +151,7 @@ namespace FileStorage.Web.Controllers
         /// <returns></returns>
         [HttpPatch]
         [Route("rename/{fileUniqId}")]
-        public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameFileRequest request)
+        public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameRequest request)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace FileStorage.Web.Controllers
         /// <returns></returns>
         [HttpPatch]
         [Route("replace/{fileUniqId}")]
-        public async Task<IActionResult> Replace(Guid fileUniqId, [FromBody]ReplaceFileRequest request)
+        public async Task<IActionResult> Replace(Guid fileUniqId, [FromBody]ReplaceRequest request)
         {
             try
             {

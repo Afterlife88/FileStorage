@@ -16,6 +16,7 @@
     vm.downloadFile = downloadFile;
     vm.renameFile = renameFile;
     vm.replaceFile = replaceFile;
+    vm.renameFolder = renameFolder;
 
     vm.workPlaceItems = {
       filesAndFolders: []
@@ -73,16 +74,15 @@
     function replaceFile(file) {
       openReplaceModal(file);
     }
+    function renameFolder(node) {
+      openRenameFolderModal(node);
+    }
+
     // Listeners
-    $scope.$on('folder-added', function (event, data) {
+    $scope.$on('updateFolder', function (event, data) {
       changeFolder(data);
     });
-    $scope.$on('file-renamed', function (event, data) {
-      changeFolder(data);
-    });
-    $scope.$on('node-replaced', function (event, data) {
-      changeFolder(data);
-    });
+
 
     /// Helpers, modals etc
 
@@ -187,6 +187,22 @@
         }
       });
       return renameFileModal;
+    }
+
+    function openRenameFolderModal(item) {
+      var renameFolderModal = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/views/modals/renameFolder.html',
+        backdrop: 'static',
+        controller: 'renameFolderController as vm',
+        scope: $scope,
+        resolve: {
+          data: function () {
+            return item;
+          }
+        }
+      });
+      return renameFolderModal;
     }
   }
 })();

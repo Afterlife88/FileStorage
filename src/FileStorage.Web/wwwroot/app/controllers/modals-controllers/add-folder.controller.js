@@ -22,7 +22,7 @@
       return folderService.addfolder(request).then(function () {
         Alertify.success('Folder added successfully!');
         $uibModalInstance.close();
-        $scope.$emit('folder-added', request.parentFolderId);
+        $scope.$emit('updateFolder', request.parentFolderId);
 
       }).catch(function (err) {
         Alertify.error(err.data);

@@ -19,7 +19,7 @@ namespace FileStorage.Services.Contracts
         ServiceState State { get; }
         Task<FileDto> UploadAsync(IFormFile file, Guid? directoryId, string userEmail);
         Task<FileDto> RenameFileAsync(Guid fileUniqId, string newName, string callerEmail);
-        Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileRequest model);
+        Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceRequest model);
         Task<ServiceState> RemoveFileAsync(Guid fileUniqId, string callerEmail);
         Task<FileDto> RestoreRemovedFileAsync(Guid fileUniqId, string callerEmail);
     }

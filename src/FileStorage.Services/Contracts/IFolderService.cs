@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FileStorage.Domain.Entities;
 using FileStorage.Services.DTO;
 using FileStorage.Services.Models;
 using FileStorage.Services.RequestModels;
@@ -13,7 +12,8 @@ namespace FileStorage.Services.Contracts
         Task<FolderDto> GetFoldersForUserAsync(string userEmail);
         Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderRequest folder);
         Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId);
-        Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceFileRequest model);
+        Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceRequest model);
+        Task<FolderDto> RenameFolderAsync(Guid fileUniqId, string newName, string callerEmail);
         ServiceState State { get; }
         Task<IEnumerable<FolderDto>> GetListFolder(string email);
     }

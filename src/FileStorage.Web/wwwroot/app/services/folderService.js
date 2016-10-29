@@ -14,7 +14,8 @@
       getFolder: getFolder,
       addfolder: addfolder,
       getListOfFolders: getListOfFolders,
-      replaceFolder: replaceFolder
+      replaceFolder: replaceFolder,
+      renameFolder: renameFolder
     };
     return service;
 
@@ -69,6 +70,16 @@
       });
     }
 
+    function renameFolder(folderId, renameBody) {
+      spinnerService.showSpinner();
+      return $http.patch('/api/folders/rename/' + folderId, renameBody).then(function (response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
+    }
     function addfolder(data) {
       spinnerService.showSpinner();
       return $http.post('/api/folders/', data).then(function (response) {

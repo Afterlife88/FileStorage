@@ -16,17 +16,14 @@ namespace FileStorage.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
 
-
         public ServiceState State { get; }
-
-       
 
         public FolderService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             State = new ServiceState();
         }
-
+        #region Methods
         public async Task<FolderDto> GetFoldersForUserAsync(string userEmail)
         {
             try
@@ -154,7 +151,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceFileRequest model)
+        public async Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceRequest model)
         {
             try
             {
@@ -164,7 +161,7 @@ namespace FileStorage.Services.Implementation
 
                 var destFolder = await _unitOfWork.NodeRepository.GetNodeByIdAsync(model.DestanationFolderId);
 
-               
+
                 if (currentFolder == null || !currentFolder.IsDirectory)
                 {
                     State.TypeOfError = TypeOfServiceError.BadRequest;
@@ -195,7 +192,30 @@ namespace FileStorage.Services.Implementation
                 return null;
             }
         }
+        public async Task<FolderDto> RenameFolderAsync(Guid fileUniqId, string newName, string callerEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var folder = await _unitOfWork.NodeRepository.GetFolderByIdAsync(fileUniqId);
 
+                // Validate if user have access to file and can edit it
+                if (!ValidateAccessToFolder(State, folder, owner))
+                    return null;
+
+                _unitOfWork.NodeRepository.RenameNode(folder, newName);
+                await _unitOfWork.CommitAsync();
+                return Mapper.Map<Node, FolderDto>(folder);
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
+        #endregion
+        #region Helpers methods 
         private void RecursivelyDisplayFolderSibling(Node node, FolderDto folder)
         {
             // Right now EF core do not support full nested objects loading. So get next object every time
@@ -245,5 +265,6 @@ namespace FileStorage.Services.Implementation
             }
             return modelState.IsValid;
         }
+        #endregion
     }
 }

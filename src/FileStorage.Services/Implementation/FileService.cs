@@ -206,7 +206,7 @@ namespace FileStorage.Services.Implementation
             }
         }
 
-        public async Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceFileRequest model)
+        public async Task<FileDto> ReplaceFileAsync(string callerEmail, Guid fileUniqId, ReplaceRequest model)
         {
             try
             {
