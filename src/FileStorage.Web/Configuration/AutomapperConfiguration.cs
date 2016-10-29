@@ -40,11 +40,13 @@ namespace FileStorage.Web.Configuration
                 //.ForMember(dest => dest.IsDirectory, opt => opt.Condition(src => src.IsDirectory));
 
                 config.CreateMap<Node, FolderDto>()
-                    .ForMember(dest=>dest.Name, opt=>opt.MapFrom(src=>src.Name))
+                    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                     .ForMember(dest => dest.ParentFolderName, opt => opt.MapFrom(src => src.Folder.Name))
                     .ForMember(dest => dest.ParentFolderId, opt => opt.MapFrom(src => src.Folder.Id))
                     .ForMember(src => src.UniqueFolderId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(src => src.OwnerId, opt => opt.MapFrom(src => src.OwnerId));
+
+
                 //config.CreateMap<Node, FolderDto>()
                 //    //.ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Id))
                 //    .AfterMap((src, dest) => dest.Files = src.Siblings.Where(r => !r.IsDirectory))

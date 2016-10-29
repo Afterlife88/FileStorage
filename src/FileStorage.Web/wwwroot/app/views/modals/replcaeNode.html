@@ -1,0 +1,26 @@
+﻿<div class="modal-header">
+  <h3 class="modal-title">Replace {{vm.data.name}}</h3>
+</div>
+<form name="modalForm">
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error': modalForm.selectRequired.$invalid }">
+
+      <label>Current folder:</label><p>{{vm.data.directoryName}}</p><br />
+
+      <label>Destination folder:</label><br />
+      <select name="selectRequired" class="form-control" ng-model="vm.directoryToMove" ng-options="o as o.name for o in vm.arrOfFolders" required>
+        <option value="" selected>Select folder...</option> 
+      </select>
+     
+      <span ng-show="modalForm.selectRequired.$error.required" class="help-block">Folder name is required.</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="vm.directoryToMove.name == undefined" ng-class="{ 'disabled': modalForm.$invalid }"
+            type="button" ng-click="vm.ok(vm.data, vm.directoryToMove)">
+      OK
+    </button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+  </div>
+</form>

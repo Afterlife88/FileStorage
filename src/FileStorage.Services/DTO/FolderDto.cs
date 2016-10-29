@@ -11,7 +11,7 @@ namespace FileStorage.Services.DTO
         public string ParentFolderName { get; set; }
         public string ParentFolderId { get; set; }
         public string OwnerId { get; set; }
-        public List<FileDto> Files { get; set; }
         public List<FolderDto> Folders { get; set; }
+        public List<FileDto> Files { get; set; }
     }
 }

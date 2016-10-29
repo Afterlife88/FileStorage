@@ -22,7 +22,7 @@
 
       <div class="collapse navbar-collapse">
         <div class="navbar-header">
-         <a  class="navbar-brand" href="/">File storage system</a>
+          <a class="navbar-brand" href="/">File storage system</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
           <li ng-if="isAuth"><a href="#/">Welcome {{userName}}</a></li>
@@ -64,6 +64,7 @@
   <script src="app/controllers/file-storage.controller.js"></script>
   <script src="app/controllers/modals-controllers/add-folder.controller.js"></script>
   <script src="app/controllers/modals-controllers/rename-file.controller.js"></script>
+  <script src="app/controllers/modals-controllers/replace-controller.js"></script>
 
   <!-- services, filters, factories -->
   <script src="app/services/authInterceptorService.js"></script>
@@ -74,5 +75,6 @@
   <script src="app/services/spinnerService.js"></script>
   <script src="app/controllers/modals-controllers/file-versions.controller.js"></script>
   <script src="app/filters/bytesFilter.js"></script>
+
 </body>
 </html>

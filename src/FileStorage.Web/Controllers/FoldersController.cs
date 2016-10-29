@@ -36,13 +36,13 @@ namespace FileStorage.Web.Controllers
         /// <remarks>
         /// # Description
         /// 
-        /// Response of the request contain all information about folders and files on in that exist in root user folder, include recursively files and folder that contains in other folders
+        /// Response of the request contain all information about folders and files on in that exist in root user folder in tree-view, include recursively files and folder that contains in other folders
         /// 
         /// </remarks>
         /// <response code="200">Return Root user folder with all existed data that user have on his workplace</response>
         /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
         /// <response code="500">Returns if server error has occurred</response>
-        [HttpGet]
+        [HttpGet("tree-view")]
         [ProducesResponseType(typeof(FolderDto), 200)]
         [ProducesResponseType(typeof(UnauthorizedResult), 401)]
         [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
@@ -65,6 +65,36 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        /// <summary>
+        /// Return list of all folders
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<FolderDto>), 200)]
+        [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+        [ProducesResponseType(typeof(InternalServerErrorResult), 500)]
+        public async Task<IActionResult> GetListFolders()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var folders = await _folderService.GetListFolder(callerEmail);
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
+
+                return Ok(folders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -82,7 +112,7 @@ namespace FileStorage.Web.Controllers
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 var folder = await _folderService.GetFolderForUserAsync(callerEmail, uniqFolderId);
-         
+
                 if (!_folderService.State.IsValid)
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
                         _folderService.State.ErrorMessage);
@@ -160,5 +190,7 @@ namespace FileStorage.Web.Controllers
         //public void Delete(int id)
         //{
         //}
+
+
     }
 }

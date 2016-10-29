@@ -12,11 +12,25 @@
     var service = {
       getAllFolders: getAllFolders,
       getFolder: getFolder,
-      addfolder: addfolder
+      addfolder: addfolder,
+      getListOfFolders: getListOfFolders
     };
     return service;
 
     function getAllFolders() {
+      spinnerService.showSpinner();
+      return $http.get('/api/folders/tree-view')
+        .then(function (response) {
+          spinnerService.hideSpinner();
+
+          return response.data;
+        }).catch(function (data) {
+          spinnerService.hideSpinner();
+          return $q.reject(data);
+        });
+    }
+
+    function getListOfFolders() {
       spinnerService.showSpinner();
       return $http.get('/api/folders')
         .then(function (response) {

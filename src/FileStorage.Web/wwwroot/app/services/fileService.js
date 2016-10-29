@@ -12,7 +12,8 @@
     var service = {
       getConcreteVersion: getConcreteVersion,
       renameFile: renameFile,
-      downloadLatest: downloadLatest
+      downloadLatest: downloadLatest,
+      replaceFile: replaceFile
     };
     return service;
 
@@ -37,6 +38,17 @@
         spinnerService.hideSpinner();
         return $q.reject(data);
       });
+    }
+    function replaceFile(fileId, destBody) {
+      spinnerService.showSpinner();
+      return $http.patch('/api/files/replace/' + fileId, destBody).then(function(response) {
+        spinnerService.hideSpinner();
+        return response.data;
+      }).catch(function (data) {
+        spinnerService.hideSpinner();
+        return $q.reject(data);
+      });
+
     }
     function downloadLatest(fileId) {
       spinnerService.showSpinner();

@@ -15,6 +15,7 @@
     vm.addFolder = addFolder;
     vm.downloadFile = downloadFile;
     vm.renameFile = renameFile;
+    vm.replaceFile = replaceFile;
 
     vm.workPlaceItems = {
       filesAndFolders: []
@@ -69,7 +70,9 @@
     function renameFile(file) {
       openRenameFileModal(file);
     }
-
+    function replaceFile(file) {
+      openReplaceModal(file);
+    }
     // Listeners
     $scope.$on('folder-added', function (event, data) {
       changeFolder(data);
@@ -77,7 +80,9 @@
     $scope.$on('file-renamed', function (event, data) {
       changeFolder(data);
     });
-
+    $scope.$on('node-replaced', function (event, data) {
+      changeFolder(data);
+    });
 
     /// Helpers, modals etc
 
@@ -137,6 +142,21 @@
       return addFolderModal;
     }
 
+    function openReplaceModal(data) {
+      var addReplaceModal = $uibModal.open({
+        animation: true,
+        templateUrl: '/app/views/modals/replcaeNode.html',
+        backdrop: 'static',
+        controller: 'replaceNodeController as vm',
+        scope: $scope,
+        resolve: {
+          data: function () {
+            return data;
+          }
+        }
+      });
+      return addReplaceModal;
+    }
     function openFileVesrionsModal(item) {
       var fileVersionsModal = $uibModal.open({
         animation: true,

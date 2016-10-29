@@ -15,7 +15,6 @@
 
     function login(data) {
       return userService.login(data).then(function (result) {
-        console.log(result);
         var token = 'Bearer ' + result.access_token;
         Session.create(token, data.username);
         $rootScope.isAuth = true;

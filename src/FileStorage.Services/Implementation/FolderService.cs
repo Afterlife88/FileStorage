@@ -19,6 +19,8 @@ namespace FileStorage.Services.Implementation
 
         public ServiceState State { get; }
 
+       
+
         public FolderService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -51,7 +53,26 @@ namespace FileStorage.Services.Implementation
                 return null;
             }
         }
+        public async Task<IEnumerable<FolderDto>> GetListFolder(string email)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(email);
+                var collectionOfNodes = await _unitOfWork.NodeRepository.GetAllNodesForUserAsync(owner.Id);
 
+                var folders = collectionOfNodes.Where(r => r.IsDirectory);
+
+                return Mapper.Map<IEnumerable<Node>, IEnumerable<FolderDto>>(folders);
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+
+        }
         public async Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId)
         {
             try

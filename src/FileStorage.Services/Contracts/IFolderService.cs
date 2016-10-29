@@ -15,5 +15,6 @@ namespace FileStorage.Services.Contracts
         Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId);
         Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceFileRequest model);
         ServiceState State { get; }
+        Task<IEnumerable<FolderDto>> GetListFolder(string email);
     }
 }
