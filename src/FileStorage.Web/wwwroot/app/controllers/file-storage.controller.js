@@ -94,6 +94,7 @@
         templateUrl: '/app/views/file-versions.html',
         backdrop: 'static',
         controller: 'fileVersionsController as vm',
+        size: 'lg',
         resolve: {
           data: function () {
             return item;
