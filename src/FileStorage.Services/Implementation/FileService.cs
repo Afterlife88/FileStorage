@@ -166,11 +166,13 @@ namespace FileStorage.Services.Implementation
                 _unitOfWork.NodeRepository.AddNode(fileNode);
                 _unitOfWork.FileVersionRepository.AddFileVersion(fileVersion);
                 directoryWhereFileUploadTo.Siblings.Add(fileNode);
+                // Upload to azure blob
+                await _blobService.UploadFileAsync(file, generateNameForAzureBlob);
 
                 await _unitOfWork.CommitAsync();
 
-                // Upload to azure blob
-                await _blobService.UploadFileAsync(file, generateNameForAzureBlob);
+         
+             
                 return Mapper.Map<Node, FileDto>(fileNode);
             }
             catch (Exception ex)
