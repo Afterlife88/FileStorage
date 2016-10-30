@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using FileStorage.Services.Contracts;
-using FileStorage.Services.DTO;
 using FileStorage.Services.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 

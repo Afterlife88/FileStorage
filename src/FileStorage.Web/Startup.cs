@@ -11,14 +11,12 @@ using FileStorage.Services.Contracts;
 using FileStorage.Services.Implementation;
 using FileStorage.Web.Configuration;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.Swagger.Model;
 
