@@ -154,10 +154,6 @@ namespace FileStorage.Web.Controllers
                 return CreatedAtRoute("GetFile", new {fileUniqId = responseFromService.UniqueFileId},
                     responseFromService);
             }
-            catch (OutOfMemoryException)
-            {
-                return StatusCode(500, "File is too large for the machine that application host");
-            }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);

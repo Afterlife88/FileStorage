@@ -30,6 +30,10 @@ namespace FileStorage.Tests
         {
             return new SearchService(unitOfWork);
         }
+        public static IBlobService GetBlobService(IUnitOfWork unitOfWork)
+        {
+            return new AzureBlobService(unitOfWork);
+        }
 
     }
 }

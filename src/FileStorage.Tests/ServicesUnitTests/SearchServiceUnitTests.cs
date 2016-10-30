@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FileStorage.Domain.Entities;
+using FileStorage.Tests.Helpers;
 using Moq;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,7 +23,7 @@ namespace FileStorage.Tests.ServicesUnitTests
         {
             // Arrange
             var fakeUnitOfWork = MockingManager.GetFakeUnitOfWork();
-       
+
             var node1 = new Node()
             {
                 IsDirectory = false,
@@ -32,6 +33,7 @@ namespace FileStorage.Tests.ServicesUnitTests
                 OwnerId = new Guid().ToString(),
                 Created = DateTime.Now,
                 FolderId = null,
+                Id = new Guid("37e32a9e-bd72-48e2-9a7b-5c4fdbda6be1")
             };
             var fileVersion = new FileVersion()
             {
@@ -45,7 +47,7 @@ namespace FileStorage.Tests.ServicesUnitTests
             node1.FileVersions.Add(fileVersion);
 
             fakeUnitOfWork.Setup(t => t.NodeRepository.GetFolderByIdAsync(It.IsAny<Guid>())).ReturnsAsync(node1);
-     
+
             var searchService = MockingManager.GetSearchService(fakeUnitOfWork.Object);
 
             fakeUnitOfWork.VerifyAll();
@@ -54,6 +56,34 @@ namespace FileStorage.Tests.ServicesUnitTests
 
             // Assert
             Assert.Equal(1, result.Count());
+        }
+
+        [Fact]
+        public async Task Search_Return_All_Removed_Items_Successful()
+        {
+            var nodes = TestData.CreateFiles();
+
+            // Remove fake nodes
+            var enumerable = nodes as Node[] ?? nodes.ToArray();
+            foreach (var node in enumerable.ToArray())
+            {
+                node.IsDeleted = true;
+            }
+
+            // Arrange
+            var fakeUnitOfWork = MockingManager.GetFakeUnitOfWork();
+
+
+            fakeUnitOfWork.Setup(t => t.NodeRepository.GetAllNodesForUserWithPredicate(It.IsAny<string>(), false)).ReturnsAsync(enumerable);
+
+            var searchService = MockingManager.GetSearchService(fakeUnitOfWork.Object);
+
+            // Act
+            var result = await searchService.SearchFilesAsync("test@gmail.com", null, true);
+
+            // Assert
+
+            Assert.Equal(2, result.Count());
         }
 
 
