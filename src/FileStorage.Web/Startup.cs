@@ -72,7 +72,7 @@ namespace FileStorage.Web
             services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 4294967295);
             // DI
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
-            services.AddScoped<IBlobService, AzureBlobService>();
+            services.AddTransient<IBlobService, AzureBlobService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<INodeRepository, NodeRepository>();
