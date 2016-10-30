@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FileStorage.Web.Controllers
 {
     /// <summary>
-    /// 
+    /// Resource for search file and folders
     /// </summary>
     [Route("api/search")]
     [Authorize]
@@ -21,7 +21,7 @@ namespace FileStorage.Web.Controllers
         private readonly ISearchService _searchService;
 
         /// <summary>
-        /// 
+        /// Default constructor
         /// </summary>
         /// <param name="searchService"></param>
         public SearchController(ISearchService searchService)

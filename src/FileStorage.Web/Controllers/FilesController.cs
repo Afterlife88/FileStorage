@@ -174,7 +174,6 @@ namespace FileStorage.Web.Controllers
         /// <response code="403">Returns if user have not access to requested file</response>
         /// <response code="404">Returns if passed file are not exist</response>
         /// <response code="500">Returns if server error has occurred</response>
-        /// <returns></returns>
         [HttpPatch]
         [Route("rename/{fileUniqId}")]
         public async Task<IActionResult> RenameFile(Guid fileUniqId, [FromBody]RenameRequest request)
@@ -190,7 +189,7 @@ namespace FileStorage.Web.Controllers
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
                         _fileService.State.ErrorMessage);
 
-                return NoContent();
+                return StatusCode(204);
             }
             catch (Exception ex)
             {
@@ -228,7 +227,7 @@ namespace FileStorage.Web.Controllers
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
                         _fileService.State.ErrorMessage);
 
-                return NoContent();
+                return StatusCode(204);
             }
             catch (Exception ex)
             {

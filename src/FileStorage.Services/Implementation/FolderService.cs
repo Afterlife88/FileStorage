@@ -194,7 +194,7 @@ namespace FileStorage.Services.Implementation
 
                 if (currentFolder == null || !currentFolder.IsDirectory)
                 {
-                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    State.TypeOfError = TypeOfServiceError.NotFound;
                     State.ErrorMessage = "Source folder not found!";
                     return null;
                 }
