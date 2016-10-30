@@ -111,8 +111,8 @@ namespace FileStorage.Web
             app.UseSwaggerUi(baseRoute: "swagger", swaggerUrl: "/swagger/v1/swagger.json");
             app.UseMvcWithDefaultRoute();
 
-            // Recreate db's
-            databaseInitializer.Seed().GetAwaiter().GetResult();
+            //// Recreate db's
+            //databaseInitializer.Seed().GetAwaiter().GetResult();
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
         {
