@@ -19,7 +19,7 @@
 Проект являет собой сервис файлового хранилища, аналог веб-версии Dropbox, OneDrive и т.д. Доступ к файлам реализован через REST архитектуру.
 Используемые технологии:
 - **Серверная часть:** ASP.NET Core, Entity Framework Core, MS SQL, Swagger (для документации API), XUnit, Moq, AutoMapper (Entity => DTO), Windows Azure Storage (библиотека для взаимодействия с Azure BLOB хранилищем)
-- **Клиент:** AngularJS, Angular-ui/Bootstrap (модалки и тп) на вьюхе, angular-file-upload(для загрузки файлов), Bootstrap, font-awesome
+- **Клиент:** AngularJS, UI Bootstrap, angular-file-upload(для загрузки файлов), Bootstrap, font-awesome
 
 ## Описание структуры проекта
 Проект выполнен в соответствии принципам Domain-Driven Design, в связи с этим решение разбито на 6 проектов, где есть строгое разграничение между Domain Entities, Data Access Layer, Buisness Layer, API, в итоге есть разграниченные слои, которые легко дополнять и масштабировать проект, соблюдены **SOLID** принципы при построении архитектуры решения. Обширную документацию к API можно просмотреть по адресу **/swagger**, там сразу можно будет потестить запросы к API. Клиент доступен по корневому URL и доступен сразу после запуска приложения.
