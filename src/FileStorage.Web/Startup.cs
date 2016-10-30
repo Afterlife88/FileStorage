@@ -111,6 +111,7 @@ namespace FileStorage.Web
             app.UseSwaggerUi(baseRoute: "swagger", swaggerUrl: "/swagger/v1/swagger.json");
             app.UseMvcWithDefaultRoute();
 
+            //app.UseIdentity();
             //// Recreate db's
             //databaseInitializer.Seed().GetAwaiter().GetResult();
         }

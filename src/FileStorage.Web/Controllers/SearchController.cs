@@ -15,7 +15,7 @@ namespace FileStorage.Web.Controllers
     /// Resource for search file and folders
     /// </summary>
     [Route("api/search")]
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = "Bearer")]
     public class SearchController : Controller
     {
         private readonly ISearchService _searchService;

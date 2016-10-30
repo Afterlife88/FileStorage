@@ -17,7 +17,7 @@ namespace FileStorage.Web.Controllers
     /// <summary>
     /// Resource for manage files in file storage system
     /// </summary>
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = "Bearer")]
     [Route("api/files")]
     public class FilesController : Controller
     {
