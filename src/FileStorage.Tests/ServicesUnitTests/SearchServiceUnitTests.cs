@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FileStorage.DAL.Contracts;
@@ -8,28 +9,34 @@ using FileStorage.Domain.Entities;
 using FileStorage.Web.Configuration;
 using Moq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace FileStorage.Tests.ServicesUnitTests
 {
     public class SearchServiceUnitTests
     {
+        private readonly ITestOutputHelper output;
+
+        public SearchServiceUnitTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         [Fact]
         public async Task Search_Returns_Non_Deleted_Files_Or_Folders_Successful()
         {
-
+            // Arrange
             var fakeUnitOfWork = MockingManager.GetFakeUnitOfWork();
-
+       
             var node1 = new Node()
             {
                 IsDirectory = false,
                 ContentType = "application/json",
                 Name = "name",
                 IsDeleted = false,
-                OwnerId = "qweqweqwe-123123-asdasdxzc-asdasdasd",
+                OwnerId = new Guid().ToString(),
                 Created = DateTime.Now,
-                FolderId = new Guid(),
-                
-
+                FolderId = null,
             };
             var fileVersion = new FileVersion()
             {
@@ -43,26 +50,14 @@ namespace FileStorage.Tests.ServicesUnitTests
             node1.FileVersions.Add(fileVersion);
 
             fakeUnitOfWork.Setup(t => t.NodeRepository.GetFolderByIdAsync(It.IsAny<Guid>())).ReturnsAsync(node1);
-
-
+     
             var searchService = MockingManager.GetSearchService(fakeUnitOfWork.Object);
-            fakeUnitOfWork.VerifyAll();
 
+            fakeUnitOfWork.VerifyAll();
+            // Act
             var result = await searchService.SearchFilesAsync("test@gmail.com", "name", false);
 
-
-
-            //// Arrange
-            //var mockRepo = new Mock<IUnitOfWork>();
-            //mockRepo.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(GetPathList()));
-            //var service = new PathService(mockRepo.Object);
-            //AutomapperConfiguration.Load();
-
-            //// Act
-            //var result = await service.GetAllExistedPathsAsync();
-
-            //// Assert
-            //var list = Assert.IsType<List<PathDto>>(result);
+            // Assert
             Assert.Equal(1, result.Count());
         }
 
