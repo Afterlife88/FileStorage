@@ -66,6 +66,10 @@ namespace FileStorage.Web.Controllers
         /// Get file from file storage
         /// </summary>
         /// <remarks>
+        /// 
+        /// ## Description
+        /// Returns data of the file with Content-Type, Content-Lenght and Content-Disposition headers 
+        /// 
         /// ## Important
         /// 
         ///    <b>Vendor client documentation (swagger) that you use right now make respond file corrupt and increase size received from server by 2 (you can check it by compare content-length from server and downloaded file from documentation).  
@@ -115,11 +119,23 @@ namespace FileStorage.Web.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Upload file to service
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="directoryUniqId">Optional directory id of the where file upload to</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// ## Description
+        /// 
+        /// Uploading file from Multipart/form-data, generating hash, checking if this file already exist,
+        /// if exsit returning bad request, if file hash is different - then its new version of file and upload it. 
+        /// 
+        /// </remarks>
+        /// <param name="file">Multipart/form-data of file</param>
+        /// <param name="directoryUniqId">Directory Id where file upload to</param>
+        /// <response code="200">Return file information with Location header where file can be downloaded</response>
+        /// <response code="400">Returns if values invalid</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="403">Returns if user have not access to requested upload folder</response>
+        /// <response code="404">Returns if passed folder are not exist</response>
+        /// <response code="500">Returns if server error has occurred</response>
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file, [FromQuery]Guid? directoryUniqId = null)
         {
@@ -142,11 +158,22 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         /// <summary>
-        /// 
+        /// Rename file
         /// </summary>
-        /// <param name="fileUniqId"></param>
-        /// <param name="request"></param>
+        /// <remarks>
+        /// ## Description 
+        /// Renaming a name of the file
+        /// </remarks>
+        /// <param name="fileUniqId">Unique file Id</param>
+        /// <param name="request">Request</param>
+        /// <response code="204">Return if file renamed successfully</response>
+        /// <response code="400">Returns if request are invalid</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="403">Returns if user have not access to requested file</response>
+        /// <response code="404">Returns if passed file are not exist</response>
+        /// <response code="500">Returns if server error has occurred</response>
         /// <returns></returns>
         [HttpPatch]
         [Route("rename/{fileUniqId}")]
@@ -163,18 +190,29 @@ namespace FileStorage.Web.Controllers
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
                         _fileService.State.ErrorMessage);
 
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
 
-        /// <returns></returns>
+        /// <summary>
+        /// Replace file
+        /// </summary>
+        /// <remarks>
+        /// ## Description 
+        /// Replacing file under requested folder 
+        /// </remarks>
+        /// <param name="fileUniqId">Unique file Id</param>
+        /// <param name="request">Request</param>
+        /// <response code="204">Return if file replaced successfully</response>
+        /// <response code="400">Returns if request are invalid</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="403">Returns if user have not access to requested file</response>
+        /// <response code="404">Returns if passed file are not exist</response>
+        /// <response code="500">Returns if server error has occurred</response>
         [HttpPatch]
         [Route("replace/{fileUniqId}")]
         public async Task<IActionResult> Replace(Guid fileUniqId, [FromBody]ReplaceRequest request)
@@ -190,7 +228,7 @@ namespace FileStorage.Web.Controllers
                     return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
                         _fileService.State.ErrorMessage);
 
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -200,10 +238,20 @@ namespace FileStorage.Web.Controllers
 
 
         /// <summary>
-        /// 
+        /// Restoring removed file from recycle bin
         /// </summary>
-        /// <param name="fileUniqId"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// ## Description 
+        /// Each removed file placed in recycle bin on 30 days. After that they will be removed forever.
+        /// This request can restore removed file 
+        /// </remarks>
+        /// <param name="fileUniqId">Unique file Id</param>
+        /// <response code="200">Return file information about restored file with Location header where file can be downloaded</response>
+        /// <response code="400">Returns if file are not removed, or not found, and other similar situations</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="403">Returns if user have not access to requested file</response>
+        /// <response code="404">Returns if passed file are not exist</response>
+        /// <response code="500">Returns if server error has occurred</response>
         [HttpPut]
         [Route("restore/{fileUniqId}")]
         public async Task<IActionResult> ResotreDeletedFile(Guid fileUniqId)
@@ -225,11 +273,21 @@ namespace FileStorage.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         /// <summary>
-        /// 
+        /// Delete file
         /// </summary>
-        /// <param name="fileUniqId"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// ## Description 
+        /// Removing file and placing it to recycle bin on 30 days.
+        /// </remarks>
+        /// <param name="fileUniqId">Unique file Id</param>
+        /// <response code="204">Return if file removed successfully</response>
+        /// <response code="400">Returns if request are wrong</response>
+        /// <response code="401">Returns if authorize token are missing in header or token is wrong</response>
+        /// <response code="403">Returns if user have not access to requested file</response>
+        /// <response code="404">Returns if passed file are not exist</response>
+        /// <response code="500">Returns if server error has occurred</response>
         [Route("{fileUniqId}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteFile(Guid fileUniqId)
