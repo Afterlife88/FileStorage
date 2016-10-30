@@ -98,6 +98,8 @@ namespace FileStorage.Services.Implementation
             }
         }
 
+
+
         public async Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId)
         {
             try
@@ -242,6 +244,33 @@ namespace FileStorage.Services.Implementation
                 return null;
             }
         }
+
+        public async Task<FolderDto> RestoreRemovedFolderAsync(Guid folderId, string callerEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var folder = await _unitOfWork.NodeRepository.GetNodeThatWasRemoved(folderId);
+
+                if (folder == null || !folder.IsDirectory)
+                {
+                    State.ErrorMessage = "Requested folder not found!";
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    return null;
+                }
+
+                RecursiveRestore(folder);
+
+                await _unitOfWork.CommitAsync();
+                return Mapper.Map<Node, FolderDto>(folder);
+            }
+            catch (Exception ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
         #endregion
         #region Helpers methods 
         private void RecursivelyDisplayFolderSibling(Node node, FolderDto folder)
@@ -316,6 +345,22 @@ namespace FileStorage.Services.Implementation
                 ExecutorUser = user,
                 RemovedOn = DateTime.Now
             });
+        }
+
+        private void RecursiveRestore(Node parent)
+        {
+
+            if (parent.IsDirectory)
+            {
+                var siblings = parent.Siblings.ToList();
+                foreach (var child in siblings)
+                {
+                    RecursiveRestore(child);
+                }
+            }
+
+            parent.IsDeleted = false;
+            _unitOfWork.RemovedNodeRepository.DeleteRemovedNodeRecord(parent);
         }
         #endregion
     }

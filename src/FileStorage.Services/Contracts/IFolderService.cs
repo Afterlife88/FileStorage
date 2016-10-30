@@ -13,9 +13,11 @@ namespace FileStorage.Services.Contracts
         Task<FolderDto> AddFolderAsync(string userEmail, CreateFolderRequest folder);
         Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId);
         Task<FolderDto> ReplaceFolderAsync(string callerEmail, Guid folderId, ReplaceRequest model);
-        Task<FolderDto> RenameFolderAsync(Guid fileUniqId, string newName, string callerEmail);
+        Task<FolderDto> RenameFolderAsync(Guid folderId, string newName, string callerEmail);
         ServiceState State { get; }
         Task<IEnumerable<FolderDto>> GetListFolder(string email);
-        Task<ServiceState> RemoveFolderAsync(Guid fileUniqId, string callerEmail);
+        Task<ServiceState> RemoveFolderAsync(Guid folderId, string callerEmail);
+
+        Task<FolderDto> RestoreRemovedFolderAsync(Guid folderId, string callerEmail);
     }
 }

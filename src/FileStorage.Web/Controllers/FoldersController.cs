@@ -212,12 +212,6 @@ namespace FileStorage.Web.Controllers
 
             }
         }
-        //// PUT api/values/5
-        //[HttpPatch("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
         /// <summary>
         /// 
         /// </summary>
@@ -246,6 +240,37 @@ namespace FileStorage.Web.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uniqFolderId"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("restore/{uniqFolderId}")]
+
+        public async Task<IActionResult> RestoreFolder(Guid uniqFolderId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                await _folderService.RestoreRemovedFolderAsync(uniqFolderId, callerEmail);
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
+
+                return StatusCode(204);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
 

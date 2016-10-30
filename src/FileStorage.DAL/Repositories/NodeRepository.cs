@@ -85,7 +85,9 @@ namespace FileStorage.DAL.Repositories
 
         public async Task<Node> GetNodeThatWasRemoved(Guid nodeId)
         {
-            var node = await _dataDbContext.Nodes.FirstOrDefaultAsync(r => r.Id == nodeId && r.IsDeleted);
+            var node = await _dataDbContext.Nodes.Where(r => r.Id == nodeId && 
+            r.IsDeleted).Include(r => r.Siblings).ThenInclude(r => r.FileVersions).
+               FirstOrDefaultAsync();
             return node;
         }
     }
