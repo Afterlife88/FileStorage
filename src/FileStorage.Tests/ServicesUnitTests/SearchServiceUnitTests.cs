@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using FileStorage.DAL.Contracts;
-using FileStorage.DAL.Contracts.Repositories;
 using FileStorage.Domain.Entities;
-using FileStorage.Web.Configuration;
 using Moq;
 using Xunit;
 using Xunit.Abstractions;

@@ -20,6 +20,7 @@
         a.href = url;
         a.download = fileName;
         a.target = '_blank';
+        document.body.appendChild(a);
         a.click();
       }).catch(function (err) {
         Alertify.error(err.data);

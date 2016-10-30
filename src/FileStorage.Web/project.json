@@ -32,8 +32,6 @@
     "netcoreapp1.0": {
       "imports": [
         "dotnet5.6",
-        "dnxcore50",
-        "netstandard1.6",
         "portable-net45+win8"
       ]
     }
@@ -42,7 +40,8 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
-    "xmlDoc": true
+    "xmlDoc": true,
+    "nowarn": [ "1591" ]
   },
 
   "runtimeOptions": {
@@ -54,7 +53,8 @@
   "publishOptions": {
     "include": [
       "wwwroot",
-      "web.config"
+      "web.config",
+      "appsettings.json"
     ]
   },
   "scripts": {
