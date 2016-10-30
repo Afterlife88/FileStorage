@@ -30,12 +30,13 @@
         <td ng-if="!node.contentType" class="fa fa-folder fa-2x"></td>
         <td ng-if="node.contentType" class="fa fa-file-text fa-2x"></td>
         <td>{{node.name}}</td>
-        <td>{{node.contentType}}</td>
+        <td ng-if="!node.contentType"></td>
+        <td ng-if="node.contentType">{{node.contentType}}</td>
         <td>{{node.created | date:'HH:mm:ss MM/dd/yyyy'}}</td>
         <td ng-if="node.contentType && !vm.showPropForRemoved">
           <a href="javascript:void(0);" class="btn btn-xs btn-primary" ng-click="vm.download(node.name, node.id)">Download latest version</a>
         </td>
-        <td ng-if="!node.contentType"></td>
+        <td ng-if="!node.contentType && !vm.showPropForRemoved"></td>
         <td ng-if="vm.showPropForRemoved">{{node.removedOn | date:'HH:mm:ss MM/dd/yyyy'}}</td>
         <td ng-if="vm.showPropForRemoved">{{node.willBeRemovedAt | date:'HH:mm:ss dd/MM/yyyy'}}</td>
       </tr>
