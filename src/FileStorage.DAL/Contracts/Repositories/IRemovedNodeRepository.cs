@@ -11,5 +11,6 @@ namespace FileStorage.DAL.Contracts.Repositories
         Task<IEnumerable<RemovedNode>> GetAllRemovedNodes();
         void AddRemovedNode(RemovedNode node);
         Task DeleteRemovedNodeRecord(Node node);
+        Task<IEnumerable<RemovedNode>> GetLateFiles();
     }
 }

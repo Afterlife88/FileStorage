@@ -1,18 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Threading.Tasks;
+using FileStorage.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FileStorage.Web.Controllers
 {
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class DailyCheckController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IBlobService _blobService;
+        public DailyCheckController(IBlobService blobService)
         {
-            return new string[] { "value1", "value2" };
+            _blobService = blobService;
         }
+        // GET: api/dailycheck
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                await _blobService.CheckLateFilesAsync();
+                return Ok("Files checked");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+    }
 }

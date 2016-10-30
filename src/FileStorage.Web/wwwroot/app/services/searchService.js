@@ -17,7 +17,7 @@
     function search(query, searchRemoved) {
       console.log(searchRemoved);
       var request = getRequest(query, searchRemoved);
-
+      spinnerService.showSpinner();
       return $http.get('/api/search?query=' + request.query + '&includeRemoved=' + request.search).then(function (response) {
         spinnerService.hideSpinner();
         return response.data;

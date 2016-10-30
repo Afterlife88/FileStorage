@@ -85,10 +85,20 @@ namespace FileStorage.DAL.Repositories
 
         public async Task<Node> GetNodeThatWasRemoved(Guid nodeId)
         {
-            var node = await _dataDbContext.Nodes.Where(r => r.Id == nodeId && 
+            var node = await _dataDbContext.Nodes.Where(r => r.Id == nodeId &&
             r.IsDeleted).Include(r => r.Siblings).ThenInclude(r => r.FileVersions).
                FirstOrDefaultAsync();
             return node;
+        }
+
+        public void DeleteCascadeLateNode(Node node)
+        {
+            _dataDbContext.Nodes.Remove(node);
+            foreach (var n in node.FileVersions.ToArray())
+                _dataDbContext.FileVersions.Remove(n);
+            var removedNode = _dataDbContext.RemovedNodes.FirstOrDefault(r => r.Node == node);
+            if (removedNode != null)
+                _dataDbContext.RemovedNodes.Remove(removedNode);
         }
     }
 }

@@ -28,13 +28,19 @@ namespace FileStorage.DAL.Repositories
 
         public async Task<IEnumerable<RemovedNode>> GetAllRemovedNodes()
         {
-            return await _dataDbContext.RemovedNodes.Include(r=>r.Node).ToArrayAsync();
+            return await _dataDbContext.RemovedNodes.Include(r => r.Node).ToArrayAsync();
         }
-        
+
         public async Task DeleteRemovedNodeRecord(Node node)
         {
             var getNode = await _dataDbContext.RemovedNodes.FirstOrDefaultAsync(r => r.Node == node);
             _dataDbContext.RemovedNodes.Remove(getNode);
+        }
+
+        public async Task<IEnumerable<RemovedNode>> GetLateFiles()
+        {
+            var removed = await _dataDbContext.RemovedNodes.Where(r => r.DateOfRemoval < DateTime.Now).Include(r => r.Node).ThenInclude(r=>r.FileVersions).ToArrayAsync();
+            return removed;
         }
     }
 }

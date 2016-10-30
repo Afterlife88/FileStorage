@@ -29,5 +29,7 @@ namespace FileStorage.Services.Contracts
         /// <param name="path">path to the file<</param>
         /// <returns></returns>
         Task DeleteFileAsync(string path);
+
+        Task CheckLateFilesAsync();
     }
 }

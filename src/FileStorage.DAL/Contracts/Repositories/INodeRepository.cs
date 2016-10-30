@@ -20,5 +20,6 @@ namespace FileStorage.DAL.Contracts.Repositories
         Task<Node> GetFolderByIdAsync(Guid id);
         Task<IEnumerable<Node>> GetAllFolUserWithQuery(string query, string userId, bool takeDeleted = false);
         Task<IEnumerable<Node>> GetAllNodesForUserWithPredicate(string userId, bool takeDeleted);
+        void DeleteCascadeLateNode(Node node);
     }
 }
