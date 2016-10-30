@@ -1,1 +1,38 @@
-# FileStorage
+#File-storage
+### DevChallenge 2016 fall, back-end semi-final round, pro category
+
+## Демо
+> - http://challenge-task.info
+
+## Запуск приложения через загрузку образа с docker hub
+> - **docker run -p 8080:5000 devchallenge/file-storage**
+> - Запустите localhost:8080 в браузере, если порт занят, замените в docker run 8080 на любой другой порт и запустите команду еще раз.
+
+## Альтернативный путь сборки и запуска через docker
+> - `cd src\FileStorage.Web`
+> - `bower install`
+> - `cd ..\..\`
+> - `docker build -t app .`
+> - `docker run -p 8080:5000 -t app`
+
+## Описание проекта
+Проект являет собой сервис файлого-хранилища, аналог веб версии Dropbox, OneDrive и тд доступ к файлам реализован через REST архитектуру. 
+Используемые технологии:
+- **Серверная часть:** ASP.NET Core, Entity Framework Core, MS SQL, Swagger (для документации API), XUnit, Moq, AutoMapper (Entity => DTO), Window Azure Storage (библиотека для взаимодейсвтия с Azure BLOB хранилищем)
+- **Клиент:** AngularJS, Angular-ui/Bootstrap (модалки и тп) на вьюхе, angular-file-upload(для загрузки файлов), Bootstrap, font-awesome
+
+## Описание структуры проекта
+Проект выполнен в соотвецвтии принципам Domain-Driven Design, в связи с этим решение разбито на 6 проектов, где есть строгое разграниченые между Domain Entities, Data Access Layer, Buisness Layer, API в итоге есть разграниченые слои которые легко дополнять и масштабировать проект, соблюдены SOLID принципы при построении архитектуры решения. Обширную документацию к API можно просмотреть по адресу **/swagger**, там сразу можно будет потестить запросы к API. Клиент доступен по корневому URL и доступен сразу после запуска приложения. 
+
+## Структура проекта
+- **FileStorage.Domain** - хранит в себе сущности для ORM Entity Framework Core на основе которых идет генерация базы данных. 
+- **FileStorage.DAL** - проект которые обеспечивает доступ к данным, "слой" между бизнесс логикой и средством хранения данных (MS Sql Server), хранит в себе реализацию **UnitOfWork** и **Repository** патернов. 
+- **FileStorage.Services** - Buisness Layer приложения, обеспечивает workflow для бизнесс логики приложения, в папке **Contracts** содержатся абстракции на которых строим зависимость в приложении. **Implementation** конкретные реализации и основаня бизнесс логика. 
+- **FileStorage.Tests** - тесты для проекта, в папке **ServicesUnitTests** содержатся основные юнит тесты для проверки бизнесс логики приложения.
+- **FileStorage.Web** -  так как нужно было запускать через один docker контейнер. API и клиентская часть содержится на одном хосте. В папке **Controllers** 4 API контроллера и один Home контроллер для возвращения вьюхи на клиент и там уже использовать Angular. Контроллеры выполняют тривиальные функции взять запрос - передать на сервис (business layer) - вернуть ответ пришедший с сервиса. **Startup**  файл содержит основную конфигурацию к **API** и **DI** контейнер который регестрирует конкретные реализации к абстракциям. В папке **wwwroot/app** клиентское приложение с использованием AngularJS вы можете просмотреть его сразу после старта приложения. В папке **wwwroot/swagger** клиентская документация к API. 
+
+
+## Зависимости в проекте
+- **CustomServiceRegistration** -> CustomServiceRegistration.Domain, CustomServiceRegistration.TokenProvider
+- **CustomServiceRegistration.Tests** ->  CustomServiceRegistration
+- **CustomServiceRegistration.TokenProvider** -> CustomServiceRegistration.Domain

@@ -148,10 +148,15 @@ namespace FileStorage.Web.Controllers
 
                 var responseFromService = await _fileService.UploadAsync(file, directoryUniqId, callerEmail);
                 if (!_fileService.State.IsValid)
-                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError, _fileService.State.ErrorMessage);
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _fileService.State.TypeOfError,
+                        _fileService.State.ErrorMessage);
 
-                return CreatedAtRoute("GetFile", new { fileUniqId = responseFromService.UniqueFileId }, responseFromService);
-
+                return CreatedAtRoute("GetFile", new {fileUniqId = responseFromService.UniqueFileId},
+                    responseFromService);
+            }
+            catch (OutOfMemoryException)
+            {
+                return StatusCode(500, "File is too large for the machine that application host");
             }
             catch (Exception ex)
             {
