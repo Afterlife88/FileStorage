@@ -14,7 +14,7 @@ namespace FileStorage.Tests.Helpers
                 ContentType = "application/json",
                 Name = "name",
                 IsDeleted = false,
-
+                Id = new Guid("37e32a9e-bd72-48e2-9a7b-5c4fdbda6be1"),
             };
             var fileVersion = new FileVersion()
             {
@@ -48,8 +48,18 @@ namespace FileStorage.Tests.Helpers
                 VersionOfFile = 1
             };
             node2.FileVersions.Add(fileVersion2);
+
             yield return node2;
 
+            var folder = new Node()
+            {
+                IsDirectory = true,
+                Name = "name",
+                IsDeleted = false,
+                Id = new Guid("37e32a9e-bd72-48e2-9a7b-5c4fdbda3xj5"),
+                OwnerId = "7e32a9e-bd72-48e2-9a7b-5c4fdbda3xj5""
+            };
+            yield return folder;
         }
     }
 }
