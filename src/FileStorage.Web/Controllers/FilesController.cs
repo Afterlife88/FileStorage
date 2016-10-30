@@ -239,7 +239,6 @@ namespace FileStorage.Web.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                // TODO: Validate if content type is not form-data
                 var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 await _fileService.RemoveFileAsync(fileUniqId, callerEmail);

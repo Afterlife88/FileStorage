@@ -218,11 +218,35 @@ namespace FileStorage.Web.Controllers
         //{
         //}
 
-        //// DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uniqFolderId"></param>
+        /// <returns></returns>
+        [Route("{uniqFolderId}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFolder(Guid uniqFolderId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var callerEmail = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                await _folderService.RemoveFolderAsync(uniqFolderId, callerEmail);
+                if (!_folderService.State.IsValid)
+                    return ServiceResponseDispatcher.ExecuteServiceResponse(this, _folderService.State.TypeOfError,
+                        _folderService.State.ErrorMessage);
+
+                return StatusCode(204);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
 
     }

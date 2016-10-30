@@ -70,6 +70,34 @@ namespace FileStorage.Services.Implementation
             }
 
         }
+
+        public async Task<ServiceState> RemoveFolderAsync(Guid folderUniqId, string callerEmail)
+        {
+            try
+            {
+                var owner = await _unitOfWork.UserRepository.GetUserAsync(callerEmail);
+                var nodeToRemove = await _unitOfWork.NodeRepository.GetNodeByIdAsync(folderUniqId);
+
+                if (nodeToRemove == null || !nodeToRemove.IsDirectory)
+                {
+                    State.ErrorMessage = "Requested folder not found!";
+                    State.TypeOfError = TypeOfServiceError.BadRequest;
+                    return State;
+                }
+
+                RecursiveDelete(nodeToRemove, owner);
+                await _unitOfWork.CommitAsync();
+                return State;
+            }
+            catch (Exception ex)
+            {
+
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
+        }
+
         public async Task<FolderDto> GetFolderForUserAsync(string userEmail, Guid folderId)
         {
             try
@@ -266,6 +294,28 @@ namespace FileStorage.Services.Implementation
                 return modelState.IsValid;
             }
             return modelState.IsValid;
+        }
+
+        private void RecursiveDelete(Node parent, ApplicationUser user)
+        {
+
+            if (parent.IsDirectory)
+            {
+                var siblings = parent.Siblings.ToList();
+                foreach (var child in siblings)
+                {
+                    RecursiveDelete(child, user);
+                }
+            }
+
+            parent.IsDeleted = true;
+            _unitOfWork.RemovedNodeRepository.AddRemovedNode(new RemovedNode()
+            {
+                Node = parent,
+                DateOfRemoval = DateTime.Now.AddMonths(1),
+                ExecutorUser = user,
+                RemovedOn = DateTime.Now
+            });
         }
         #endregion
     }

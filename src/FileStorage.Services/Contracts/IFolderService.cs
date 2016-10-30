@@ -16,5 +16,6 @@ namespace FileStorage.Services.Contracts
         Task<FolderDto> RenameFolderAsync(Guid fileUniqId, string newName, string callerEmail);
         ServiceState State { get; }
         Task<IEnumerable<FolderDto>> GetListFolder(string email);
+        Task<ServiceState> RemoveFolderAsync(Guid fileUniqId, string callerEmail);
     }
 }
