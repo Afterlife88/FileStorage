@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using FileStorage.Services.Contracts;
 using FileStorage.Services.DTO;
+using FileStorage.Services.Models;
 using FileStorage.Services.RequestModels;
 using FileStorage.Services.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -112,6 +113,10 @@ namespace FileStorage.Web.Controllers
                 };
                 return result;
             }
+            catch (AzureException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
@@ -153,6 +158,10 @@ namespace FileStorage.Web.Controllers
 
                 return CreatedAtRoute("GetFile", new {fileUniqId = responseFromService.UniqueFileId},
                     responseFromService);
+            }
+            catch (AzureException ex)
+            {
+                return StatusCode(500, ex.Message);
             }
             catch (Exception ex)
             {

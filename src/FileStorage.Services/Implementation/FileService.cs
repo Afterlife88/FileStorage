@@ -82,6 +82,12 @@ namespace FileStorage.Services.Implementation
                     return await GetLastVersionOfFile(fileNode);
                 return await GetConcreteVersionOfFile(fileNode, versionOfFile.GetValueOrDefault(-1));
             }
+            catch (AzureException ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
+            }
             catch (Exception ex)
             {
                 State.ErrorMessage = ex.Message;
@@ -170,10 +176,14 @@ namespace FileStorage.Services.Implementation
                 await _blobService.UploadFileAsync(file, generateNameForAzureBlob);
 
                 await _unitOfWork.CommitAsync();
-
-         
              
                 return Mapper.Map<Node, FileDto>(fileNode);
+            }
+            catch (AzureException ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return null;
             }
             catch (Exception ex)
             {
@@ -318,23 +328,33 @@ namespace FileStorage.Services.Implementation
 
         private async Task<ServiceState> AddNewVersionOfFileAsync(IFormFile newfile, Node existedFile, string hash, string generatedName)
         {
-            int getLastVersionOfFile =
-                      await _unitOfWork.FileVersionRepository.GetNumberOfLastVersionFile(existedFile);
-            // Increment version of file
-            getLastVersionOfFile++;
-            var newFileVersion = new FileVersion
+            try
             {
-                Node = existedFile,
-                Created = DateTime.Now,
-                MD5Hash = hash,
-                PathToFile = generatedName,
-                Size = newfile.Length,
-                VersionOfFile = getLastVersionOfFile
-            };
-            _unitOfWork.FileVersionRepository.AddFileVersion(newFileVersion);
-            await _unitOfWork.CommitAsync();
-            await _blobService.UploadFileAsync(newfile, generatedName);
-            return State;
+                int getLastVersionOfFile =
+                    await _unitOfWork.FileVersionRepository.GetNumberOfLastVersionFile(existedFile);
+                // Increment version of file
+                getLastVersionOfFile++;
+                var newFileVersion = new FileVersion
+                {
+                    Node = existedFile,
+                    Created = DateTime.Now,
+                    MD5Hash = hash,
+                    PathToFile = generatedName,
+                    Size = newfile.Length,
+                    VersionOfFile = getLastVersionOfFile
+                };
+                _unitOfWork.FileVersionRepository.AddFileVersion(newFileVersion);
+                await _unitOfWork.CommitAsync();
+                await _blobService.UploadFileAsync(newfile, generatedName);
+                return State;
+            }
+            catch (AzureException ex)
+            {
+                State.ErrorMessage = ex.Message;
+                State.TypeOfError = TypeOfServiceError.ServiceError;
+                return State;
+            }
+
         }
         private async Task<Tuple<Stream, FileDto>> GetConcreteVersionOfFile(Node file, int versionOfFile)
         {

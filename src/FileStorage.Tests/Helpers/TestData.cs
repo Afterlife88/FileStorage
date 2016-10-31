@@ -57,7 +57,7 @@ namespace FileStorage.Tests.Helpers
                 Name = "name",
                 IsDeleted = false,
                 Id = new Guid("37e32a9e-bd72-48e2-9a7b-5c4fdbda3xj5"),
-                OwnerId = "7e32a9e-bd72-48e2-9a7b-5c4fdbda3xj5""
+                OwnerId = "7e32a9e-bd72-48e2-9a7b-5c4fdbda3xj5"
             };
             yield return folder;
         }
