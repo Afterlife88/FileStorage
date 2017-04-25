@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FileStorage.Web", "src\FileStorage.Web\FileStorage.Web.xproj", "{F3BB43CC-AA1E-45B7-9CFC-6FA04F19CDE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Web", "src\FileStorage.Web\FileStorage.Web.csproj", "{F3BB43CC-AA1E-45B7-9CFC-6FA04F19CDE3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FileStorage.Domain", "src\FileStorage.Domain\FileStorage.Domain.xproj", "{8B65359B-A24D-4601-9495-8180F4DF1FD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Domain", "src\FileStorage.Domain\FileStorage.Domain.csproj", "{8B65359B-A24D-4601-9495-8180F4DF1FD8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FileStorage.Tests", "src\FileStorage.Tests\FileStorage.Tests.xproj", "{A6720D3F-E589-4934-9BEE-32407E23E9E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Tests", "src\FileStorage.Tests\FileStorage.Tests.csproj", "{A6720D3F-E589-4934-9BEE-32407E23E9E2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FileStorage.Utils", "src\FileStorage.Utils\FileStorage.Utils.xproj", "{ECEAC2B3-ADCE-457A-BC58-656BBD3F7CFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Utils", "src\FileStorage.Utils\FileStorage.Utils.csproj", "{ECEAC2B3-ADCE-457A-BC58-656BBD3F7CFD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FileStorage.Services", "src\FileStorage.Services\FileStorage.Services.xproj", "{546FA868-BD64-49D4-852C-C4095703E78B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.Services", "src\FileStorage.Services\FileStorage.Services.csproj", "{546FA868-BD64-49D4-852C-C4095703E78B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FileStorage.DAL", "src\FileStorage.DAL\FileStorage.DAL.xproj", "{0B75612B-61FE-42F4-A79B-06213132ACEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorage.DAL", "src\FileStorage.DAL\FileStorage.DAL.csproj", "{0B75612B-61FE-42F4-A79B-06213132ACEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

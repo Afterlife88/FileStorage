@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:latest
+FROM microsoft/dotnet:1.0-sdk
 
 # Set env variables
 ENV ASPNETCORE_URLS http://*:5000
