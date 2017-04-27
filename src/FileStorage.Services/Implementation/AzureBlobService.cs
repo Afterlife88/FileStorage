@@ -53,8 +53,6 @@ namespace FileStorage.Services.Implementation
                 throw new AzureException(
                     "Failed to connect to Azure Blob from docker container! Please reboot docker and try again!");
             }
-
-
         }
 
         public async Task DeleteFileAsync(string path)
