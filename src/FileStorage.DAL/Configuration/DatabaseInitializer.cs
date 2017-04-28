@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FileStorage.DAL.Contracts.Initializers;
 using FileStorage.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -26,37 +27,37 @@ namespace FileStorage.DAL.Configuration
             await _context.Database.EnsureCreatedAsync();
 
 
-            //if (_context.Users.Any())
-            //{
-            //    foreach (var u in _context.Users)
-            //        _context.Remove(u);
-            //    _context.SaveChanges();
-            //}
+            if (_context.Users.Any())
+            {
+                foreach (var u in _context.Users)
+                    _context.Remove(u);
+                _context.SaveChanges();
+            }
 
-            //var email = "test@gmail.com";
-            //if (await _userManager.FindByEmailAsync(email) == null)
-            //{
-            //    // use the create rather than addorupdate so can set password
-            //    var user = new ApplicationUser
-            //    {
-            //        Email = email,
-            //        UserName = email
-            //    };
-            //    await _userManager.CreateAsync(user, "test123456");
-            //}
+            var email = "test@gmail.com";
+            if (await _userManager.FindByEmailAsync(email) == null)
+            {
+                // use the create rather than addorupdate so can set password
+                var user = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email
+                };
+                await _userManager.CreateAsync(user, "test123456");
+            }
 
-            //var createdUser = await _userManager.FindByEmailAsync(email);
-            //var roleName = "admin";
-            //if (await _roleManager.FindByNameAsync(roleName) == null)
-            //{
-            //    await _roleManager.CreateAsync(new IdentityRole() { Name = roleName });
-            //}
+            var createdUser = await _userManager.FindByEmailAsync(email);
+            var roleName = "admin";
+            if (await _roleManager.FindByNameAsync(roleName) == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole() { Name = roleName });
+            }
 
-            //if (!await _userManager.IsInRoleAsync(createdUser, roleName))
-            //{
-            //    await _userManager.AddToRoleAsync(createdUser, roleName);
-            //}
-            //await _context.SaveChangesAsync();
+            if (!await _userManager.IsInRoleAsync(createdUser, roleName))
+            {
+                await _userManager.AddToRoleAsync(createdUser, roleName);
+            }
+            await _context.SaveChangesAsync();
 
         }
     }

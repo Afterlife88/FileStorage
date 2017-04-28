@@ -112,7 +112,7 @@ namespace FileStorage.Web
             app.UseMvcWithDefaultRoute();
 
             //app.UseIdentity();
-            //// Recreate db's
+            // Recreate db's
             //databaseInitializer.Seed().GetAwaiter().GetResult();
         }
         private string GetXmlCommentsPath(ApplicationEnvironment appEnvironment)
